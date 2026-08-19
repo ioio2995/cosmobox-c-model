@@ -911,11 +911,7 @@ Ces questions constituent un niveau supplémentaire du programme et doivent rest
 Comme distingué en section 4, la réduction isotrope envisage l’existence d’un état maximal de propagation causale permettant une normalisation physique :
 
 ```math
-\boxed{
-C=1,
-\qquad
-0<C\leq1.
-}
+C=1,\qquad 0<C\le 1.
 ```
 
 Ce domaine concerne la **quantité physique $C$ dans une normalisation par rapport à un état maximal**. Il constitue une hypothèse à tester et non une conséquence de la sonde opérationnelle.
@@ -1101,107 +1097,107 @@ peut être obtenue sans introduire artificiellement les résultats recherchés.
 
 Les premières étapes de validation pourront être organisées progressivement.
 
-1. **Existence d’une grandeur relationnelle robuste**
+### 1. Existence d’une grandeur relationnelle robuste
 
-   Vérifier qu’une quantité telle que
+Vérifier qu’une quantité telle que
 
-   ```math
-   C^{(pq)}
-   ```
+```math
+C^{(pq)}
+```
 
-   peut être construite à partir d’observables physiques ou de corrélations de manière reproductible et invariante de jauge, puis déterminer si la sonde
+peut être construite à partir d’observables physiques ou de corrélations de manière reproductible et invariante de jauge, puis déterminer si la sonde
 
-   ```math
-   C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
-   ```
+```math
+C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
+```
 
-   permet d’en tester effectivement certaines propriétés.
+permet d’en tester effectivement certaines propriétés.
 
-2. **Reconstruction d’une structure géométrique**
+### 2. Reconstruction d’une structure géométrique
 
-   Déterminer si l’ensemble des relations
+Déterminer si l’ensemble des relations
 
-   ```math
-   \{C^{(pq)}\}
-   ```
+```math
+\{C^{(pq)}\}
+```
 
-   peut effectivement produire une structure locale puis macroscopique cohérente.
+peut effectivement produire une structure locale puis macroscopique cohérente.
 
-   Cette géométrie ne doit pas être introduite implicitement dans la définition initiale de $C$.
+Cette géométrie ne doit pas être introduite implicitement dans la définition initiale de $C$.
 
-3. **Limite macroscopique faible**
+### 3. Limite macroscopique faible
 
-   Vérifier si les variations collectives de $C$ peuvent produire, dans un régime approprié, une dynamique compatible avec la limite gravitationnelle newtonienne.
+Vérifier si les variations collectives de $C$ peuvent produire, dans un régime approprié, une dynamique compatible avec la limite gravitationnelle newtonienne.
 
-   Il faudra notamment retrouver une relation effective correspondant à une accélération de la forme :
+Il faudra notamment retrouver une relation effective correspondant à une accélération de la forme :
 
-   ```math
-   a\simeq-\frac{GM}{r^2}.
-   ```
+```math
+a\simeq-\frac{GM}{r^2}.
+```
 
-   Dans une première construction, l’échelle globale du couplage pourra être **calibrée sur la valeur de $G$**. Une telle calibration ne constituera pas une dérivation de la constante gravitationnelle. Un objectif ultérieur sera de déterminer si la valeur de $G$ peut être reliée aux paramètres microscopiques du modèle.
+Dans une première construction, l’échelle globale du couplage pourra être **calibrée sur la valeur de $G$**. Une telle calibration ne constituera pas une dérivation de la constante gravitationnelle. Un objectif ultérieur sera de déterminer si la valeur de $G$ peut être reliée aux paramètres microscopiques du modèle.
 
-4. **Structure temporelle et décalage gravitationnel**
+### 4. Structure temporelle et décalage gravitationnel
 
-   Tester si le modèle reproduit correctement les différences de temps propre observées entre des régions soumises à des environnements gravitationnels différents.
+Tester si le modèle reproduit correctement les différences de temps propre observées entre des régions soumises à des environnements gravitationnels différents.
 
-   Ce test est particulièrement important puisque, dans l’hypothèse $C$, le temps local est lié à l’organisation des relations causales et non introduit comme une variable indépendante de cette structure.
+Ce test est particulièrement important puisque, dans l’hypothèse $C$, le temps local est lié à l’organisation des relations causales et non introduit comme une variable indépendante de cette structure.
 
-5. **Propagation de la lumière**
+### 5. Propagation de la lumière
 
-   Vérifier que la géométrie effective produite par $C$ reproduit correctement la propagation lumineuse dans un environnement gravitationnel non uniforme, notamment la déviation observée des signaux lumineux.
+Vérifier que la géométrie effective produite par $C$ reproduit correctement la propagation lumineuse dans un environnement gravitationnel non uniforme, notamment la déviation observée des signaux lumineux.
 
-6. **Retard de Shapiro**
+### 6. Retard de Shapiro
 
-   Tester si la modification des relations de propagation prédit le retard supplémentaire observé lorsqu’un signal traverse une région gravitationnellement perturbée.
+Tester si la modification des relations de propagation prédit le retard supplémentaire observé lorsqu’un signal traverse une région gravitationnellement perturbée.
 
-7. **Sources en mouvement et en rotation**
+### 7. Sources en mouvement et en rotation
 
-   Vérifier si le modèle peut rendre compte des effets qui ne peuvent pas être décrits uniquement par une géométrie spatiale isotrope et statique.
+Vérifier si le modèle peut rendre compte des effets qui ne peuvent pas être décrits uniquement par une géométrie spatiale isotrope et statique.
 
-   Cette étape permettra notamment de déterminer si les degrés de liberté contenus dans $C$ sont suffisants ou si une structure supplémentaire est nécessaire.
+Cette étape permettra notamment de déterminer si les degrés de liberté contenus dans $C$ sont suffisants ou si une structure supplémentaire est nécessaire.
 
-8. **Invariance locale de $c$**
+### 8. Invariance locale de $c$
 
-   Vérifier explicitement qu’un observateur effectuant des mesures entièrement locales obtient toujours :
+Vérifier explicitement qu’un observateur effectuant des mesures entièrement locales obtient toujours :
 
-   ```math
-   \boxed{
-   c_{\mathrm{local}}=c
-   }
-   ```
+```math
+\boxed{
+c_{\mathrm{local}}=c
+}
+```
 
-   indépendamment de l’état relatif de $C$ attribué à son environnement.
+indépendamment de l’état relatif de $C$ attribué à son environnement.
 
-9. **Covariance relativiste**
+### 9. Covariance relativiste
 
-   Vérifier que les prédictions physiques du modèle ne dépendent pas d’un référentiel global privilégié et que les différentes descriptions d’un même système peuvent être reliées de manière cohérente entre observateurs en mouvement relatif.
+Vérifier que les prédictions physiques du modèle ne dépendent pas d’un référentiel global privilégié et que les différentes descriptions d’un même système peuvent être reliées de manière cohérente entre observateurs en mouvement relatif.
 
-   La sonde $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ fondée sur le paramètre d’évolution du premier modèle ne constitue pas, à elle seule, une sonde covariante. Avant cette étape, elle devra être remplacée ou reformulée par une construction compatible avec l’absence de feuilletage temporel privilégié.
+La sonde $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ fondée sur le paramètre d’évolution du premier modèle ne constitue pas, à elle seule, une sonde covariante. Avant cette étape, elle devra être remplacée ou reformulée par une construction compatible avec l’absence de feuilletage temporel privilégié.
 
-10. **Recherche d’une prédiction discriminante**
+### 10. Recherche d’une prédiction discriminante
 
-    Identifier au moins une situation dans laquelle l’hypothèse $C$ conduit à une prédiction calculable qui ne soit pas simplement équivalente à une métrique effective ou à une description optique existante.
+Identifier au moins une situation dans laquelle l’hypothèse $C$ conduit à une prédiction calculable qui ne soit pas simplement équivalente à une métrique effective ou à une description optique existante.
 
-    Une piste particulière consiste à rechercher deux états dont les descriptions gravitationnelles de référence sont identiques — en particulier, dans une comparaison semi-classique, avec le même $\langle T_{\mu\nu}\rangle$ — mais dont les corrélations quantiques collectives diffèrent, puis à déterminer si l’hypothèse $C$ prédit des structures effectives distinctes :
+Une piste particulière consiste à rechercher deux états dont les descriptions gravitationnelles de référence sont identiques — en particulier, dans une comparaison semi-classique, avec le même $\langle T_{\mu\nu}\rangle$ — mais dont les corrélations quantiques collectives diffèrent, puis à déterminer si l’hypothèse $C$ prédit des structures effectives distinctes :
 
-    ```math
-    \boxed{
-    \langle T_{\mu\nu}\rangle_A
-    =
-    \langle T_{\mu\nu}\rangle_B,
-    \qquad
-    \text{corrélations quantiques}_A
-    \neq
-    \text{corrélations quantiques}_B
-    \stackrel{?}{\longrightarrow}
-    C_A\neq C_B
-    }
-    ```
+```math
+\boxed{
+\langle T_{\mu\nu}\rangle_A
+=
+\langle T_{\mu\nu}\rangle_B,
+\qquad
+\text{corrélations quantiques}_A
+\neq
+\text{corrélations quantiques}_B
+\stackrel{?}{\longrightarrow}
+C_A\neq C_B
+}
+```
 
-    Cette relation n’est pas une prédiction acquise ; elle constitue une piste de recherche discriminante. Pour être réellement discriminante, la différence obtenue devra persister alors que la description gravitationnelle utilisée comme référence prédit le même comportement pour les deux états.
+Cette relation n’est pas une prédiction acquise ; elle constitue une piste de recherche discriminante. Pour être réellement discriminante, la différence obtenue devra persister alors que la description gravitationnelle utilisée comme référence prédit le même comportement pour les deux états.
 
-    Tant qu’aucune différence de ce type n’est identifiée, la réussite des tests précédents établit seulement la compatibilité du modèle avec des descriptions physiques connues, et non son caractère physiquement distinct.
+Tant qu’aucune différence de ce type n’est identifiée, la réussite des tests précédents établit seulement la compatibilité du modèle avec des descriptions physiques connues, et non son caractère physiquement distinct.
 
 ### Principe de réfutation
 
