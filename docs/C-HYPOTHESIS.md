@@ -14,7 +14,7 @@ Son objectif est de fixer aussi précisément que possible le contenu physique a
 
 La démarche retenue est donc :
 
-$$
+```math
 \boxed{
 \text{hypothèse physique}
 \rightarrow
@@ -26,7 +26,7 @@ $$
 \rightarrow
 \text{confrontation aux observations}
 }
-$$
+```
 
 La formalisation devra préserver la possibilité que l’hypothèse soit réfutée ou que certaines de ses composantes doivent être abandonnées.
 
@@ -62,7 +62,7 @@ Sa fonction première est de caractériser localement la possibilité de transme
 
 Une unité $C$ prise isolément ne définit donc pas à elle seule une géométrie ou un temps. C’est son inscription dans un ensemble de relations causales qui lui donne son sens physique :
 
-$$
+```math
 \boxed{
 C^{(p)}
 \longleftrightarrow
@@ -72,7 +72,7 @@ C^{(r)}
 \longleftrightarrow
 \cdots
 }
-$$
+```
 
 Une information physique peut se propager localement à travers cet ensemble, chaque relation constituant une possibilité de transmission vers les constituants voisins.
 
@@ -82,7 +82,7 @@ La géométrie est envisagée de manière analogue comme une manifestation colle
 
 On peut donc résumer l’intuition par :
 
-$$
+```math
 \boxed{
 \text{unités }C
 \rightarrow
@@ -95,7 +95,7 @@ $$
 \text{structure géométrique}
 \end{cases}
 }
-$$
+```
 
 À ce stade, la nature mathématique exacte de $C$ n’est pas fixée. Une représentation tridimensionnelle, éventuellement tensorielle, constitue une hypothèse à étudier plutôt qu’un résultat déjà acquis.
 
@@ -111,7 +111,7 @@ Une information reçue localement est retransmise vers l’ensemble des constitu
 
 Schématiquement :
 
-$$
+```math
 \boxed{
 \text{information locale}
 \rightarrow
@@ -119,7 +119,7 @@ C
 \rightarrow
 \text{redistribution vers les voisins accessibles}
 }
-$$
+```
 
 Cette redistribution peut être envisagée comme une propagation de type ondulatoire : une perturbation locale se transmet à plusieurs constituants voisins, qui participent à leur tour à sa propagation dans l’ensemble.
 
@@ -133,19 +133,19 @@ Dans un environnement où $C$ est déformé, les possibilités restent multiples
 
 Ainsi, $C$ ne sélectionne pas une trajectoire particulière :
 
-$$
+```math
 \boxed{
 C\text{ ne détermine pas où l'information doit aller.}
 }
-$$
+```
 
 Il définit plutôt :
 
-$$
+```math
 \boxed{
 \text{la géométrie locale des possibilités selon lesquelles elle peut se propager.}
 }
-$$
+```
 
 La propagation globale résulte de l’enchaînement de ces redistributions locales.
 
@@ -155,7 +155,7 @@ Deux constituants entre lesquels une information peut être transmise selon une 
 
 On peut donc envisager la chaîne conceptuelle suivante :
 
-$$
+```math
 \boxed{
 \text{relations causales locales}
 \rightarrow
@@ -163,7 +163,7 @@ $$
 \rightarrow
 \text{relations géométriques effectives}
 }
-$$
+```
 
 La formation éventuelle d’une géométrie collective à partir de cette organisation est développée dans la section 5 et constitue une hypothèse à tester.
 
@@ -175,19 +175,19 @@ Elles peuvent être redistribuées sur un ensemble plus large de possibilités, 
 
 Une information faiblement observable à un endroit et à un instant donnés peut ainsi être :
 
-$$
+```math
 \boxed{
 \text{plus diffuse}
 }
-$$
+```
 
 ou :
 
-$$
+```math
 \boxed{
 \text{encore en cours de propagation}
 }
-$$
+```
 
 Une même perturbation initiale pourrait donc produire une contribution principale plus directe, accompagnée de contributions secondaires plus faibles, plus dispersées ou plus tardives.
 
@@ -201,15 +201,15 @@ La transmission de l’information établit également une structure causale.
 
 Une information ne peut être retransmise par un constituant qu’à partir du moment où cette information lui est causalement accessible. Les relations de propagation établissent donc un ordre entre les événements :
 
-$$
+```math
 E_1\rightarrow E_2\rightarrow E_3\rightarrow\cdots
-$$
+```
 
 Le temps local n’est pas identifié à $C$ pris isolément. Il apparaît dans **l’enchaînement des transmissions causales entre les unités $C$**.
 
 Dans cette perspective, la structure temporelle et la structure géométrique sont liées à une même organisation sous-jacente :
 
-$$
+```math
 \boxed{
 \text{propagation de l'information}
 \rightarrow
@@ -218,7 +218,7 @@ $$
 \text{relations géométriques}
 \end{cases}
 }
-$$
+```
 
 ### Borne maximale de propagation
 
@@ -226,19 +226,19 @@ Le modèle est soumis à une **contrainte physique externe** : l’existence d�
 
 Cette borne est notée :
 
-$$
+```math
 \boxed{c}
-$$
+```
 
 Dans ce cadre, $c$ n’est pas seulement associé à la propagation de la lumière : il représente la **limite locale maximale de propagation causale de l’information**.
 
 Dans une réduction isotrope simplifiée, si un état physique correspondant à la propagation maximale existe et peut être utilisé pour normaliser $C$, on pourra représenter relativement à cet état :
 
-$$
+```math
 \boxed{
 v_{\mathrm{eff}}=C\,c
 }
-$$
+```
 
 Dans cette expression, $v_{\mathrm{eff}}$ est une grandeur de description relative. Elle ne doit pas être confondue avec une mesure locale directe d’une vitesse différente de $c$.
 
@@ -260,9 +260,9 @@ Ce choix est une convention opérationnelle. Il ne signifie pas que l’état re
 
 La sonde introduite plus loin sera donc explicitement notée :
 
-$$
+```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})},
-$$
+```
 
 afin de rappeler qu’elle dépend de l’état choisi comme référence.
 
@@ -274,35 +274,35 @@ L’hypothèse envisage par ailleurs l’existence d’une borne maximale locale
 
 Si la formalisation permet d’identifier un état physique réalisant effectivement cette propagation maximale, cet état pourra être choisi comme normalisation de $C$ :
 
-$$
+```math
 \boxed{
 C=1
 \quad\Longleftrightarrow\quad
 \text{état maximal de référence}
 }
-$$
+```
 
 Dans la réduction isotrope correspondante :
 
-$$
+```math
 \boxed{
 C=1
 \quad\Rightarrow\quad
 v_{\mathrm{eff}}=c.
 }
-$$
+```
 
 Une valeur telle que
 
-$$
+```math
 C=0.8
-$$
+```
 
 signifierait alors que, relativement à cette normalisation maximale, la relation effective de propagation est décrite par :
 
-$$
+```math
 v_{\mathrm{eff}}=0.8c.
-$$
+```
 
 L’existence d’un tel état maximal et la possibilité d’obtenir un domaine physique $0<C\leq1$ ne sont pas établies par convention. Elles constituent des hypothèses que le modèle devra tester.
 
@@ -324,17 +324,17 @@ Cette structure peut comporter plusieurs caractéristiques : extension relative 
 
 Une représentation tridimensionnelle est donc envisagée. Un tenseur local,
 
-$$
+```math
 C_{ij},
-$$
+```
 
 constitue une représentation mathématique candidate capable de décrire cette anisotropie.
 
 Dans le cas isotrope, cette représentation pourrait se réduire à :
 
-$$
+```math
 C_{ij}=C\,\delta_{ij}.
-$$
+```
 
 Le caractère tensoriel de $C$ n’est cependant pas posé comme un résultat acquis. Il devra être justifié par la formalisation et, idéalement, émerger des relations causales du modèle plutôt que d’être imposé uniquement pour des raisons mathématiques.
 
@@ -344,15 +344,15 @@ La géométrie macroscopique n’est pas supposée être obtenue par addition di
 
 Chaque relation locale participe aux possibilités de propagation, et c’est **l’organisation collective de ces possibilités** qui pourrait faire apparaître une structure géométrique à plus grande échelle :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}
+\{C^{(pq)}\}
 \stackrel{?}{\longrightarrow}
 \text{organisation des propagations}
 \stackrel{?}{\longrightarrow}
 \text{géométrie effective}
 }
-$$
+```
 
 Dans cette perspective, la géométrie n’est pas supposée être un contenant préalable et indépendant dans lequel les constituants seraient placés. Elle est envisagée comme une propriété effective de l’organisation causale.
 
@@ -376,23 +376,23 @@ Une différence de $C$ définie relativement à un autre environnement ne doit d
 
 Par exemple, dans une normalisation où $C$ est défini relativement à un état causal maximal, si une région est décrite par :
 
-$$
+```math
 C=0.8,
-$$
+```
 
 cela peut correspondre, dans la description effective introduite précédemment, à :
 
-$$
+```math
 v_{\mathrm{eff}}=0.8c.
-$$
+```
 
 Cette grandeur $v_{\mathrm{eff}}$ n’est pas une vitesse locale directement mesurée. Un observateur appartenant entièrement à cette région doit néanmoins mesurer localement :
 
-$$
+```math
 \boxed{
 c_{\mathrm{local}}=c.
 }
-$$
+```
 
 La différence entre les deux descriptions doit provenir de la structure relative des liaisons causales et de leur manifestation géométrique, et non d’une violation locale de la borne causale.
 
@@ -400,11 +400,11 @@ Cette invariance n’est pas considérée comme démontrée par la simple défin
 
 Le modèle devra notamment montrer comment les procédures locales de mesure de l’espace et du temps, lorsqu’elles sont construites dans un même environnement causal, restent compatibles avec :
 
-$$
+```math
 \boxed{
 c_{\mathrm{local}}=c.
 }
-$$
+```
 
 Les effets associés aux variations de $C$ doivent donc apparaître lors de la comparaison entre des environnements causalement différents, plutôt que sous la forme d’une variation directement mesurable de $c$ à l’intérieur d’un environnement local homogène.
 
@@ -418,7 +418,7 @@ Les possibilités locales de transmission dépendent de l’environnement physiq
 
 Schématiquement :
 
-$$
+```math
 \boxed{
 \text{constituant}
 +
@@ -426,13 +426,13 @@ $$
 \longrightarrow
 \text{état local de }C
 }
-$$
+```
 
 L’environnement peut modifier $C$, soit globalement dans le cas isotrope, soit en déformant sa structure géométrique locale. La manière dont ces modifications doivent être comparées à une référence est définie indépendamment dans la section 4.
 
 On envisage ainsi :
 
-$$
+```math
 \boxed{
 \text{modification de l'environnement}
 \longrightarrow
@@ -440,15 +440,15 @@ $$
 \longrightarrow
 \text{modification de }C
 }
-$$
+```
 
 À ce stade, aucune loi universelle n’est postulée entre la quantité de matière et la valeur de $C$. En particulier, une relation simple du type
 
-$$
+```math
 \text{plus de matière}
 \Rightarrow
 C\text{ plus faible}
-$$
+```
 
 reste une hypothèse à tester et non une définition du modèle.
 
@@ -464,7 +464,7 @@ Ainsi, deux systèmes présentant une même distribution classique de matière p
 
 L’idée générale est donc :
 
-$$
+```math
 \boxed{
 \text{matière}
 +
@@ -472,7 +472,7 @@ $$
 \rightarrow
 \text{état de }C
 }
-$$
+```
 
 ### État quantique et observation
 
@@ -482,29 +482,29 @@ L’état quantique décrit les possibilités physiques du système et les distr
 
 À l’échelle d’un ensemble, ces propriétés peuvent notamment être caractérisées par des valeurs moyennes, des corrélations ou d’autres observables collectives :
 
-$$
+```math
 \langle O_p\rangle,
 \qquad
 \langle O_pO_q\rangle,
 \qquad
 \langle O_pO_q\rangle_{\mathrm{conn}},
-$$
+```
 
 où $\langle O_pO_q\rangle_{\mathrm{conn}}$ représente, par exemple, la partie connectée de la corrélation entre deux constituants après retrait des contributions indépendantes.
 
 L’idée n’est donc pas :
 
-$$
+```math
 \boxed{
 \text{résultat individuel d'une mesure}
 \rightarrow
 C
 }
-$$
+```
 
 mais plutôt :
 
-$$
+```math
 \boxed{
 \text{état quantique collectif}
 \rightarrow
@@ -512,7 +512,7 @@ $$
 \stackrel{?}{\longrightarrow}
 C
 }
-$$
+```
 
 Les fluctuations quantiques microscopiques peuvent ainsi coexister avec l’apparition éventuelle d’un état collectif de $C$ suffisamment stable pour posséder une manifestation macroscopique.
 
@@ -524,7 +524,7 @@ La relation entre l’état quantique et $C$ doit donc être recherchée à part
 
 La chaîne conceptuelle devient :
 
-$$
+```math
 \boxed{
 \text{état quantique matière + jauge}
 \rightarrow
@@ -532,13 +532,13 @@ $$
 \stackrel{?}{\longrightarrow}
 C
 }
-$$
+```
 
 Les corrélations sont particulièrement intéressantes dans cette perspective, puisqu’elles caractérisent directement les relations physiques entre différents constituants de l’ensemble.
 
 Elles pourraient ainsi constituer un niveau intermédiaire naturel entre l’état quantique collectif et la structure relationnelle attribuée à $C$ :
 
-$$
+```math
 \boxed{
 \text{état quantique}
 \rightarrow
@@ -548,7 +548,7 @@ $$
 \stackrel{?}{\longrightarrow}
 C
 }
-$$
+```
 
 La nature exacte des observables pertinentes reste à déterminer.
 
@@ -556,15 +556,15 @@ La nature exacte des observables pertinentes reste à déterminer.
 
 Puisque $C$ est envisagé comme une **unité locale de liaison causale**, il peut être plus naturel de rechercher d’abord une grandeur caractérisant la relation entre deux constituants :
 
-$$
+```math
 C^{(pq)}
-$$
+```
 
 plutôt qu’un $C^{(p)}$ entièrement défini pour un constituant pris isolément.
 
 La chaîne de travail pourrait alors être :
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -572,13 +572,13 @@ $$
 \stackrel{?}{\longrightarrow}
 C^{(pq)}
 }
-$$
+```
 
 La notation $\rho_{\mathrm{ensemble}}$ est utilisée ici de manière générale pour décrire l’état quantique collectif. Elle permet notamment de représenter aussi bien un état pur,
 
-$$
+```math
 \rho=|\Psi\rangle\langle\Psi|,
-$$
+```
 
 qu’un état mixte ou une description statistique plus générale.
 
@@ -590,23 +590,23 @@ qu’un état mixte ou une description statistique plus générale.
 
 Dans cette troisième possibilité, une structure locale effective associée à un constituant $p$ pourrait être reconstruite à partir de l’ensemble des relations causales qu’il entretient avec les autres constituants :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}_{q}
+\{C^{(pq)}\}_{q}
 \stackrel{?}{\longrightarrow}
 C^{(p)}
 }
-$$
+```
 
 Si une représentation géométrique tridimensionnelle ou tensorielle se révèle pertinente, cette reconstruction pourrait prendre une forme plus structurée :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}_{q}
+\{C^{(pq)}\}_{q}
 \stackrel{?}{\longrightarrow}
 C^{(p)}_{ij}
 }
-$$
+```
 
 Dans ce cas, la structure géométrique locale associée à $C^{(p)}$ ne serait pas nécessairement une propriété fondamentale portée isolément par le constituant. Elle pourrait émerger de l’organisation de ses relations causales avec son environnement.
 
@@ -622,7 +622,7 @@ $C$ représenterait seulement **la manifestation géométrique de certaines prop
 
 La relation conceptuelle peut être représentée par :
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -635,7 +635,7 @@ C
 \text{manifestation géométrique}
 \end{cases}
 }
-$$
+```
 
 Ainsi, $C$ **ne produit pas la mécanique quantique et ne la remplace pas**.
 
@@ -643,7 +643,7 @@ La mécanique quantique conserve sa dynamique et ses règles de prédiction. Dan
 
 La relation recherchée est donc orientée :
 
-$$
+```math
 \boxed{
 \text{état quantique}
 \stackrel{?}{\longrightarrow}
@@ -651,30 +651,30 @@ C
 \stackrel{?}{\longrightarrow}
 \text{manifestation géométrique}
 }
-$$
+```
 
 et non :
 
-$$
+```math
 \boxed{
 C
 \longrightarrow
 \text{mécanique quantique}
 }
-$$
+```
 
 ### Relation inconnue entre état quantique et C
 
 On peut représenter provisoirement la relation recherchée par une application :
 
-$$
+```math
 \boxed{
 \mathcal G:
 \rho_{\mathrm{ensemble}}
 \stackrel{?}{\longrightarrow}
-\left\{C^{(pq)}\right\}
+\{C^{(pq)}\}
 }
-$$
+```
 
 La fonction $\mathcal G$ n’est pas connue.
 
@@ -684,7 +684,7 @@ Elle ne devra pas être choisie uniquement pour reproduire a posteriori une géo
 
 La question centrale du programme devient donc :
 
-$$
+```math
 \boxed{
 \begin{gathered}
 \text{peut-on extraire de l'état quantique collectif}\\
@@ -692,17 +692,17 @@ $$
 \text{dont l'organisation possède les propriétés attribuées à }C\ ?
 \end{gathered}
 }
-$$
+```
 
 Et, dans un second temps :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}
+\{C^{(pq)}\}
 \stackrel{?}{\longrightarrow}
 \text{géométrie effective observable}
 }
-$$
+```
 
 Si aucune construction de ce type ne peut être obtenue sans introduire artificiellement la géométrie recherchée, cette partie de l’hypothèse devra être révisée ou abandonnée.
 
@@ -714,68 +714,68 @@ La quantité fondamentale hypothétique $C$ doit être distinguée d’une **son
 
 Pour une relation entre deux constituants $p$ et $q$, on choisit un état de référence et on note :
 
-$$
+```math
 T^{\mathrm{ref}}_{pq}
-$$
+```
 
 un temps caractéristique de propagation obtenu dans cet état, et :
 
-$$
+```math
 T^{\mathrm{state}}_{pq}
-$$
+```
 
 le temps correspondant dans l’état physique étudié.
 
 On peut alors définir :
 
-$$
+```math
 \boxed{
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
 =
 \frac{T^{\mathrm{ref}}_{pq}}
 {T^{\mathrm{state}}_{pq}}
 }
-$$
+```
 
 L’indication « $\mathrm{ref}$ » rappelle que cette quantité dépend de la référence choisie.
 
 Ainsi, si :
 
-$$
+```math
 T^{\mathrm{state}}_{pq}
 =
 T^{\mathrm{ref}}_{pq},
-$$
+```
 
 alors :
 
-$$
+```math
 \boxed{
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}=1
 }
-$$
+```
 
 Si :
 
-$$
+```math
 T^{\mathrm{state}}_{pq}
 =
 1.25\,T^{\mathrm{ref}}_{pq},
-$$
+```
 
 alors :
 
-$$
+```math
 \boxed{
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}=0.8
 }
-$$
+```
 
 À l’inverse, si l’état étudié présente un temps caractéristique plus court que la référence choisie, on peut obtenir :
 
-$$
+```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}>1.
-$$
+```
 
 Une telle valeur ne signifie pas que la quantité physique fondamentale $C$ dépasse nécessairement $1$, ni qu’une propagation locale dépasse $c$. Elle signifie seulement que la relation causale étudiée apparaît plus rapide ou plus directe que dans l’état choisi comme référence.
 
@@ -805,7 +805,7 @@ Il pourra être extrait d’une observable physique appropriée, idéalement inv
 
 La chaîne opérationnelle devient alors :
 
-$$
+```math
 \boxed{
 \rho
 \rightarrow
@@ -815,7 +815,7 @@ T_{pq}
 \rightarrow
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
 }
-$$
+```
 
 ### Rapport entre $C_{\mathrm{eff}}$ et $C$
 
@@ -827,7 +827,7 @@ On cherchera donc à déterminer si les variations de $C_{\mathrm{eff}}^{(pq\mid
 
 Schématiquement :
 
-$$
+```math
 \boxed{
 \begin{array}{ccc}
 \rho_{\mathrm{ensemble}}
@@ -840,7 +840,7 @@ T_{pq}
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
 \end{array}
 }
-$$
+```
 
 La correspondance verticale de droite constitue précisément un objet de test ; elle n’est pas supposée.
 
@@ -858,21 +858,21 @@ Les propriétés physiques attribuées à $C$ doivent donc pouvoir être défini
 
 Le caractère relationnel de
 
-$$
+```math
 C^{(pq)}
-$$
+```
 
 constitue une piste naturelle dans cette direction, puisque la grandeur est associée à une relation physique entre constituants plutôt qu’à des coordonnées spatiales absolues.
 
 Cependant :
 
-$$
+```math
 \boxed{
 \text{description relationnelle}
 \neq
 \text{covariance relativiste démontrée}
 }
-$$
+```
 
 La formalisation devra donc montrer explicitement comment les différentes descriptions de $C$ se transforment lors d’un changement de référentiel et comment elles restent compatibles avec l’invariance locale de $c$.
 
@@ -886,7 +886,7 @@ Dans ce cas, l’existence des constituants et certaines de leurs relations sont
 
 L’objectif n’est donc pas encore de faire émerger l’espace lui-même, mais de déterminer si l’état quantique défini sur cette structure peut produire une organisation effective possédant les propriétés géométriques attribuées à $C$.
 
-$$
+```math
 \boxed{
 \text{état quantique}
 +
@@ -896,7 +896,7 @@ $$
 \stackrel{?}{\longrightarrow}
 \text{géométrie effective}
 }
-$$
+```
 
 Si une géométrie cohérente apparaît, cela démontrerait seulement qu’une **géométrie effective peut émerger sur une structure relationnelle préexistante**.
 
@@ -910,50 +910,50 @@ Ces questions constituent un niveau supplémentaire du programme et doivent rest
 
 Comme distingué en section 4, la réduction isotrope envisage l’existence d’un état maximal de propagation causale permettant une normalisation physique :
 
-$$
+```math
 \boxed{
 C=1,
 \qquad
 0<C\leq1.
 }
-$$
+```
 
 Ce domaine concerne la **quantité physique $C$ dans une normalisation par rapport à un état maximal**. Il constitue une hypothèse à tester et non une conséquence de la sonde opérationnelle.
 
 La quantité relative :
 
-$$
+```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
 =
 \frac{T^{\mathrm{ref}}_{pq}}
 {T^{\mathrm{state}}_{pq}}
-$$
+```
 
 obéit à une logique différente. Comme sa référence peut être choisie arbitrairement, elle peut produire une valeur supérieure à $1$ lorsque l’état étudié présente une relation causale plus rapide ou plus directe que l’état de référence.
 
 Ainsi :
 
-$$
+```math
 \boxed{
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}>1
 \;\not\Rightarrow\;
 C>1
 }
-$$
+```
 
 et ne constitue pas en soi une violation de la borne locale $c$.
 
 L’un des objectifs du modèle sera précisément de déterminer si un état maximal naturel existe et si les relations physiques reconstruites permettent alors une normalisation cohérente avec :
 
-$$
+```math
 0<C\leq1.
-$$
+```
 
 Une procédure opérationnelle de réfutation consiste à rechercher un état candidat pouvant servir de référence maximale et à vérifier, sur l’ensemble des états et relations accessibles au modèle, que :
 
-$$
+```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{max})}\leq1,
-$$
+```
 
 où $\mathrm{max}$ désigne l’état candidat retenu comme référence maximale dans le schéma général $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$.
 
@@ -961,9 +961,9 @@ Si aucun état de référence ne satisfait cette propriété, ou si tout état c
 
 Dans cette interprétation, la limite :
 
-$$
+```math
 C\rightarrow0
-$$
+```
 
 correspondrait à une réduction extrême de la liaison causale ou de l’extension effective accessible à la propagation relativement à l’état maximal.
 
@@ -975,23 +975,23 @@ La signification exacte de cette limite reste à déterminer.
 
 Dans une réduction isotrope où $C$ est normalisé par rapport à l’état causal maximal, la relation effective :
 
-$$
+```math
 v_{\mathrm{eff}}=C\,c
-$$
+```
 
 peut être comparée à la description habituelle d’une propagation dans un milieu caractérisé par un indice de réfraction :
 
-$$
+```math
 v=\frac{c}{n}.
-$$
+```
 
 On obtient alors algébriquement :
 
-$$
+```math
 \boxed{
 n_{\mathrm{eff}}=\frac{1}{C}
 }
-$$
+```
 
 Cette correspondance constitue une **analogie mathématique utile**.
 
@@ -1005,7 +1005,7 @@ L’hypothèse $C$ explore au contraire la possibilité que l’organisation mê
 
 La distinction conceptuelle peut être résumée ainsi :
 
-$$
+```math
 \boxed{
 \text{description optique classique :}
 \quad
@@ -1015,11 +1015,11 @@ $$
 \rightarrow
 \text{propagation}
 }
-$$
+```
 
 alors que l’hypothèse $C$ recherche plutôt :
 
-$$
+```math
 \boxed{
 \text{état physique}
 \rightarrow
@@ -1029,7 +1029,7 @@ C
 \rightarrow
 \text{géométrie effective}
 }
-$$
+```
 
 Cette analogie constitue donc un point de comparaison direct pour les tests de compatibilité et de discrimination formulés dans les sections suivantes.
 
@@ -1041,9 +1041,9 @@ Dans son état actuel, $C$ ne constitue pas une métrique complète d’espace-t
 
 Une éventuelle structure tridimensionnelle :
 
-$$
+```math
 C_{ij}
-$$
+```
 
 peut décrire certaines propriétés spatiales locales, mais elle ne contient pas automatiquement l’ensemble des degrés de liberté nécessaires à une description relativiste complète.
 
@@ -1059,7 +1059,7 @@ On attendrait notamment qu’une géométrie effective issue de $C$ puisse, dans
 
 La valeur physique de l’hypothèse résiderait précisément dans la possibilité d’obtenir une chaîne calculable du type :
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -1071,7 +1071,7 @@ C
 \rightarrow
 \text{observables gravitationnelles}
 }
-$$
+```
 
 Si cette chaîne ne peut être obtenue, ou si elle ne produit qu’une réécriture arbitraire d’une métrique déjà connue, l’hypothèse devra être réévaluée.
 
@@ -1083,7 +1083,7 @@ Dès qu’une relation calculable entre l’état quantique collectif et $C$ aur
 
 L’objectif n’est pas seulement de vérifier que $C$ peut reproduire certains comportements connus, mais de déterminer si la chaîne complète
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -1095,7 +1095,7 @@ C
 \rightarrow
 \text{observables physiques}
 }
-$$
+```
 
 peut être obtenue sans introduire artificiellement les résultats recherchés.
 
@@ -1105,15 +1105,15 @@ Les premières étapes de validation pourront être organisées progressivement.
 
    Vérifier qu’une quantité telle que
 
-   $$
+   ```math
    C^{(pq)}
-   $$
+   ```
 
    peut être construite à partir d’observables physiques ou de corrélations de manière reproductible et invariante de jauge, puis déterminer si la sonde
 
-   $$
+   ```math
    C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
-   $$
+   ```
 
    permet d’en tester effectivement certaines propriétés.
 
@@ -1121,9 +1121,9 @@ Les premières étapes de validation pourront être organisées progressivement.
 
    Déterminer si l’ensemble des relations
 
-   $$
-   \left\{C^{(pq)}\right\}
-   $$
+   ```math
+   \{C^{(pq)}\}
+   ```
 
    peut effectivement produire une structure locale puis macroscopique cohérente.
 
@@ -1135,9 +1135,9 @@ Les premières étapes de validation pourront être organisées progressivement.
 
    Il faudra notamment retrouver une relation effective correspondant à une accélération de la forme :
 
-   $$
+   ```math
    a\simeq-\frac{GM}{r^2}.
-   $$
+   ```
 
    Dans une première construction, l’échelle globale du couplage pourra être **calibrée sur la valeur de $G$**. Une telle calibration ne constituera pas une dérivation de la constante gravitationnelle. Un objectif ultérieur sera de déterminer si la valeur de $G$ peut être reliée aux paramètres microscopiques du modèle.
 
@@ -1165,11 +1165,11 @@ Les premières étapes de validation pourront être organisées progressivement.
 
    Vérifier explicitement qu’un observateur effectuant des mesures entièrement locales obtient toujours :
 
-   $$
+   ```math
    \boxed{
    c_{\mathrm{local}}=c
    }
-   $$
+   ```
 
    indépendamment de l’état relatif de $C$ attribué à son environnement.
 
@@ -1185,7 +1185,7 @@ Les premières étapes de validation pourront être organisées progressivement.
 
     Une piste particulière consiste à rechercher deux états dont les descriptions gravitationnelles de référence sont identiques — en particulier, dans une comparaison semi-classique, avec le même $\langle T_{\mu\nu}\rangle$ — mais dont les corrélations quantiques collectives diffèrent, puis à déterminer si l’hypothèse $C$ prédit des structures effectives distinctes :
 
-    $$
+    ```math
     \boxed{
     \langle T_{\mu\nu}\rangle_A
     =
@@ -1197,7 +1197,7 @@ Les premières étapes de validation pourront être organisées progressivement.
     \stackrel{?}{\longrightarrow}
     C_A\neq C_B
     }
-    $$
+    ```
 
     Cette relation n’est pas une prédiction acquise ; elle constitue une piste de recherche discriminante. Pour être réellement discriminante, la différence obtenue devra persister alors que la description gravitationnelle utilisée comme référence prédit le même comportement pour les deux états.
 
@@ -1213,19 +1213,19 @@ De même, les mécanismes qualitatifs tels que la diffusion ou le retard évoqu�
 
 On cherchera au contraire à distinguer :
 
-$$
+```math
 \boxed{
 \text{échec d'une réalisation particulière de }C
 }
-$$
+```
 
 de :
 
-$$
+```math
 \boxed{
 \text{échec d'un principe fondamental de l'hypothèse }C
 }
-$$
+```
 
 Par exemple, l’échec d’une représentation tensorielle particulière $C_{ij}$ n’invaliderait pas nécessairement immédiatement l’idée relationnelle de $C$.
 
@@ -1241,7 +1241,7 @@ Le programme comporte deux chaînes complémentaires : une chaîne **conceptuell
 
 La chaîne fondamentale actuellement envisagée est :
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -1253,7 +1253,7 @@ C^{(p)}\ \text{ou}\ C^{(p)}_{ij}
 \stackrel{?}{\longrightarrow}
 \text{géométrie effective}
 }
-$$
+```
 
 Aucune des flèches marquées d’un point d’interrogation n’est considérée comme acquise.
 
@@ -1261,39 +1261,39 @@ La première question est de savoir si l’état quantique collectif contient un
 
 La seconde est de déterminer si un ensemble de telles relations peut être organisé de manière cohérente pour faire apparaître une structure locale :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}_q
+\{C^{(pq)}\}_q
 \stackrel{?}{\longrightarrow}
 C^{(p)}
 }
-$$
+```
 
 et, éventuellement, une représentation géométrique plus structurée :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}_q
+\{C^{(pq)}\}_q
 \stackrel{?}{\longrightarrow}
 C^{(p)}_{ij}.
 }
-$$
+```
 
 Enfin, le modèle devra déterminer si l’organisation collective de ces structures peut produire une géométrie effective macroscopique :
 
-$$
+```math
 \boxed{
-\left\{C^{(pq)}\right\}
+\{C^{(pq)}\}
 \stackrel{?}{\longrightarrow}
 \text{géométrie effective}.
 }
-$$
+```
 
 ### Chaîne opérationnelle
 
 En parallèle, le premier modèle calculable pourra utiliser une observable dynamique pour définir un temps caractéristique $T_{pq}$ relativement à son paramètre d’évolution :
 
-$$
+```math
 \boxed{
 \rho_{\mathrm{ensemble}}
 \rightarrow
@@ -1303,25 +1303,25 @@ T_{pq}
 \rightarrow
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}.
 }
-$$
+```
 
 Cette chaîne ne définit pas $C$. Elle fournit une **sonde relative** destinée à déterminer si les modifications observées de la propagation sont compatibles avec les propriétés attribuées à une éventuelle structure $C^{(pq)}$.
 
 Le programme devra donc établir, ou réfuter, une correspondance entre :
 
-$$
+```math
 \boxed{
 C^{(pq)}
 \stackrel{?}{\longleftrightarrow}
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}.
 }
-$$
+```
 
 ### Objectif général
 
 Le premier objectif n’est pas de confirmer l’existence de $C$, mais de déterminer si une relation quantitative, cohérente et falsifiable peut être construite entre :
 
-$$
+```math
 \boxed{
 \begin{gathered}
 \text{état quantique collectif},\\
@@ -1331,11 +1331,11 @@ $$
 \text{géométrie effective}.
 \end{gathered}
 }
-$$
+```
 
 Le programme peut ainsi être envisagé comme une progression :
 
-$$
+```math
 \boxed{
 \begin{aligned}
 1.&\quad \text{identifier des observables quantiques pertinentes},\\
@@ -1348,7 +1348,7 @@ $$
 8.&\quad \text{rechercher une prédiction discriminante}.
 \end{aligned}
 }
-$$
+```
 
 L’hypothèse $C$ sera considérée comme physiquement intéressante seulement si cette chaîne peut être obtenue **sans introduire à l’avance la géométrie ou les lois macroscopiques que le modèle cherche précisément à faire émerger**.
 
