@@ -45,21 +45,13 @@ C_{ij}=C\,\delta_{ij}.
 
 ---
 
-## 3. C n'est pas une évolution temporelle
+## 3. C et unité locale de temps
 
-L'idée initiale de « clic » temporel est abandonnée comme postulat fondamental.
+`C` décrit un état géométrique ; il n'est ni une durée ni une évolution temporelle.
 
-Elle était une métaphore de la relation entre propagation de l'information, espace et temps, mais elle suggérait à tort une discrétisation nécessaire du temps.
+Il associe à l'unité locale de temps de référence une extension géométrique possible de propagation. La durée fournit l'unité de référence ; `C` en exprime la représentation géométrique dans l'espace.
 
-Le modèle ne suppose donc pas actuellement :
-
-- une horloge universelle ;
-- un temps fondamentalement discret ;
-- une succession d'états `C_n` constituant elle-même le temps.
-
-La propagation et l'évolution quantique peuvent être continues.
-
-Conceptuellement, `C` relie une unité locale de temps à une extension géométrique possible, sans être lui-même une durée.
+Cette définition n'impose aucune structure temporelle particulière au-delà de cette relation locale entre unité de temps et extension géométrique.
 
 ---
 
