@@ -17,19 +17,22 @@ L'objectif est de conserver une séparation stricte entre :
 
 ## 2. Nature de C
 
-L'hypothèse de départ est qu'une particule élémentaire porte un **état géométrique local** noté `C`.
+L'hypothèse de départ est qu'une particule élémentaire porte une **unité locale de temps** notée `C`, dont la manifestation possède une représentation géométrique dans l'espace.
 
-`C` n'est pas :
+`C` ne désigne pas :
 
 - une position ;
 - une vitesse ;
 - une énergie ;
-- le temps lui-même ;
+- un temps global ;
+- une durée écoulée mesurée depuis un référentiel extérieur ;
 - une évolution de l'état quantique.
 
-`C` représente la **géométrie spatiale associée à une unité locale de temps**, c'est-à-dire l'extension géométrique dans laquelle une propagation physique peut se manifester relativement à cette unité.
+`C` désigne l'unité temporelle locale à partir de laquelle les possibilités de propagation prennent une **extension et une forme géométriques dans l'espace**.
 
-Cette géométrie peut être isotrope ou déformée suivant plusieurs directions. Sa représentation complète est donc supposée pouvoir être tridimensionnelle. Une représentation tensorielle locale, notée provisoirement
+Autrement dit, l'unité locale de temps n'est pas séparée de sa représentation spatiale : `C` porte directement cette relation géométrique entre temps local et espace accessible à la propagation.
+
+Cette représentation géométrique peut être isotrope ou déformée suivant plusieurs directions. Sa représentation complète est donc supposée pouvoir être tridimensionnelle. Une représentation tensorielle locale, notée provisoirement
 
 \[
 C_{ij},
@@ -45,13 +48,15 @@ C_{ij}=C\,\delta_{ij}.
 
 ---
 
-## 3. C et unité locale de temps
+## 3. C comme unité locale de temps à représentation géométrique
 
-`C` décrit un état géométrique ; il n'est ni une durée ni une évolution temporelle.
+`C` est posé comme l'**unité locale de temps** du système, considérée à travers sa représentation géométrique dans l'espace.
 
-Il associe à l'unité locale de temps de référence une extension géométrique possible de propagation. La durée fournit l'unité de référence ; `C` en exprime la représentation géométrique dans l'espace.
+Il ne faut donc pas comprendre `C` comme une durée supplémentaire venant modifier un temps extérieur déjà défini. La valeur relative de `C` exprime l'état géométrique de cette unité locale : son extension et, dans le cas général, sa déformation spatiale.
 
-Cette définition n'impose aucune structure temporelle particulière au-delà de cette relation locale entre unité de temps et extension géométrique.
+Dans l'état isotrope de référence, cette unité possède une représentation géométrique maximale et uniforme. Lorsque l'environnement de la particule perturbe `C`, cette représentation peut se contracter ou se déformer.
+
+Ainsi, `C` ne relie pas simplement une durée externe à un espace préexistant : **`C` est l'unité locale de temps dont la représentation géométrique participe à définir les possibilités locales de propagation dans l'espace.**
 
 ---
 
@@ -89,7 +94,7 @@ Cette expression ne doit pas être interprétée comme une variation directement
 
 La propagation de l'information n'est pas supposée se dérouler dans une géométrie préalable indépendante de `C`.
 
-L'hypothèse est inverse : `C` fournit une **représentation géométrique locale des possibilités de propagation** associées à l'unité temporelle de référence.
+L'hypothèse est inverse : `C` fournit une **représentation géométrique locale des possibilités de propagation** associées à l'unité temporelle locale.
 
 Dans un état isotrope, les directions sont géométriquement équivalentes.
 
