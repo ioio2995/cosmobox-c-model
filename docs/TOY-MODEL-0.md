@@ -4,7 +4,7 @@
 
 Le Toy Model 0 doit répondre à une question centrale :
 
-> **Un état quantique collectif peut-il fournir une grandeur relationnelle physique, robuste et invariante de jauge, dont certaines propriétés peuvent être sondées par une quantité opérationnelle \(C_{\mathrm{eff}}\), et dont l’organisation peut éventuellement être interprétée géométriquement sans introduire cette géométrie dans sa définition ?**
+> **Un état quantique collectif peut-il fournir une grandeur relationnelle physique, robuste et invariante de jauge, dont certaines propriétés peuvent être sondées par une quantité opérationnelle $C_{\mathrm{eff}}$, et dont l’organisation peut éventuellement être interprétée géométriquement sans introduire cette géométrie dans sa définition ?**
 
 Le modèle doit être assez petit pour être calculé exactement et assez riche pour contenir :
 
@@ -14,7 +14,7 @@ Le modèle doit être assez petit pour être calculé exactement et assez riche 
 - une notion de perturbation locale ;
 - une propagation mesurable par corrélations ;
 - un état de référence et des états perturbés ;
-- plusieurs relations \((p,q)\) permettant de tester l’identifiabilité et l’organisation collective.
+- plusieurs relations $(p,q)$ permettant de tester l’identifiabilité et l’organisation collective.
 
 Le Toy Model 0 doit maintenir une séparation stricte entre :
 
@@ -43,12 +43,12 @@ Le Toy Model 0 ne cherche pas encore à :
 - faire émerger la topologie du graphe ;
 - quantifier la gravité ;
 - dériver la mécanique quantique ;
-- démontrer l’invariance locale de \(c\) ;
+- démontrer l’invariance locale de $c$ ;
 - traiter la covariance relativiste complète ;
-- postuler d’emblée un tenseur tridimensionnel \(C_{ij}\) ;
+- postuler d’emblée un tenseur tridimensionnel $C_{ij}$ ;
 - ajuster des paramètres pour reproduire Schwarzschild.
 
-Le modèle doit au contraire permettre à l’hypothèse \(C\) d’échouer tôt.
+Le modèle doit au contraire permettre à l’hypothèse $C$ d’échouer tôt.
 
 ---
 
@@ -62,14 +62,14 @@ G=(V,E).
 
 où :
 
-- les nœuds \(p\in V\) portent les degrés de liberté de matière ;
-- les liens \((p,q)\in E\) portent les degrés de liberté de jauge ;
+- les nœuds $p\in V$ portent les degrés de liberté de matière ;
+- les liens $(p,q)\in E$ portent les degrés de liberté de jauge ;
 - la connectivité est imposée ;
 - cette connectivité n’est pas interprétée comme une distance physique fondamentale.
 
 Le Hamiltonien doit être invariant de jauge et suffisamment simple pour permettre une diagonalisation exacte ou une évolution temporelle exacte sur de petites tailles.
 
-Pour l’implémentation initiale, la base privilégiée est un **modèle fini U(1)** déjà maîtrisé dans Cosmobox. Ce choix est méthodologique : il permet de tester l’hypothèse \(C\) sans rouvrir simultanément le problème du choix d’une nouvelle théorie de jauge.
+Pour l’implémentation initiale, la base privilégiée est un **modèle fini U(1)** déjà maîtrisé dans Cosmobox. Ce choix est méthodologique : il permet de tester l’hypothèse $C$ sans rouvrir simultanément le problème du choix d’une nouvelle théorie de jauge.
 
 Une structure plus minimale ne devra être retenue que si elle conserve les observables relationnelles et les contraintes nécessaires au test.
 
@@ -77,7 +77,7 @@ Une structure plus minimale ne devra être retenue que si elle conserve les obse
 
 ## 4. Étape 0 — identifiabilité de la structure relationnelle
 
-Avant toute définition de \(C_{\mathrm{eff}}\), le modèle doit déterminer si l’information relationnelle recherchée est effectivement identifiable à partir des observables invariantes de jauge accessibles.
+Avant toute définition de $C_{\mathrm{eff}}$, le modèle doit déterminer si l’information relationnelle recherchée est effectivement identifiable à partir des observables invariantes de jauge accessibles.
 
 La question préalable est :
 
@@ -98,7 +98,7 @@ L’analyse devra notamment :
 - vérifier si des corrélations inter-secteurs sont nécessaires à la reconstruction ;
 - enregistrer l’absence de telles corrélations comme une limitation ou un résultat négatif, et non la compenser par l’introduction de variables non observables.
 
-Le Toy Model 0 ne doit poursuivre la construction d’un \(C^{(pq)}\) dans un secteur que si une information relationnelle suffisamment robuste y est effectivement identifiable.
+Le Toy Model 0 ne doit poursuivre la construction d’un $C^{(pq)}$ dans un secteur que si une information relationnelle suffisamment robuste y est effectivement identifiable.
 
 ---
 
@@ -122,7 +122,7 @@ ou, plus généralement, une matrice de densité :
 
 définit l’état de comparaison opérationnel.
 
-Pour une relation donnée \((p,q)\), la sonde est normalisée par construction à :
+Pour une relation donnée $(p,q)$, la sonde est normalisée par construction à :
 
 ```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}=1
@@ -140,9 +140,9 @@ On construit des états :
 |\Psi_{\lambda}\rangle
 ```
 
-ou des matrices de densité \(\rho_\lambda\), et éventuellement des Hamiltoniens perturbés \(H_\lambda\), où \(\lambda\) contrôle un changement physique identifiable : énergie locale, occupation de matière, couplage, configuration de jauge ou autre perturbation invariante de jauge.
+ou des matrices de densité $\rho_\lambda$, et éventuellement des Hamiltoniens perturbés $H_\lambda$, où $\lambda$ contrôle un changement physique identifiable : énergie locale, occupation de matière, couplage, configuration de jauge ou autre perturbation invariante de jauge.
 
-Le paramètre \(\lambda\) ne doit pas être interprété a priori comme une densité géométrique ni comme une valeur de \(C\).
+Le paramètre $\lambda$ ne doit pas être interprété a priori comme une densité géométrique ni comme une valeur de $C$.
 
 ---
 
@@ -161,13 +161,13 @@ Elle doit satisfaire au minimum :
 1. invariance de jauge ;
 2. sens physique clair ;
 3. réponse mesurable à une perturbation locale ;
-4. capacité à comparer plusieurs paires \((p,q)\) ;
+4. capacité à comparer plusieurs paires $(p,q)$ ;
 5. robustesse suffisante pour définir une dynamique relationnelle ;
 6. capacité à participer au test d’identifiabilité de la section 4.
 
 Des candidats possibles sont des corrélateurs de matière reliés par un transporteur de jauge, ou d’autres observables relationnelles déjà utilisées dans les niveaux précédents de Cosmobox.
 
-La grandeur relationnelle candidate \(C^{(pq)}\) ne doit pas être identifiée d’emblée à \(G_{pq}\). Il faudra déterminer si une fonction de ces observables ou de leurs corrélations peut jouer ce rôle :
+La grandeur relationnelle candidate $C^{(pq)}$ ne doit pas être identifiée d’emblée à $G_{pq}$. Il faudra déterminer si une fonction de ces observables ou de leurs corrélations peut jouer ce rôle :
 
 ```math
 \rho_{\mathrm{ensemble}}
@@ -181,9 +181,9 @@ C^{(pq)}.
 
 ## 7. Paramètre d’évolution et temps d’arrivée relationnel
 
-Pour chaque paire \((p,q)\), on construit un temps caractéristique à partir de \(G_{pq}(t)\).
+Pour chaque paire $(p,q)$, on construit un temps caractéristique à partir de $G_{pq}(t)$.
 
-Le paramètre \(t\) utilisé dans le Toy Model 0 est **le paramètre d’évolution externe du modèle de calcul**. Dans une évolution hamiltonienne, il pourra par exemple apparaître dans :
+Le paramètre $t$ utilisé dans le Toy Model 0 est **le paramètre d’évolution externe du modèle de calcul**. Dans une évolution hamiltonienne, il pourra par exemple apparaître dans :
 
 ```math
 |\Psi(t)\rangle
@@ -192,9 +192,9 @@ e^{-iHt/\hbar}
 |\Psi(0)\rangle.
 ```
 
-Ce paramètre ne doit pas être identifié au temps local que l’hypothèse \(C\) cherche éventuellement à faire émerger.
+Ce paramètre ne doit pas être identifié au temps local que l’hypothèse $C$ cherche éventuellement à faire émerger.
 
-La construction de \(T_{pq}\) est donc limitée au premier modèle à évolution temporelle fixée. Elle devra être reformulée avant tout test de covariance relativiste ou toute tentative de définition du temps local émergent.
+La construction de $T_{pq}$ est donc limitée au premier modèle à évolution temporelle fixée. Elle devra être reformulée avant tout test de covariance relativiste ou toute tentative de définition du temps local émergent.
 
 Deux définitions devront au minimum être comparées.
 
@@ -203,20 +203,17 @@ Deux définitions devront au minimum être comparées.
 ```math
 T^{\mathrm{thr}}_{pq}
 =
-\inf\left\{
-t\mid
-\Delta G_{pq}(t)\geq\eta
-\right\}.
+\inf\{t\mid \Delta G_{pq}(t)\geq\eta\}.
 ```
 
-où \(\eta\) est un seuil défini de manière reproductible.
+où $\eta$ est un seuil défini de manière reproductible.
 
 ### 7.2 Maximum de croissance
 
 ```math
 T^{\mathrm{grow}}_{pq}
 =
-\operatorname*{arg\,max}_t
+\mathrm{arg\,max}_{t}
 \frac{d}{dt}\Delta G_{pq}(t).
 ```
 
@@ -226,9 +223,9 @@ D’autres définitions pourront être introduites seulement si elles apportent 
 
 ---
 
-## 8. Sonde opérationnelle relative \(C_{\mathrm{eff}}\)
+## 8. Sonde opérationnelle relative $C_{\mathrm{eff}}$
 
-Pour une même paire \((p,q)\), on compare l’état étudié à l’état de référence :
+Pour une même paire $(p,q)$, on compare l’état étudié à l’état de référence :
 
 ```math
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}
@@ -242,7 +239,7 @@ Cette quantité est :
 - adimensionnelle ;
 - relationnelle ;
 - explicitement dépendante du choix de référence ;
-- normalisée à \(1\) dans l’état de référence ;
+- normalisée à $1$ dans l’état de référence ;
 - calculable sans introduire une distance métrique préalable.
 
 Si :
@@ -271,7 +268,7 @@ est possible sans impliquer :
 C>1.
 ```
 
-La sonde \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\) mesure une **modification globale de la relation causale** entre \(p\) et \(q\).
+La sonde $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ mesure une **modification globale de la relation causale** entre $p$ et $q$.
 
 Elle ne sépare pas a priori :
 
@@ -285,9 +282,9 @@ Dans le cadre relationnel, cette séparation peut elle-même ne devenir pertinen
 
 ---
 
-## 9. Barrière entre \(C^{(pq)}\) et \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\)
+## 9. Barrière entre $C^{(pq)}$ et $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$
 
-La sonde opérationnelle ne constitue pas la définition fondamentale de \(C\).
+La sonde opérationnelle ne constitue pas la définition fondamentale de $C$.
 
 Le Toy Model 0 doit tester explicitement la correspondance :
 
@@ -297,17 +294,17 @@ C^{(pq)}
 C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}.
 ```
 
-Une variation de \(C_{\mathrm{eff}}\) n’est pertinente pour l’hypothèse \(C\) que si elle suit de manière robuste une propriété relationnelle physique extraite de l’état quantique.
+Une variation de $C_{\mathrm{eff}}$ n’est pertinente pour l’hypothèse $C$ que si elle suit de manière robuste une propriété relationnelle physique extraite de l’état quantique.
 
 Le test doit notamment vérifier :
 
 - stabilité de la correspondance sous changement de référence ;
 - stabilité sous petites perturbations de l’état ;
 - invariance de jauge ;
-- cohérence du classement des relations entre plusieurs définitions de \(T_{pq}\) ;
+- cohérence du classement des relations entre plusieurs définitions de $T_{pq}$ ;
 - absence de dépendance dominante à un artefact de connectivité ou de seuil.
 
-Si cette correspondance échoue, le Toy Model 0 ne doit pas passer directement à une interprétation géométrique de \(C_{\mathrm{eff}}\).
+Si cette correspondance échoue, le Toy Model 0 ne doit pas passer directement à une interprétation géométrique de $C_{\mathrm{eff}}$.
 
 ---
 
@@ -326,7 +323,7 @@ comme une géométrie physique émergente.
 
 Le premier test porte uniquement sur la possibilité de reconstruire une structure géométrique **effective sur une topologie imposée**.
 
-Toute comparaison avec la distance de graphe doit être utilisée comme diagnostic externe, jamais comme ingrédient de la définition de \(C^{(pq)}\) ou de \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\).
+Toute comparaison avec la distance de graphe doit être utilisée comme diagnostic externe, jamais comme ingrédient de la définition de $C^{(pq)}$ ou de $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$.
 
 ---
 
@@ -370,7 +367,7 @@ C’est un résultat négatif valide.
 
 Les relations définissent une notion cohérente de coût, de proximité ou de distance effective, mais aucune structure tensorielle locale identifiable.
 
-Cela restreint l’hypothèse d’une représentation locale \(C_{ij}\).
+Cela restreint l’hypothèse d’une représentation locale $C_{ij}$.
 
 ### C. Structure locale anisotrope reconstructible
 
@@ -389,7 +386,7 @@ C^{(p)}_{ij}.
 Une reconstruction candidate devra être testée au minimum sur :
 
 - positivité du coût relationnel lorsqu’un coût est défini ;
-- symétrie ou asymétrie contrôlée de \(C^{(pq)}\) et \(C^{(qp)}\) ;
+- symétrie ou asymétrie contrôlée de $C^{(pq)}$ et $C^{(qp)}$ ;
 - stabilité sous changement de jauge ;
 - composition cohérente sur plusieurs relations ;
 - robustesse aux petites perturbations de l’état ;
@@ -413,13 +410,13 @@ Un échec local d’identifiabilité doit être conservé comme résultat.
 
 ### Expérience 0B — référence homogène
 
-Construire un état symétrique et vérifier que les relations équivalentes donnent des signatures relationnelles et des \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\) compatibles.
+Construire un état symétrique et vérifier que les relations équivalentes donnent des signatures relationnelles et des $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ compatibles.
 
 Objectif : établir la normalisation, les symétries attendues et le bruit numérique intrinsèque.
 
 ### Expérience 1 — perturbation locale
 
-Modifier localement un paramètre physique ou l’état de matière et mesurer la réponse de \(G_{pq}(t)\), de \(T_{pq}\) et de \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\).
+Modifier localement un paramètre physique ou l’état de matière et mesurer la réponse de $G_{pq}(t)$, de $T_{pq}$ et de $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$.
 
 Objectif : vérifier qu’une perturbation quantique locale produit une réponse relationnelle mesurable.
 
@@ -427,13 +424,13 @@ Objectif : vérifier qu’une perturbation quantique locale produit une réponse
 
 Faire varier progressivement l’intensité de la perturbation.
 
-Objectif : tester, et non supposer, si une perturbation croissante entraîne une variation monotone de la grandeur relationnelle candidate ou de sa sonde \(C_{\mathrm{eff}}\).
+Objectif : tester, et non supposer, si une perturbation croissante entraîne une variation monotone de la grandeur relationnelle candidate ou de sa sonde $C_{\mathrm{eff}}$.
 
 ### Expérience 3 — anisotropie
 
 Introduire une perturbation qui brise volontairement une symétrie entre plusieurs relations autour d’un même nœud.
 
-Objectif : déterminer si les observables relationnelles et \(C_{\mathrm{eff}}\) détectent cette brisure, puis si une structure directionnelle peut être reconstruite sans imposer un tenseur.
+Objectif : déterminer si les observables relationnelles et $C_{\mathrm{eff}}$ détectent cette brisure, puis si une structure directionnelle peut être reconstruite sans imposer un tenseur.
 
 ### Expérience 4 — chemins multiples, diffusion et retard
 
@@ -458,17 +455,17 @@ Les contributions diffuses ou retardées doivent être prédites par la dynamiqu
 Le Toy Model 0 doit être considéré comme négatif, non concluant ou limité dans un secteur si, par exemple :
 
 - l’information relationnelle n’est pas identifiable avec les observables invariantes disponibles ;
-- \(T_{pq}\) dépend fortement d’un choix arbitraire de seuil ;
+- $T_{pq}$ dépend fortement d’un choix arbitraire de seuil ;
 - les différentes définitions de temps d’arrivée donnent des classements incompatibles ;
-- \(C_{\mathrm{eff}}\) dépend d’une variable de jauge non physique ;
-- \(C_{\mathrm{eff}}\) ne suit aucune propriété relationnelle robuste pouvant être associée à \(C^{(pq)}\) ;
+- $C_{\mathrm{eff}}$ dépend d’une variable de jauge non physique ;
+- $C_{\mathrm{eff}}$ ne suit aucune propriété relationnelle robuste pouvant être associée à $C^{(pq)}$ ;
 - la valeur extraite est essentiellement déterminée par la connectivité imposée ;
 - aucune réponse stable à une perturbation physique n’apparaît ;
 - la reconstruction géométrique exige d’injecter les coordonnées que l’on prétend faire émerger ;
 - le caractère tensoriel doit être imposé à la main pour obtenir le résultat attendu ;
 - diffusion ou retard ne peuvent être obtenus quantitativement alors qu’ils sont nécessaires pour interpréter les résultats.
 
-Un échec d’une définition particulière de \(T_{pq}\) ou d’une observable candidate n’invalide pas automatiquement l’hypothèse \(C\), mais il doit éliminer cette construction précise.
+Un échec d’une définition particulière de $T_{pq}$ ou d’une observable candidate n’invalide pas automatiquement l’hypothèse $C$, mais il doit éliminer cette construction précise.
 
 ---
 
@@ -476,17 +473,17 @@ Un échec d’une définition particulière de \(T_{pq}\) ou d’une observable 
 
 Un résultat positif pourrait établir seulement ceci :
 
-> Sur une topologie quantique donnée, certaines observables relationnelles invariantes de jauge permettent d’identifier une structure relationnelle candidate \(C^{(pq)}\), et une sonde opérationnelle adimensionnelle \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\) en suit certaines propriétés de manière robuste ; l’organisation de ces relations peut alors être testée pour une interprétation géométrique effective.
+> Sur une topologie quantique donnée, certaines observables relationnelles invariantes de jauge permettent d’identifier une structure relationnelle candidate $C^{(pq)}$, et une sonde opérationnelle adimensionnelle $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ en suit certaines propriétés de manière robuste ; l’organisation de ces relations peut alors être testée pour une interprétation géométrique effective.
 
 Il ne démontrerait pas que :
 
-- \(C\) est une propriété fondamentale de la nature ;
+- $C$ est une propriété fondamentale de la nature ;
 - l’espace réel émerge de cette manière ;
 - la topologie elle-même émerge ;
 - la gravité est dérivée ;
-- \(c_{\mathrm{local}}=c\) est automatiquement expliqué ;
+- $c_{\mathrm{local}}=c$ est automatiquement expliqué ;
 - le continuum relativiste est obtenu ;
-- \(C_{\mathrm{eff}}\) est une observable covariante valable au-delà du cadre temporel fixé du Toy Model 0.
+- $C_{\mathrm{eff}}$ est une observable covariante valable au-delà du cadre temporel fixé du Toy Model 0.
 
 ---
 
@@ -495,8 +492,8 @@ Il ne démontrerait pas que :
 On ne passera à un Toy Model 1 que si le Toy Model 0 fournit simultanément :
 
 1. une information relationnelle identifiable ;
-2. une grandeur candidate \(C^{(pq)}\) suffisamment robuste ;
-3. une sonde \(C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}\) dont la correspondance avec cette grandeur est établie dans le domaine étudié ;
+2. une grandeur candidate $C^{(pq)}$ suffisamment robuste ;
+3. une sonde $C_{\mathrm{eff}}^{(pq\mid\mathrm{ref})}$ dont la correspondance avec cette grandeur est établie dans le domaine étudié ;
 4. au moins une organisation collective suffisamment stable pour justifier l’étude d’une reconstruction géométrique plus ambitieuse.
 
 Le Toy Model 1 pourrait alors étudier :
