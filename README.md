@@ -33,6 +33,8 @@ Cette définition n'est pas encore postulée comme fondamentale ; elle constitue
 
 - `docs/C-HYPOTHESIS.md` — définition conceptuelle consolidée de l'hypothèse C.
 - `docs/TOY-MODEL-0.md` — cahier des charges du premier modèle jouet relationnel.
+- `docs/IMPLEMENTATION-0A.md` — contrat technique d'implémentation du benchmark 0A.
+- `docs/governance/` — règles de collaboration et de documentation du dépôt.
 
 ## Principe méthodologique
 
