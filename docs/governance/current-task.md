@@ -6,7 +6,7 @@ Ce document suit `docs/governance/collaboration-governance.md` §11. Il est mis 
 
 ```text
 ACTIVE_BRANCH = master
-HEAD_COMMIT = 2ea0afb (docs: add collaboration and documentation governance)
+HEAD_COMMIT = e7506f7 (docs: migrate docs to governance-target arborescence)
 ```
 
 ## État documentaire
