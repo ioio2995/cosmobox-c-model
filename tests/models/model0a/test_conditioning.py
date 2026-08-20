@@ -41,7 +41,7 @@ def test_d01_raw_singular_values_match_the_analytic_oracle(delta):
     result = _analyze(delta)
     expected = sorted([_sigma_plus(delta), _sigma_minus(delta)], reverse=True)
     raw_sorted = sorted(result.singular_values_raw, reverse=True)
-    np.testing.assert_allclose(raw_sorted, expected, atol=1e-9)
+    np.testing.assert_allclose(raw_sorted, expected, atol=constants.SINGULAR_VALUE_ATOL)
 
 
 @pytest.mark.parametrize("delta", [d for d in constants.F_DELTA_SWEEP if d != 0.0])

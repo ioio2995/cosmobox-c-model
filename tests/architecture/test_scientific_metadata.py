@@ -56,13 +56,18 @@ def test_core_module_has_valid_scientific_metadata(module):
     assert status in ALLOWED_STATUSES, f"{module.__name__}: invalid status {status!r}"
 
     if status == "project-defined":
-        origin_model = metadata.get("origin_model")
-        normative_reference = metadata.get("normative_reference")
-        assert origin_model is not None, f"{module.__name__}: origin_model required for project-defined"
-        assert normative_reference is not None, (
+        assert metadata.get("origin_model") is not None, (
+            f"{module.__name__}: origin_model required for project-defined"
+        )
+        assert metadata.get("normative_reference") is not None, (
             f"{module.__name__}: normative_reference required for project-defined"
         )
 
+    # Any normative_reference actually present must be valid, regardless of
+    # status: a stale or broken reference must fail even on a module whose
+    # status does not strictly require one.
+    normative_reference = metadata.get("normative_reference")
+    if normative_reference is not None:
         reference_path, anchor = _parse_reference(normative_reference)
         target = REPO_ROOT / reference_path
         assert target.is_file(), f"{module.__name__}: normative_reference file not found: {reference_path}"

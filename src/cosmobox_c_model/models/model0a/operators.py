@@ -99,35 +99,53 @@ def build_gauss_operators(basis: Basis) -> tuple[np.ndarray, np.ndarray, np.ndar
     return g0, g1, g2
 
 
-def select_physical_inclusion(basis: Basis) -> np.ndarray:
-    """Select the physical subspace from the Gauss constraints, never by injecting
-    L, M, R directly as the selection mechanism: the dimension and content of the
-    computed joint kernel are both verified against the expected physical states
-    before the frozen (L, M, R) order is explicitly imposed on the returned Q.
+def discover_physical_states(basis: Basis) -> dict[tuple[int, ...], np.ndarray]:
+    """Discover the Gauss-selected physical sector purely from the constraints:
+    returns ``{state: kernel_column}`` for every axis-aligned direction found in
+    the joint kernel of G_0, G_1, G_2, in whatever order the kernel computation
+    returns them.
+
+    This performs no comparison against, and makes no use of, the model's named
+    physical states or their expected count: the dimension and content of the
+    sector are purely a computed fact. Each column is phase-normalized so its
+    dominant entry is exactly 1. Raises `ValueError` if a kernel direction is not
+    axis-aligned within `constants.EXACT_MATRIX_ATOL` -- a structural property of
+    this (diagonal) Gauss construction, not an assumption about which states are
+    physical.
     """
     g0, g1, g2 = build_gauss_operators(basis)
     kernel_vectors = common_kernel([g0, g1, g2], atol=constants.EXACT_MATRIX_ATOL)
 
-    if kernel_vectors.shape[1] != len(PHYSICAL_STATES):
-        raise ValueError(
-            "Gauss constraints did not select the expected physical sector "
-            f"dimension (got {kernel_vectors.shape[1]}, expected {len(PHYSICAL_STATES)})"
-        )
-
-    physical_indices = [basis.index_of_state(state) for state in PHYSICAL_STATES]
-    projector = kernel_vectors @ kernel_vectors.conj().T
-    for state, index in zip(PHYSICAL_STATES, physical_indices):
-        unit_vector = basis.unit_vector(index)
-        residual = np.linalg.norm(projector @ unit_vector - unit_vector)
-        if residual > constants.EXACT_MATRIX_ATOL:
+    discovered: dict[tuple[int, ...], np.ndarray] = {}
+    for column in range(kernel_vectors.shape[1]):
+        vector = kernel_vectors[:, column]
+        dominant_index = int(np.argmax(np.abs(vector)))
+        dominant_magnitude = abs(vector[dominant_index])
+        residual = np.sqrt(max(np.linalg.norm(vector) ** 2 - dominant_magnitude**2, 0.0))
+        if dominant_magnitude < 1 - constants.EXACT_MATRIX_ATOL or residual > constants.EXACT_MATRIX_ATOL:
             raise ValueError(
-                f"expected physical state {state!r} is not in the Gauss-selected "
-                "physical sector"
+                f"Gauss kernel direction {column} is not axis-aligned within "
+                f"atol={constants.EXACT_MATRIX_ATOL!r}; the physical sector could "
+                "not be discovered unambiguously"
             )
+        normalized_vector = vector / vector[dominant_index]
+        state = basis.state_at(dominant_index)
+        discovered[state] = normalized_vector
+    return discovered
 
+
+def select_physical_inclusion(basis: Basis) -> np.ndarray:
+    """Impose the frozen (L, M, R) order (implementation-design.md Section 10) on
+    the physical sector discovered from the Gauss constraints. `PHYSICAL_STATES`
+    is used here only to label and order the columns already discovered by
+    `discover_physical_states`; it is never used to validate or fabricate the
+    selection itself -- that validation lives exclusively in the acceptance
+    tests (tests/models/model0a/test_basis_and_gauss.py, A03/A04).
+    """
+    discovered = discover_physical_states(basis)
     inclusion = np.zeros((basis.dimension, len(PHYSICAL_STATES)), dtype=complex)
-    for column, index in enumerate(physical_indices):
-        inclusion[index, column] = 1.0
+    for column, state in enumerate(PHYSICAL_STATES):
+        inclusion[:, column] = discovered[state]
     return inclusion
 
 

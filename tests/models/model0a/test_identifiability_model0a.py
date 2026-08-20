@@ -36,12 +36,12 @@ def _expectation(operator: np.ndarray, state_vector: np.ndarray) -> complex:
 def test_c01_hs_basis_is_hermitian_traceless_and_orthonormal():
     _, _, hs_basis, _ = _setup()
     for element in hs_basis:
-        assert abs(np.trace(element)) < 1e-12
-        np.testing.assert_allclose(element, element.conj().T, atol=1e-12)
+        assert abs(np.trace(element)) < constants.EXACT_MATRIX_ATOL
+        np.testing.assert_allclose(element, element.conj().T, atol=constants.HERMITICITY_ATOL)
     for i, bi in enumerate(hs_basis):
         for j, bj in enumerate(hs_basis):
             expected = 1.0 if i == j else 0.0
-            assert abs(np.trace(bi @ bj).real - expected) < 1e-12
+            assert abs(np.trace(bi @ bj).real - expected) < constants.EXACT_MATRIX_ATOL
 
 
 def test_c02_measurement_matrix_imaginary_part_is_controlled():
@@ -56,7 +56,9 @@ def test_c03_family_f1():
     result = analyze_identifiability(matrix, rank_tolerance=constants.RANK_EPSILON)
     assert result.numerical_rank == 2
     expected_spectrum = np.array([1, 1, 0, 0, 0, 0, 0, 0], dtype=float)
-    np.testing.assert_allclose(np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=1e-10)
+    np.testing.assert_allclose(
+        np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=constants.SINGULAR_VALUE_ATOL
+    )
 
 
 def test_c04_family_f2():
@@ -65,7 +67,9 @@ def test_c04_family_f2():
     result = analyze_identifiability(matrix, rank_tolerance=constants.RANK_EPSILON)
     assert result.numerical_rank == 6
     expected_spectrum = np.array([1, 1, 1 / SQRT2, 1 / SQRT2, 1 / SQRT2, 1 / SQRT2, 0, 0])
-    np.testing.assert_allclose(np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=1e-10)
+    np.testing.assert_allclose(
+        np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=constants.SINGULAR_VALUE_ATOL
+    )
 
 
 def test_c05_kernel_projector_f2_matches_the_analytic_reference():
@@ -83,7 +87,9 @@ def test_c06_family_f3():
     result = analyze_identifiability(matrix, rank_tolerance=constants.RANK_EPSILON)
     assert result.numerical_rank == 8
     expected_spectrum = np.array([1, 1] + [1 / SQRT2] * 6)
-    np.testing.assert_allclose(np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=1e-10)
+    np.testing.assert_allclose(
+        np.sort(result.singular_values_domain)[::-1], expected_spectrum, atol=constants.SINGULAR_VALUE_ATOL
+    )
     assert result.kernel_basis.shape[0] == 0
 
 
@@ -108,8 +114,8 @@ def test_c08_witness_states_are_indistinguishable_under_f2():
     for psi in WITNESS_STATES.values():
         for operator, expected_value in zip(operators, expected):
             value = _expectation(operator, psi)
-            assert abs(value.real - expected_value) < 1e-12
-            assert abs(value.imag) < 1e-12
+            assert abs(value.real - expected_value) < constants.EXPECTATION_ATOL
+            assert abs(value.imag) < constants.EXPECTATION_ATOL
 
 
 def test_c09_witness_states_are_distinguished_under_f3():
@@ -124,5 +130,5 @@ def test_c09_witness_states_are_distinguished_under_f3():
         x02 = _expectation(observables["X_02"], psi)
         y02 = _expectation(observables["Y_02"], psi)
         expected_x, expected_y = expected_x02_y02[name]
-        assert abs(x02.real - expected_x) < 1e-12
-        assert abs(y02.real - expected_y) < 1e-12
+        assert abs(x02.real - expected_x) < constants.EXPECTATION_ATOL
+        assert abs(y02.real - expected_y) < constants.EXPECTATION_ATOL

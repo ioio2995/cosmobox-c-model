@@ -7,6 +7,7 @@ from __future__ import annotations
 import numpy as np
 
 from cosmobox_c_model.core.state_space import restrict_operator
+from cosmobox_c_model.models.model0a import constants
 from cosmobox_c_model.models.model0a.basis_config import build_total_basis
 from cosmobox_c_model.models.model0a.operators import (
     build_gauss_operators,
@@ -34,7 +35,7 @@ def test_b04_gauge_invariance_on_the_full_72_dim_space():
     for gauss_operator in (g0, g1, g2):
         for observable in (o01, o12, o02):
             commutator = gauss_operator @ observable - observable @ gauss_operator
-            assert np.max(np.abs(commutator)) < 1e-12
+            assert np.linalg.norm(commutator, ord="fro") < constants.COMMUTATOR_ATOL
 
 
 def test_b05_projected_matrices_match_the_oracle():
@@ -50,9 +51,9 @@ def test_b05_projected_matrices_match_the_oracle():
     expected_o12 = np.array([[0, 0, 0], [0, 0, 1], [0, 0, 0]], dtype=complex)  # |M><R|
     expected_o02 = np.array([[0, 0, 1], [0, 0, 0], [0, 0, 0]], dtype=complex)  # |L><R|
 
-    np.testing.assert_allclose(o01_phys, expected_o01, atol=1e-12)
-    np.testing.assert_allclose(o12_phys, expected_o12, atol=1e-12)
-    np.testing.assert_allclose(o02_phys, expected_o02, atol=1e-12)
+    np.testing.assert_allclose(o01_phys, expected_o01, atol=constants.EXACT_MATRIX_ATOL)
+    np.testing.assert_allclose(o12_phys, expected_o12, atol=constants.EXACT_MATRIX_ATOL)
+    np.testing.assert_allclose(o02_phys, expected_o02, atol=constants.EXACT_MATRIX_ATOL)
 
 
 def test_b06_composition_identity_is_only_projected_never_global():
@@ -61,8 +62,8 @@ def test_b06_composition_identity_is_only_projected_never_global():
     o01, o12, o02 = build_relational_operators(basis)
 
     composition_total = o01 @ o12
-    assert not np.allclose(composition_total, o02, atol=1e-9)
+    assert not np.allclose(composition_total, o02, atol=constants.EXACT_MATRIX_ATOL)
 
     composition_phys = restrict_operator(composition_total, inclusion)
     o02_phys = restrict_operator(o02, inclusion)
-    np.testing.assert_allclose(composition_phys, o02_phys, atol=1e-12)
+    np.testing.assert_allclose(composition_phys, o02_phys, atol=constants.EXACT_MATRIX_ATOL)
