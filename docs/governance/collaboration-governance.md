@@ -89,6 +89,7 @@ La lecture commence toujours par :
 ```text
 docs/governance/collaboration-governance.md
 docs/governance/documentation-governance.md
+docs/governance/software-architecture-governance.md
 ```
 
 Puis viennent `docs/governance/current-task.md` et les documents du périmètre concerné lorsque le mandat dépend de l'état courant du projet.
