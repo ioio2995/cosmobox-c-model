@@ -14,7 +14,7 @@ Le Hamiltonien s'écrit :
 H
 =H_{hop}
 +g V_0
-+g\delta V_{stag}
++g\delta V_{\delta}
 +2\mu N_{even},
 ```
 
@@ -23,8 +23,16 @@ avec :
 ```math
 V_0=\sum_i E_i^2,
 \qquad
-V_{stag}=\sum_i(-1)^iE_i^2.
+V_{\delta}=\sum_i(-1)^iE_i^2,
 ```
+
+et :
+
+```math
+N_{even}=n_0+n_2+n_4.
+```
+
+La notation `V_delta` est normative pour le terme électrique alterné. Elle ne doit pas être confondue avec le terme de matière `2 mu N_even`.
 
 La réflexion exacte vérifie :
 
@@ -43,7 +51,7 @@ pour tout `g,mu` dans le domaine où le protocole est défini.
 
 `delta` est donc la seule coordonnée déclarée qui brise cette symétrie et autorise `Delta_1 != 0`.
 
-Nuance importante : le terme générateur est en réalité `g*delta*V_stag`. Ainsi `g` n'est pas un simple modulateur indépendant : il règle aussi l'amplitude du générateur de contraste. En particulier :
+Nuance importante : le terme générateur est `g*delta*V_delta`. Ainsi `g` n'est pas un simple modulateur indépendant : il règle aussi l'amplitude du générateur de contraste. En particulier :
 
 ```math
 g=0 \Longrightarrow H \text{ indépendant de } \delta,
@@ -188,7 +196,7 @@ La prescription scientifique était déjà définie : fondamental unique -> proj
 
 Une diagonalisation indépendante de qualification préalable a été effectuée avant le gel de la campagne. Elle n'est pas un résultat confirmatoire et doit être divulguée comme information de design.
 
-Résultats :
+Résultats spectraux :
 
 ```text
 Lambda = 2
@@ -212,6 +220,65 @@ Le fondamental de référence est donc non dégénéré aux deux cutoffs princip
 
 La très forte stabilité numérique de l'énergie et du gap entre `Lambda=2` et `Lambda=3` est informative mais ne remplace pas les contrôles de troncature préenregistrés sur les observables de campagne.
 
+### 7.1 Qualification du degré cyclique
+
+L'égalité des énergies aux deux cutoffs ne permet pas à elle seule de conclure que le degré cyclique est « gelé ». Elle montre surtout que les états supplémentaires accessibles à `Lambda=3` ne modifient pratiquement pas le fondamental.
+
+Pour un fondamental pur :
+
+```math
+\|D_\Phi\|_{HS}^2
+=2\,Var_{\rho}(\Phi).
+```
+
+La qualification directe donne :
+
+```text
+Lambda = 2
+    <Phi>                 ~= 0
+    Var(Phi)               = 0.0312410968528452
+    ||D_Phi||_HS           = 0.249964384874506
+    sum_i <E_i^2>          = 0.830720005054357
+    weight(max |E_i| = 2)  = 1.6846381433e-6
+
+Lambda = 3
+    <Phi>                 ~= 0
+    Var(Phi)               = 0.0312410968528456
+    ||D_Phi||_HS           = 0.249964384874508
+    sum_i <E_i^2>          = 0.830720005054361
+    weight(max |E_i| = 3)  = 5.2e-18
+```
+
+La direction `D_Phi` est donc clairement active au point de référence et stable sous `Lambda=2 -> 3`.
+
+Une projection numérique de qualification donne en outre :
+
+```text
+rank(S_n)                         = 5
+||Proj_{S_n}(D_Phi)||_HS          ~= 1e-15
+||D_Phi - Proj_{S_n}(D_Phi)||_HS = 0.249964384874506  (Lambda=2)
+```
+
+avec le même résultat à `Lambda=3` à la précision machine. Ce résultat est une information de qualification, pas encore un théorème structurel ajouté au protocole.
+
+Pour la configuration de matière alternée `n=b`, qui admet la fibre uniforme la plus large :
+
+```text
+P(n=b) ~= 0.372229473184816
+```
+
+et, conditionnellement à `n=b`, le zéro-mode est fortement centré :
+
+```text
+P(Phi=0 | n=b)   ~= 0.999982470882862
+P(Phi=+1 | n=b)  ~= 8.764558569e-6
+P(Phi=-1 | n=b)  ~= 8.764558569e-6
+```
+
+Cela montre qu'une configuration particulière peut avoir une fibre de flux très froide sans rendre `D_Phi` globalement inactif. Il est donc interdit de déduire des seules populations conditionnelles de `n=b` que le degré cyclique global est gelé.
+
+La référence `g=1` est ainsi **cutoff-froide** vis-à-vis des grands flux ajoutés, mais pas inactive vis-à-vis du degré cyclique représenté par `D_Phi`. Aucune décision de déplacer le domaine vers des `g<1` ne doit être fondée sur la seule coïncidence des énergies `Lambda=2/3`.
+
 ## 8. Symétrie du point de référence
 
 Le point `delta=0` restaure `R`, mais cela vaut pour toute la variété :
@@ -224,27 +291,72 @@ Il est donc incorrect de dire que `(1,0,0)` est nécessairement « le point le p
 
 La qualification de `d_GS` reste néanmoins utile parce que ce point sert de référence commune à tous les contrastes.
 
-## 9. Règle méthodologique pour la suite
+## 9. Gap fondamental et croisements évités
+
+La multiplicité exacte `d_GS` ne suffit pas à qualifier la régularité du fond. Un gap faible peut rendre le projecteur fondamental très sensible aux paramètres même si `d_GS=1`.
+
+Le rapport de campagne doit donc publier à chaque point :
+
+```text
+d_GS
+gap_GS
+```
+
+avec :
+
+```math
+gap_{GS}=E_1-E_0.
+```
+
+La prescription d'état canonique reste :
+
+```text
+d_GS = 1  -> projecteur pur
+
+d_GS > 1  -> mélange uniforme sur tout le sous-espace fondamental
+```
+
+Un drapeau :
+
+```text
+NEAR_CROSSING
+```
+
+est autorisé et doit être préenregistré avant la campagne sur la base d'un seuil de gap déclaré. Sa valeur numérique reste `OPEN` et doit être gelée avec les tolérances / règles de stabilité, jamais choisie après inspection des résultats.
+
+`NEAR_CROSSING` est un diagnostic de conditionnement et de sensibilité, pas un échec physique automatique. Un petit gap peut représenter une vraie forte susceptibilité du fond.
+
+En particulier, toute estimation de :
+
+```math
+\Xi_1=\partial\Delta_1/\partial\delta
+```
+
+à proximité d'un point `NEAR_CROSSING` doit être accompagnée d'un contrôle de stabilité de la dérivée. Une dégénérescence exacte ou une non-régularité du projecteur peut rendre la dérivée non applicable plutôt que simplement grande.
+
+## 10. Règle méthodologique pour la suite
 
 Il est autorisé de qualifier explicitement le point de référence avant le gel des bornes, à condition de traiter le résultat comme information de design divulguée.
 
-En revanche, une cartographie large de `d_GS` ou d'autres observables sur un domaine encore non figé constituerait une exploration pilote susceptible d'influencer les bornes. Elle devrait alors être déclarée comme telle avant utilisation.
+En revanche, une cartographie large de `d_GS`, du gap ou d'autres observables sur un domaine encore non figé constituerait une exploration pilote susceptible d'influencer les bornes. Elle devrait alors être déclarée comme telle avant utilisation.
 
 La séquence recommandée est donc :
 
 ```text
 1. qualifier le point de référence ;
 2. fixer les bornes structurelles et la grille de campagne ;
-3. préenregistrer les règles de traitement des points dégénérés ;
-4. seulement ensuite exécuter la cartographie confirmatoire d_GS et des observables.
+3. préenregistrer la publication de d_GS et gap_GS ainsi que le seuil NEAR_CROSSING ;
+4. préenregistrer le traitement des dérivées près des petits gaps ;
+5. seulement ensuite exécuter la cartographie confirmatoire et les observables.
 ```
 
-## 10. Statut
+## 11. Statut
 
 ```text
 DELTA_ZERO_NULL_MANIFOLD            = VALIDATED_FOR_FREEZE
 DELTA_ODD_COVARIANCE                = VALIDATED_FOR_FREEZE
 DELTA_ONLY_DECLARED_SYMMETRY_BREAK  = VALIDATED_FOR_FREEZE
+DELTA_GENERATOR_NAME                = V_delta
 G_TIMES_DELTA_GENERATOR             = VALIDATED_FOR_FREEZE
 G_ZERO_DELTA_COLLAPSE               = VALIDATED_FOR_FREEZE
 MU_SIGN_COVARIANCE                  = NOT_ESTABLISHED
@@ -259,5 +371,10 @@ D2_G2_SCALING                       = CONDITIONAL_EXPECTATION
 REFERENCE_GS_QUALIFICATION          = COMPLETED_NONCONFIRMATORY
 REFERENCE_D_GS_LAMBDA2              = 1
 REFERENCE_D_GS_LAMBDA3              = 1
+REFERENCE_D_PHI_ACTIVITY            = ACTIVE_NONCONFIRMATORY
+REFERENCE_CUTOFF_EDGE_WEIGHT        = NEGLIGIBLE_NONCONFIRMATORY
+GAP_GS_PUBLICATION                  = MANDATORY
+NEAR_CROSSING_FLAG                  = VALIDATED_IN_PRINCIPLE
+NEAR_CROSSING_THRESHOLD             = OPEN
 PARAMETER_CAMPAIGN                  = OPEN
 ```
