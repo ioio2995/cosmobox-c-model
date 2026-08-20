@@ -6,19 +6,24 @@ Ce document suit `docs/governance/collaboration-governance.md` §11. Il est mis 
 
 ```text
 ACTIVE_BRANCH = master
-BASE_COMMIT   = a1706db93acf65e9d75b3b21d3201d27b3445e6b
+BASE_COMMIT   = fbd6f0967460153dcacd39656808db843c7a675a
 ```
 
 `BASE_COMMIT` désigne le dernier commit distant précédant le paquet documentaire courant ; il évite l'auto-référence impossible d'un fichier versionné vers le SHA du commit qui le contient.
 
-`a1706db93acf65e9d75b3b21d3201d27b3445e6b` est le commit de fusion de la PR #1 (`governance/software-architecture`) sur `master` : il porte la gouvernance d'architecture logicielle gelée et le second audit architectural 0A.
+`fbd6f0967460153dcacd39656808db843c7a675a` est le commit de fusion de la PR #3 (`implementation/model0a`) sur `master`. Il intègre le dernier commit d'implémentation revu et accepté :
+
+```text
+a5fc55563db7ee7b06a41e4bfb6b0c8a928f960f
+```
 
 ## État documentaire
 
 ```text
 C_HYPOTHESIS               = FROZEN (docs/model/c-hypothesis.md, conceptuellement gelée)
 TOY_MODEL_0_SPECIFICATION  = FROZEN (docs/toy-models/toy0/specification.md, conceptuellement gelée)
-IMPLEMENTATION_0A_CONTRACT = FROZEN_FUNCTIONAL (docs/toy-models/toy0/implementation-design.md, contenu fonctionnel gelé ; architecture désormais validée par le second audit, cf. Dernier jalon)
+IMPLEMENTATION_0A_CONTRACT = FROZEN (docs/toy-models/toy0/implementation-design.md, contrat exécuté)
+CLOSURE_0A_REPORT          = CLOSED (docs/toy-models/toy0/closure-report.md)
 GOVERNANCE_COLLABORATION   = FROZEN (docs/governance/collaboration-governance.md)
 GOVERNANCE_DOCUMENTATION   = FROZEN (docs/governance/documentation-governance.md)
 GOVERNANCE_SOFTWARE_ARCH   = FROZEN (docs/governance/software-architecture-governance.md)
@@ -28,11 +33,13 @@ DOCUMENTATION_ARCHITECTURE = ALIGNED
 ## État du code
 
 ```text
-CODE_STATUS  = NOT_STARTED
-TESTS_STATUS = NOT_STARTED
+CODE_STATUS       = IMPLEMENTED_ACCEPTED
+TESTS_STATUS      = PASSED_89
+BENCHMARK_0A      = CLOSED
+INSTRUMENT_0A     = VALIDATED
 ```
 
-Aucun code 0A n'a encore été autorisé.
+La suite finale comporte 89 tests passants. Le runner 0A reproduit les oracles analytiques gelés et produit deux sorties JSON successives byte-identiques.
 
 ## Dernier jalon
 
@@ -41,12 +48,14 @@ AUDIT_0A_1_FUNCTIONAL      = ACCEPTED
 AUDIT_0A_1_TEST_STRATEGY   = ACCEPTED
 AUDIT_0A_1_RISK_ANALYSIS   = ACCEPTED
 AUDIT_0A_2_ARCHITECTURE    = ACCEPTED
-IMPLEMENTATION_0A          = NOT_AUTHORIZED
+IMPLEMENTATION_0A          = ACCEPTED
+REMOTE_REVIEW_0A           = PASS
+LOT_0A                     = CLOSED
 ```
 
-Le premier audit 0A reste valide pour son contenu fonctionnel, son catalogue de tests et son analyse des risques. Sa proposition d'architecture est supersédée par le second audit architectural (`AUDIT_0A_2_ARCHITECTURE`), accepté sous `software-architecture-governance.md`. La physique, les oracles et la stratégie fonctionnelle de 0A restent inchangés.
+Le premier audit 0A reste valide pour son contenu fonctionnel, son catalogue de tests et son analyse des risques. Sa proposition d'architecture a été supersédée par le second audit architectural, désormais réalisé dans l'implémentation acceptée.
 
-Architecture 0A validée :
+Architecture 0A retenue :
 
 ```text
 core/
@@ -57,8 +66,9 @@ core/
     identifiability
 
 models/model0a/
-    configuration
-    assemblage
+    basis_config
+    constants
+    operators
     observables
     benchmark
 
@@ -71,20 +81,20 @@ tests/
 ## Lot courant
 
 ```text
-CURRENT_LOT = correctif de gouvernance : fermeture du vocabulaire SCIENTIFIC_METADATA.status
-PHASE       = GOVERNANCE_CORRECTIF
+CURRENT_LOT = clôture documentaire du Toy Model 0A
+PHASE       = CLOSED
 ```
 
 ## Étape suivante
 
 ```text
-NEXT_STEP = ouverture, après revue du commit distant et décision explicite de Lionel, du premier lot d'implémentation du Toy Model 0A selon l'architecture validée par le second audit.
+NEXT_STEP = cadrage et spécification séparés du premier modèle exploratoire ; aucun modèle suivant n'est encore autorisé à l'implémentation.
 ```
 
-L'implémentation n'est pas autorisée par ce lot.
+Le prochain modèle devra constituer un nouveau lot et ne doit pas réouvrir 0A sans défaut bloquant nouvellement démontré.
 
 ## Questions ouvertes
 
 ```text
-- aucune.
+- aucune question ouverte sur 0A.
 ```
