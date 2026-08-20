@@ -6,6 +6,8 @@ Dépôt de recherche consacré à l'hypothèse **C** : tester si une structure g
 
 Ce dépôt contient un **programme exploratoire** et des modèles jouets. Il ne présente pas une théorie physique établie.
 
+Le benchmark analytique **Toy Model 0A est clos**. Il valide l'instrument logiciel d'identifiabilité (construction du secteur physique, observables invariantes de jauge, matrice de mesure, SVD, rang, noyau, projecteur et conditionnement) sur un cas dont les résultats sont connus analytiquement à l'avance. Il ne constitue pas un résultat scientifique exploratoire sur l'hypothèse C.
+
 Le travail est volontairement séparé du dépôt principal Cosmobox afin de pouvoir tester l'hypothèse C avec ses propres postulats, critères d'échec et observables.
 
 ## Idée directrice
@@ -34,7 +36,8 @@ Cette définition n'est pas encore postulée comme fondamentale ; elle constitue
 - `docs/model/c-hypothesis.md` — définition conceptuelle consolidée de l'hypothèse C.
 - `docs/toy-models/toy0/specification.md` — cahier des charges du premier modèle jouet relationnel.
 - `docs/toy-models/toy0/implementation-design.md` — contrat technique d'implémentation du benchmark 0A.
-- `docs/governance/` — règles de collaboration et de documentation du dépôt.
+- `docs/toy-models/toy0/closure-report.md` — résultats d'acceptation, limites et décision de clôture de 0A.
+- `docs/governance/` — règles de collaboration, de documentation et d'architecture logicielle du dépôt.
 
 ## Principe méthodologique
 

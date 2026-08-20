@@ -162,7 +162,10 @@ docs/governance/software-architecture-governance.md  — gelé
 docs/governance/current-task.md                      — état courant
 docs/model/c-hypothesis.md                           — gelé conceptuellement
 docs/toy-models/toy0/specification.md                — gelé conceptuellement
-docs/toy-models/toy0/implementation-design.md        — gelé fonctionnellement ; architecture à réauditer sous la gouvernance logicielle
+docs/toy-models/toy0/implementation-design.md        — gelé ; contrat 0A exécuté
+docs/toy-models/toy0/closure-report.md               — clos
 ```
+
+Le benchmark 0A est clos. Son architecture d'implémentation effective est régie par `software-architecture-governance.md` et enregistrée dans `docs/toy-models/toy0/closure-report.md` ainsi que dans `docs/governance/current-task.md`.
 
 Aucun ancien chemin (`docs/C-HYPOTHESIS.md`, `docs/TOY-MODEL-0.md`, `docs/IMPLEMENTATION-0A.md`) n'est conservé comme fichier de compatibilité au sens du §8 : ces documents n'avaient encore aucune référence externe active, la migration s'est donc faite par renommage direct plutôt que par redirection temporaire.
