@@ -8,20 +8,14 @@ import numpy as np
 
 from cosmobox_c_model.core import fermions, ladder
 from cosmobox_c_model.core.operators import action_from_matrix, build_operator_from_action
-from cosmobox_c_model.core.state_space import Basis, common_kernel, embed_action
+from cosmobox_c_model.core.state_space import Basis, embed_action
 from cosmobox_c_model.models.model0a import constants
 from cosmobox_c_model.models.model0a.basis_config import FLUX_DOMAIN
 
 TOTAL_ARITY = 5  # (n0, n1, n2, E01, E12)
 OCCUPATION_SLOTS = (0, 1, 2)
 LINK_SLOTS = {"01": 3, "12": 4}
-
-# Physical states in the frozen order (L, M, R) (implementation-design.md Section 10).
-PHYSICAL_STATES: tuple[tuple[int, ...], ...] = (
-    (1, 0, 0, 1, 0),   # L = |100;+1,0>
-    (0, 1, 0, 0, 0),   # M = |010;0,0>
-    (0, 0, 1, 0, -1),  # R = |001;0,-1>
-)
+N_SITES = len(OCCUPATION_SLOTS)
 
 
 def _fermion_action(kind: str, site: int):
@@ -100,51 +94,60 @@ def build_gauss_operators(basis: Basis) -> tuple[np.ndarray, np.ndarray, np.ndar
 
 
 def discover_physical_states(basis: Basis) -> dict[tuple[int, ...], np.ndarray]:
-    """Discover the Gauss-selected physical sector purely from the constraints:
-    returns ``{state: kernel_column}`` for every axis-aligned direction found in
-    the joint kernel of G_0, G_1, G_2, in whatever order the kernel computation
-    returns them.
+    """Discover the Gauss-selected physical sector by testing every basis state
+    individually against the three constraints (implementation-design.md
+    Section 9), never via the orientation of a kernel basis returned by an SVD.
 
-    This performs no comparison against, and makes no use of, the model's named
-    physical states or their expected count: the dimension and content of the
-    sector are purely a computed fact. Each column is phase-normalized so its
-    dominant entry is exactly 1. Raises `ValueError` if a kernel direction is not
-    axis-aligned within `constants.EXACT_MATRIX_ATOL` -- a structural property of
-    this (diagonal) Gauss construction, not an assumption about which states are
-    physical.
+    A degenerate zero-eigenspace has no unique orthonormal basis: any unitary
+    rotation within it is an equally valid set of singular vectors, so a kernel
+    computed via `core.state_space.common_kernel` cannot in general be assumed
+    to align with the ambient basis. This function sidesteps that entirely by
+    never computing a joint kernel: a basis state |s> is physical iff
+    G_k|s> = 0 (within `constants.EXACT_MATRIX_ATOL`) for k=0,1,2, tested
+    directly on each of the basis's own canonical unit vectors.
+
+    Returns ``{state: unit_vector}`` for every state found physical, in the
+    basis's own deterministic enumeration order. Makes no use of, and performs
+    no comparison against, the model's named physical states or their expected
+    count: the content and dimension of the sector are a purely computed fact.
     """
     g0, g1, g2 = build_gauss_operators(basis)
-    kernel_vectors = common_kernel([g0, g1, g2], atol=constants.EXACT_MATRIX_ATOL)
-
     discovered: dict[tuple[int, ...], np.ndarray] = {}
-    for column in range(kernel_vectors.shape[1]):
-        vector = kernel_vectors[:, column]
-        dominant_index = int(np.argmax(np.abs(vector)))
-        dominant_magnitude = abs(vector[dominant_index])
-        residual = np.sqrt(max(np.linalg.norm(vector) ** 2 - dominant_magnitude**2, 0.0))
-        if dominant_magnitude < 1 - constants.EXACT_MATRIX_ATOL or residual > constants.EXACT_MATRIX_ATOL:
-            raise ValueError(
-                f"Gauss kernel direction {column} is not axis-aligned within "
-                f"atol={constants.EXACT_MATRIX_ATOL!r}; the physical sector could "
-                "not be discovered unambiguously"
-            )
-        normalized_vector = vector / vector[dominant_index]
-        state = basis.state_at(dominant_index)
-        discovered[state] = normalized_vector
+    for index, state in enumerate(basis.states):
+        unit_vector = basis.unit_vector(index)
+        if all(
+            np.linalg.norm(g @ unit_vector) <= constants.EXACT_MATRIX_ATOL
+            for g in (g0, g1, g2)
+        ):
+            discovered[state] = unit_vector
     return discovered
 
 
+def _physical_order_key(state: tuple[int, ...]) -> tuple[int, tuple[int, ...]]:
+    """Deterministic, model-specific ordering key for a discovered physical
+    state: primarily by the site index carrying the matter occupation (the
+    position of the single `1` among n0, n1, n2), with the full state tuple as
+    a tie-break for absolute determinism when that is not unique.
+
+    Uses only the occupation structure of the state itself -- never a named
+    physical state or PHYSICAL_STATES -- yet coincides with the frozen (L, M, R)
+    order for 0A's expected sector, since L/M/R are exactly the states with the
+    matter excitation at site 0/1/2 respectively.
+    """
+    occupation = state[:N_SITES]
+    matter_site = occupation.index(1) if 1 in occupation else N_SITES
+    return (matter_site, state)
+
+
 def select_physical_inclusion(basis: Basis) -> np.ndarray:
-    """Impose the frozen (L, M, R) order (implementation-design.md Section 10) on
-    the physical sector discovered from the Gauss constraints. `PHYSICAL_STATES`
-    is used here only to label and order the columns already discovered by
-    `discover_physical_states`; it is never used to validate or fabricate the
-    selection itself -- that validation lives exclusively in the acceptance
-    tests (tests/models/model0a/test_basis_and_gauss.py, A03/A04).
+    """Build Q from every state actually discovered by `discover_physical_states`
+    -- never filtered, counted, or sized against any named physical state -- in
+    the deterministic model-specific order of `_physical_order_key`.
     """
     discovered = discover_physical_states(basis)
-    inclusion = np.zeros((basis.dimension, len(PHYSICAL_STATES)), dtype=complex)
-    for column, state in enumerate(PHYSICAL_STATES):
+    ordered_states = sorted(discovered.keys(), key=_physical_order_key)
+    inclusion = np.zeros((basis.dimension, len(ordered_states)), dtype=complex)
+    for column, state in enumerate(ordered_states):
         inclusion[:, column] = discovered[state]
     return inclusion
 
