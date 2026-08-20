@@ -3,10 +3,10 @@
 **Projet :** Cosmobox C Model  
 **Dépôt cible :** `ioio2995/cosmobox-c-model`  
 **Référence du dépôt lors de la rédaction :** `master @ d9de78206bed6a02b8a561faf3567cdb84961130`  
-**Emplacement recommandé :** `docs/IMPLEMENTATION-0A.md`  
+**Emplacement recommandé :** `docs/toy-models/toy0/implementation-design.md`  
 **Statut :** spécification d'implémentation gelée pour le benchmark 0A  
 **Public cible :** implémentation via Claude Code, revue scientifique et revue logicielle  
-**Documents conceptuels de référence :** `docs/C-HYPOTHESIS.md`, `docs/TOY-MODEL-0.md`
+**Documents conceptuels de référence :** `docs/model/c-hypothesis.md`, `docs/toy-models/toy0/specification.md`
 
 ---
 
@@ -42,7 +42,7 @@ Toute divergence entre les résultats analytiques enregistrés ici et les résul
 
 Les règles suivantes sont obligatoires pendant tout le lot 0A :
 
-1. `docs/C-HYPOTHESIS.md` et `docs/TOY-MODEL-0.md` sont conceptuellement gelés.
+1. `docs/model/c-hypothesis.md` et `docs/toy-models/toy0/specification.md` sont conceptuellement gelés.
 2. Claude Code ne doit pas modifier ces deux documents pour adapter la théorie à l'implémentation.
 3. Si une contradiction réelle est découverte, l'implémentation doit s'arrêter sur le point concerné et la contradiction doit être remontée explicitement avant toute modification conceptuelle.
 4. Les valeurs analytiques attendues de 0A doivent vivre dans les tests/oracles, jamais dans les fonctions scientifiques de production.
@@ -1558,7 +1558,7 @@ Claude Code doit traiter ce document comme un **contrat d'implémentation**, non
 Ordre de travail recommandé :
 
 ```text
-1. lire intégralement C-HYPOTHESIS.md, TOY-MODEL-0.md et ce document ;
+1. lire intégralement docs/model/c-hypothesis.md, docs/toy-models/toy0/specification.md et ce document ;
 2. confirmer le périmètre et l'état initial du dépôt ;
 3. mettre en place le package et les tests sans logique scientifique codée en dur ;
 4. implémenter d'abord la base, les primitives et Gauss ;

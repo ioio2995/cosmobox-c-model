@@ -143,13 +143,13 @@ Un succès d'API Git ou une mise à jour de référence ne prouve pas à lui seu
 
 ## 10. État actuel des sources canoniques
 
-À la date de gel de ce document, l'arborescence cible du §2 n'est pas encore en place. Les sources canoniques réelles sont :
+L'arborescence réelle est alignée avec la cible du §2. Les sources canoniques sont :
 
 ```text
 README.md
-docs/C-HYPOTHESIS.md        — gelé conceptuellement
-docs/TOY-MODEL-0.md         — gelé conceptuellement
-docs/IMPLEMENTATION-0A.md   — gelé, implémentation non démarrée
+docs/model/c-hypothesis.md                       — gelé conceptuellement
+docs/toy-models/toy0/specification.md             — gelé conceptuellement
+docs/toy-models/toy0/implementation-design.md     — gelé, implémentation non démarrée
 ```
 
-Ces fichiers restent à la racine de `docs/` tant qu'aucune décision explicite n'a validé leur migration vers `docs/model/` et `docs/toy-models/toy0/`. Une telle migration suit intégralement §7 et §9 et fait l'objet d'un lot dédié : elle n'est jamais un effet de bord d'un autre lot.
+Aucun ancien chemin (`docs/C-HYPOTHESIS.md`, `docs/TOY-MODEL-0.md`, `docs/IMPLEMENTATION-0A.md`) n'est conservé comme fichier de compatibilité au sens du §8 : ces documents n'avaient encore aucune référence externe active, la migration s'est donc faite par renommage direct plutôt que par redirection temporaire.

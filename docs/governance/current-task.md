@@ -6,16 +6,17 @@ Ce document suit `docs/governance/collaboration-governance.md` §11. Il est mis 
 
 ```text
 ACTIVE_BRANCH = master
-HEAD_COMMIT = 8b652a6 (chore: add devcontainer config, .gitignore, and enforce LF line endings)
+HEAD_COMMIT = 2ea0afb (docs: add collaboration and documentation governance)
 ```
 
 ## État documentaire
 
 ```text
-C_HYPOTHESIS               = FROZEN (docs/C-HYPOTHESIS.md, conceptuellement gelée)
-TOY_MODEL_0_SPECIFICATION  = FROZEN (docs/TOY-MODEL-0.md, conceptuellement gelée)
-IMPLEMENTATION_0A_CONTRACT = FROZEN (docs/IMPLEMENTATION-0A.md, implémentation non démarrée)
+C_HYPOTHESIS               = FROZEN (docs/model/c-hypothesis.md, conceptuellement gelée)
+TOY_MODEL_0_SPECIFICATION  = FROZEN (docs/toy-models/toy0/specification.md, conceptuellement gelée)
+IMPLEMENTATION_0A_CONTRACT = FROZEN (docs/toy-models/toy0/implementation-design.md, implémentation non démarrée)
 GOVERNANCE                 = FROZEN (docs/governance/collaboration-governance.md, documentation-governance.md)
+DOCUMENTATION_ARCHITECTURE = ALIGNED (arborescence conforme à documentation-governance.md §2)
 ```
 
 ## État du code
@@ -25,7 +26,7 @@ CODE_STATUS  = NOT_STARTED
 TESTS_STATUS = NOT_STARTED
 ```
 
-Aucun code n'existe encore dans le dépôt. Le benchmark 0A décrit par `docs/IMPLEMENTATION-0A.md` n'a pas commencé d'implémentation.
+Aucun code n'existe encore dans le dépôt. Le benchmark 0A décrit par `docs/toy-models/toy0/implementation-design.md` n'a pas commencé d'implémentation.
 
 ## Dernier lot
 
@@ -37,12 +38,11 @@ CURRENT_LOT        = mise en place de la gouvernance de collaboration et de docu
 ## Étape suivante
 
 ```text
-NEXT_STEP = validation par Lionel de docs/governance/collaboration-governance.md et documentation-governance.md
-THEN      = ouverture du premier lot d'implémentation du benchmark 0A, conformément à docs/IMPLEMENTATION-0A.md et au cycle décrit en collaboration-governance.md §2
+NEXT_STEP = ouverture du premier lot d'implémentation du benchmark 0A, conformément à docs/toy-models/toy0/implementation-design.md et au cycle décrit en collaboration-governance.md §2
 ```
 
 ## Questions ouvertes
 
 ```text
-- migration éventuelle de docs/C-HYPOTHESIS.md, docs/TOY-MODEL-0.md et docs/IMPLEMENTATION-0A.md vers l'arborescence cible de documentation-governance.md §2 : non décidée, non urgente.
+- aucune.
 ```
