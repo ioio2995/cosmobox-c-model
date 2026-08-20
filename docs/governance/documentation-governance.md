@@ -10,6 +10,8 @@ Une information normative possède une seule source de vérité principale. Les 
 
 Le code implémente les documents normatifs. Il ne redéfinit jamais silencieusement une convention scientifique.
 
+Les documents de gouvernance s'appliquent transversalement aux documents et au code relevant de leur domaine. Lorsqu'une règle de gouvernance transverse précise ou restreint un choix d'implémentation plus ancien sans modifier son contenu scientifique, cette gouvernance s'applique jusqu'à remise en cohérence du document concerné.
+
 ## 2. Arborescence cible
 
 ```text
@@ -17,6 +19,7 @@ docs/
 ├── governance/
 │   ├── collaboration-governance.md
 │   ├── documentation-governance.md
+│   ├── software-architecture-governance.md
 │   └── current-task.md
 ├── model/
 │   └── c-hypothesis.md
@@ -43,7 +46,7 @@ Les dossiers vides ne sont pas créés à l'avance. Cette arborescence est la ci
 
 ### `docs/governance/`
 
-Règles transverses du dépôt : architecture documentaire, collaboration, publication, statuts, contrôles, et l'état courant du contrat de continuité.
+Règles transverses du dépôt : architecture documentaire, collaboration, architecture logicielle, publication, statuts, contrôles, et état courant du contrat de continuité.
 
 ### `docs/model/`
 
@@ -73,7 +76,9 @@ Propositions temporaires non gelées. Après validation, leur contenu est migré
 
 ## 4. Hiérarchie des sources
 
-En cas de divergence :
+Les documents de gouvernance ont autorité sur les règles transverses relevant explicitement de leur domaine, notamment collaboration, architecture documentaire et architecture logicielle.
+
+À l'intérieur du contenu scientifique ou expérimental, en cas de divergence :
 
 1. décision gelée la plus récente ;
 2. manifeste pré-enregistré pour les valeurs propres à une campagne ou une expérience ;
@@ -83,6 +88,8 @@ En cas de divergence :
 6. schéma de données ;
 7. index et README ;
 8. document exploratoire.
+
+Une conception d'implémentation applique à la fois la spécification scientifique et les gouvernances transverses. Elle ne peut déroger implicitement à une gouvernance gelée plus récente.
 
 Cette hiérarchie sert à résoudre temporairement la divergence ; la contradiction doit ensuite être corrigée.
 
@@ -116,6 +123,8 @@ Toute modification de sens exige :
 
 Une correction éditoriale sans changement de sens ne nécessite pas de décision.
 
+Une gouvernance transverse nouvellement gelée peut rendre nécessaire la remise en cohérence d'un document d'implémentation antérieur. Cette remise en cohérence est traitée dans le lot suivant applicable et ne modifie pas implicitement la physique gelée.
+
 ## 8. Compatibilité des anciens chemins
 
 Lors d'une migration, un ancien chemin peut être conservé temporairement comme fichier de redirection marqué `supersédé`.
@@ -143,13 +152,17 @@ Un succès d'API Git ou une mise à jour de référence ne prouve pas à lui seu
 
 ## 10. État actuel des sources canoniques
 
-L'arborescence réelle est alignée avec la cible du §2. Les sources canoniques sont :
+Les sources canoniques sont :
 
 ```text
 README.md
-docs/model/c-hypothesis.md                       — gelé conceptuellement
-docs/toy-models/toy0/specification.md             — gelé conceptuellement
-docs/toy-models/toy0/implementation-design.md     — gelé, implémentation non démarrée
+docs/governance/collaboration-governance.md          — gelé
+docs/governance/documentation-governance.md          — gelé
+docs/governance/software-architecture-governance.md  — gelé
+docs/governance/current-task.md                      — état courant
+docs/model/c-hypothesis.md                           — gelé conceptuellement
+docs/toy-models/toy0/specification.md                — gelé conceptuellement
+docs/toy-models/toy0/implementation-design.md        — gelé fonctionnellement ; architecture à réauditer sous la gouvernance logicielle
 ```
 
 Aucun ancien chemin (`docs/C-HYPOTHESIS.md`, `docs/TOY-MODEL-0.md`, `docs/IMPLEMENTATION-0A.md`) n'est conservé comme fichier de compatibilité au sens du §8 : ces documents n'avaient encore aucune référence externe active, la migration s'est donc faite par renommage direct plutôt que par redirection temporaire.
