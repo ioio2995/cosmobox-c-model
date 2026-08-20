@@ -195,29 +195,56 @@ SCIENTIFIC_METADATA = {
 }
 ```
 
-Pour une construction scientifique propre au projet, les champs `origin_model` et `normative_reference` deviennent obligatoires.
+Le champ `status` prend exactement l'une des deux valeurs suivantes :
 
-Exemple :
-
-```python
-SCIENTIFIC_METADATA = {
-    "status": "experimental",
-    "origin_model": "model3b",
-    "normative_reference":
-        "docs/toy-models/model3b/specification.md#...",
+```text
+SCIENTIFIC_METADATA.status ∈ {
+    "established",
+    "project-defined",
 }
 ```
 
-Pour une primitive numérique ou une construction physique établie, `origin_model` peut être `None`.
+Cette taxonomie est volontairement minimale et fermée. Aucune autre valeur n'est autorisée ; aucune troisième catégorie n'est créée localement dans le code sans passer par §23.
 
-Le vocabulaire des statuts doit rester compatible avec la gouvernance documentaire ; aucune taxonomie scientifique concurrente ne doit être créée localement dans le code.
+**`established`**
+
+Construction mathématique, numérique ou physique qui ne constitue pas une proposition scientifique propre au projet Cosmobox C Model.
+
+```python
+SCIENTIFIC_METADATA = {
+    "status": "established",
+    "origin_model": None,
+    "normative_reference": None,
+}
+```
+
+`origin_model` et `normative_reference` peuvent rester à `None`.
+
+**`project-defined`**
+
+Construction scientifique introduite par Cosmobox C Model et dont la définition ou le statut doit rester traçable vers une source normative du projet. `origin_model` et `normative_reference` sont alors obligatoires.
+
+```python
+SCIENTIFIC_METADATA = {
+    "status": "project-defined",
+    "origin_model": "modelXX",
+    "normative_reference":
+        "docs/toy-models/modelXX/specification.md#...",
+}
+```
+
+Le placement dans `core` reste indépendant du statut scientifique : une brique `project-defined` ne devient pas scientifiquement établie du seul fait de son placement dans `core` (§5).
+
+Inversement, une procédure numérique ou mathématique générale (par exemple : décomposition en valeurs singulières, calcul de rang, de noyau ou de conditionnement) reste `established` même lorsqu'elle est utilisée au service d'un protocole scientifique propre au projet. C'est l'usage protocolaire — porté par le modèle qui assemble et pré-enregistre ses propres seuils et observables — qui peut être `project-defined`, pas la méthode générique elle-même.
+
+Cette métadonnée code porte seulement une classification minimale de provenance scientifique. Elle ne duplique pas le statut scientifique détaillé porté par la documentation normative applicable (spécification, décision, contrat d'implémentation) — voir §15.
 
 ### 5.2 Vérification automatique
 
 Un test sous `tests/architecture/` vérifie au minimum :
 
 - la présence de `SCIENTIFIC_METADATA` pour les modules publics de `core` ;
-- la validité du champ `status` ;
+- la validité du champ `status` au regard du vocabulaire fermé défini au §5.1 (`established`, `project-defined`) ;
 - la présence de `origin_model` et `normative_reference` lorsque le statut l’exige ;
 - l’existence réelle du fichier pointé par `normative_reference` ;
 - lorsqu’une ancre de section est présente, l’existence d’un titre correspondant dans le document référencé.
@@ -560,12 +587,13 @@ déterminé par la documentation normative applicable
 Il est donc possible d’avoir :
 
 ```text
-location           = core
-origin_model       = modelXX
-scientific_status  = hypothèse / expérimental / autre statut applicable
+location                      = core
+SCIENTIFIC_METADATA.status    = project-defined
+origin_model                  = modelXX
+statut scientifique détaillé  = déterminé par la documentation normative applicable
 ```
 
-sans contradiction.
+sans contradiction. Le champ `SCIENTIFIC_METADATA.status` (§5.1) ne porte que la classification minimale de provenance (`established` ou `project-defined`) ; le statut scientifique détaillé d’une construction — hypothèse, expérimental, validé, ou tout autre qualificatif porté par sa documentation normative — reste de la responsabilité exclusive de cette documentation et n’est jamais dupliqué dans le code.
 
 Aucune conclusion scientifique ne doit être inférée du seul emplacement d’un module dans l’arborescence.
 
