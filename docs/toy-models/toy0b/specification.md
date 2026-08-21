@@ -1,88 +1,88 @@
-# Toy Model 0B — spécification scientifique
+# Toy Model 0B — spécification scientifique consolidée
 
-Statut : **revue en cours**  
+Statut : **revue de clôture pré-gel**  
 Projet : `ioio2995/cosmobox-c-model`  
 Branche documentaire : `documentation/model0b-foundation`  
 Base canonique : `master @ 08d5ca506ff05e15dd9bc084ea121c3d0a19b662`
 
-Ce document fixe la source scientifique principale du Toy Model 0B. Il distingue explicitement les éléments déjà **validés pour gel**, les résultats pilotes connus avant pré-enregistrement et les paramètres qui restent ouverts. Aucun contenu de ce document ne vaut autorisation d'implémentation tant que `docs/governance/current-task.md` ne l'autorise pas explicitement.
+Ce document est la source scientifique principale consolidée du Toy Model 0B. Les documents spécialisés du même dossier conservent les démonstrations et qualifications détaillées ; ils ne doivent plus être chargés systématiquement dans les prompts lorsque le présent document suffit.
+
+Aucun contenu de ce document n'autorise l'implémentation 0B tant que `docs/governance/current-task.md` ne l'autorise pas explicitement.
 
 ---
 
-## 1. Statut des blocs
+## 1. Statut du modèle
 
 ```text
-MODEL0B_SYSTEM_AND_GAUSS       = VALIDÉ POUR GEL
-MODEL0B_TRUNCATION             = VALIDÉ POUR GEL
-MODEL0B_STATIC_OBSERVABLES     = VALIDÉ POUR GEL
-MODEL0B_STATIC_IDENTIFIABILITY = VALIDÉ POUR GEL
-MODEL0B_SYMMETRIES             = VALIDÉ POUR GEL
-MODEL0B_NULL_ORACLES           = VALIDÉ POUR GEL
-MODEL0B_KUBO_PROBE             = VALIDÉ POUR GEL
-MODEL0B_PRIMARY_SIGNAL_DELTA1  = VALIDÉ POUR GEL
+MODEL0B_SYSTEM_AND_GAUSS           = VALIDÉ POUR GEL
+MODEL0B_TRUNCATION_STRUCTURE       = VALIDÉ POUR GEL
+MODEL0B_STATIC_OBSERVABLES         = VALIDÉ POUR GEL
+MODEL0B_STATIC_IDENTIFIABILITY     = VALIDÉ POUR GEL
+MODEL0B_DECLARED_SYMMETRIES        = VALIDÉ POUR GEL
+MODEL0B_NULL_ORACLES               = VALIDÉ POUR GEL
+MODEL0B_KUBO_PROBE                 = VALIDÉ POUR GEL
+MODEL0B_PRIMARY_SIGNAL_DELTA1      = VALIDÉ POUR GEL
+MODEL0B_PATH_GRADING               = VALIDÉ POUR GEL
+MODEL0B_PATH_PURITY_STRUCTURE      = VALIDÉ POUR GEL
+MODEL0B_RECURRENCE_STRUCTURE       = VALIDÉ POUR GEL
+MODEL0B_SHORT_TIME_STRUCTURE       = VALIDÉ POUR GEL
+MODEL0B_SPECTRAL_TIME_STRUCTURE    = VALIDÉ POUR GEL EN PRINCIPE
+MODEL0B_SOFT_LOOP_STRUCTURE        = VALIDÉ POUR GEL
+MODEL0B_PARAMETER_CAMPAIGN_SHAPE   = VALIDÉ POUR GEL
 
-MODEL0B_TIME_WINDOW_PROTOCOL   = OUVERT
-MODEL0B_GAMMA_SET              = OUVERT
-MODEL0B_TIME_SAMPLING          = OUVERT
-MODEL0B_NUMERICAL_TOLERANCES   = OUVERT
-MODEL0B_PARAMETER_CAMPAIGN     = OUVERT
-
-IMPLEMENTATION_0B              = NON AUTORISÉE
+MODEL0B_NUMERICAL_CONTROL_VALUES   = OUVERT
+MODEL0B_FINAL_ACCEPTANCE_RULES     = OUVERT
+IMPLEMENTATION_0B                  = NON AUTORISÉE
 ```
 
-Le statut `VALIDÉ POUR GEL` signifie que le contenu conceptuel correspondant a été suffisamment stabilisé pour être proposé au gel. Le statut `gelé` ne sera attribué qu'après validation explicite de Lionel ORCIL et publication du paquet documentaire correspondant.
+`VALIDÉ POUR GEL` signifie que le contenu conceptuel peut être soumis au gel. Seule une validation explicite de Lionel ORCIL permettra de passer à `FROZEN`.
+
+Principe de clôture : le challenge scientifique reste permanent, mais un bloc stabilisé n'est rouvert que par une contradiction, une erreur, une impossibilité d'exécution ou un défaut susceptible d'affecter un verdict scientifique. Les améliorations non nécessaires à la validité de 0B sont différées au backlog.
 
 ---
 
-## 2. Rôle scientifique de 0B
+## 2. Rôle scientifique et limites
 
-0A a validé l'instrument numérique d'identifiabilité sur un benchmark analytique, sans fournir de degré de liberté physique autonome du champ de jauge.
+0A a validé l'instrument numérique d'identifiabilité sur un benchmark analytique. 0B introduit pour la première fois un degré cyclique non fixé par Gauss et cherche à tester sa visibilité statique et dynamique avec des observables invariantes de jauge.
 
-0B est le premier modèle exploratoire destiné à contenir simultanément :
+0B ne prétend pas démontrer :
 
-- un degré de liberté cyclique non fixé par Gauss ;
-- des observables locales et relationnelles invariantes de jauge ;
-- des symétries exactes suffisamment riches pour fournir des oracles nuls ;
-- une sonde dynamique de réponse retardée source-récepteur ;
-- une comparaison relative de temps caractéristiques qui ne doit jamais être confondue avec une vitesse fondamentale.
+- que `C` est une grandeur fondamentale ;
+- que `C_eff` est une vitesse locale fondamentale ;
+- qu'une métrique ou un continuum relativiste a émergé ;
+- que le groupe discret déclaré épuise toutes les symétries possibles ;
+- qu'un système à six sites décrit un front macroscopique ;
+- que `Lambda=2` est universellement convergé.
 
-0B ne cherche pas à effectuer une tomographie complète de l'état quantique. La question d'identifiabilité est restreinte aux directions physiques effectivement utilisées par le protocole suivant.
+Un signal `Delta1 != 0` est seulement un signal relationnel non uniforme, relatif au protocole, au groupe déclaré, au fond et à la troncature.
 
 ---
 
-## 3. Système principal
+## 3. Système physique et loi de Gauss
 
-On considère un cycle orienté à six nœuds :
+Cycle orienté :
 
 ```text
 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
 ```
 
-Les occupations de matière sont :
+Matière :
 
 ```math
-n_i\in\{0,1\}.
-```
-
-Le fond alterné est :
-
-```math
+n_i\in\{0,1\},
+\qquad
 b=(0,1,0,1,0,1),
-```
-
-et :
-
-```math
+\qquad
 q_i=n_i-b_i.
 ```
 
-Les liens portent un champ électrique tronqué :
+Liens :
 
 ```math
-E_i\in\{-\Lambda,\ldots,+\Lambda\},
+E_i\in\{-\Lambda,\ldots,+\Lambda\}.
 ```
 
-avec un opérateur de montée tronqué :
+Shift tronqué :
 
 ```math
 U_i|E\rangle=
@@ -92,297 +92,169 @@ U_i|E\rangle=
 \end{cases}
 ```
 
-`U_i` est une isométrie partielle tronquée, jamais une unité de phase exacte.
+`U_i` est un shift partiel tronqué, pas une phase unitaire exacte.
 
-Le régime scientifique de référence est :
-
-```text
-Λ_ref = 2
-```
-
-et le contrôle principal de troncature :
-
-```text
-Λ_check = 3
-```
-
-Le régime `Λ = 1` est rétrogradé en fixture / régime pilote fortement tronqué.
-
----
-
-## 4. Loi de Gauss et secteur physique
-
-Avec l'orientation ci-dessus :
+Gauss :
 
 ```math
 G_i=E_i-E_{i-1}-q_i,
+\qquad
+\mathcal H_{phys}=\bigcap_i\ker G_i.
 ```
 
-avec indices modulo 6.
-
-Le secteur physique est :
+La somme impose :
 
 ```math
-\mathcal H_{\rm phys}=\bigcap_i\ker G_i.
-```
-
-La somme des contraintes impose :
-
-```math
-\sum_i q_i=0
-\quad\Longrightarrow\quad
 \sum_i n_i=3.
 ```
 
-Il existe donc exactement :
+Pour une configuration de matière `n`, toutes les solutions sont :
 
 ```math
-\binom{6}{3}=20
+E_j=e+s_j(n).
 ```
 
-configurations de matière candidates.
-
-Pour une configuration de matière `m`, choisir un flux initial `e` détermine tous les autres flux par Gauss :
+Avec :
 
 ```math
-E_j=e+s_j(m).
+spread(n)=\max_j s_j(n)-\min_j s_j(n),
 ```
 
-On définit :
+le nombre de valeurs admissibles de `e` est :
 
 ```math
-\operatorname{spread}(m)
-=\max_j s_j(m)-\min_j s_j(m).
+\#\mathcal E_n
+=\max(0,2\Lambda+1-spread(n)).
 ```
 
-L'admissibilité sous la troncature donne exactement :
+Distribution exacte sur les 20 configurations à trois fermions :
 
-```math
-\#\mathcal E_m
-=
-\max\!\left(
-0,
-2\Lambda+1-\operatorname{spread}(m)
-\right).
-```
-
-Pour les 20 configurations de matière du 6-cycle :
-
-| `spread(m)` | nombre de configurations |
+| `spread` | nombre |
 |---:|---:|
 | 0 | 1 |
 | 1 | 16 |
 | 2 | 3 |
 
-L'unique configuration de spread nul est :
-
-```math
-n=b=(0,1,0,1,0,1).
-```
-
-Elle possède la plus grande largeur admissible du zéro-mode de flux :
-
-```math
-\#\mathcal E_b=2\Lambda+1.
-```
-
-Corollaire :
-
-```math
-\boxed{\dim\mathcal H_{\rm phys}(\Lambda)=40\Lambda-2}
-```
-
-pour `Λ >= 1`.
-
 Donc :
 
+```math
+\boxed{\dim\mathcal H_{phys}(\Lambda)=40\Lambda-2}
+```
+
+pour `Lambda>=1`.
+
 ```text
-Λ = 1 -> dim H_phys = 38
-Λ = 2 -> dim H_phys = 78
-Λ = 3 -> dim H_phys = 118
+Lambda=1 -> 38
+Lambda=2 -> 78
+Lambda=3 -> 118
 ```
 
-L'identité :
+Le secteur scientifique principal est `Lambda=2`; `Lambda=3` est le contrôle de troncature ; `Lambda=1` est un régime pilote/régression.
 
-```math
-\dim \mathcal H_{\rm interior}(\Lambda)
-=
-\dim \mathcal H_{\rm phys}(\Lambda-1)
-```
-
-est une conséquence de définition : être strictement intérieur à `±Λ` équivaut à satisfaire la borne `Λ-1`.
+Construction nominale : construire directement la base physique par Gauss, sans espace total dense.
 
 ---
 
-## 5. Construction du secteur physique
+## 4. Hamiltonien et état canonique
 
-La construction nominale ne doit pas bâtir une matrice dense sur tout :
-
-```math
-\dim\mathcal H_{\rm tot}=2^6(2\Lambda+1)^6.
-```
-
-Elle doit exploiter directement Gauss :
-
-1. énumérer les 20 configurations de matière avec trois fermions ;
-2. énumérer les `2Λ+1` valeurs possibles du flux initial ;
-3. reconstruire les six `E_i` par Gauss ;
-4. rejeter les configurations qui sortent de `[-Λ,+Λ]` ;
-5. construire les opérateurs directement dans la base physique obtenue.
-
-Cette récursion est spécifique à l'assemblage cyclique de 0B ; sa localisation logicielle future relève donc du modèle et non d'une brique générique de `core` sauf décision architecturale ultérieure explicitement justifiée.
-
-Le contrôle de l'invariance de jauge des règles d'action ne doit pas être abandonné : pour une transition non nulle :
-
-```math
-O|s\rangle=a|s'\rangle,
-```
-
-on peut vérifier sans matrice full-space que :
-
-```math
-g_i(s')=g_i(s)
-```
-
-pour toutes les contraintes de Gauss.
-
----
-
-## 6. Hamiltonien de référence et famille de fonds
-
-On fixe l'unité d'énergie par :
+Unité d'énergie :
 
 ```math
 J\equiv1.
 ```
 
-Le Hamiltonien familial est :
+On définit :
 
 ```math
-H(g,\mu,\delta)
-=
-g\sum_iE_i^2
--
-\sum_i
-\left(
-c_i^\dagger U_i c_{i+1}
-+
- c_{i+1}^\dagger U_i^\dagger c_i
-\right)
-+
-2\mu N_{\rm even}
-+
-g\delta\sum_i(-1)^iE_i^2,
+h_i=c_i^\dagger U_i c_{i+1},
+\qquad
+X_i=h_i+h_i^\dagger,
 ```
-
-avec :
 
 ```math
-N_{\rm even}=n_0+n_2+n_4.
+N_{even}=n_0+n_2+n_4,
 ```
-
-Le point de référence est :
 
 ```math
-(g_{\rm ref},\mu_{\rm ref},\delta_{\rm ref})=(1,0,0).
+V_\delta=\sum_i(-1)^iE_i^2.
 ```
 
-Le paramètre `g` compare l'énergie électrique au hopping. `μ` module le potentiel relatif des deux sous-réseaux. `δ` module de façon alternée l'énergie électrique des liens.
-
-La direction de rééchelonnement global :
-
-```math
-H\mapsto sH
-```
-
-est exclue de la famille scientifique. Elle est conservée uniquement comme contrôle nul / oracle de rééchelonnement.
-
-Le terme alterné de matière n'appartient pas au Hamiltonien nominal :
-
-```math
-\lambda_m=0
-```
-
-au point de référence afin de ne pas favoriser artificiellement `n=b`, qui est précisément la configuration possédant la plus grande largeur admissible du zéro-mode de flux.
-
----
-
-## 7. État de référence
-
-Si le fondamental est non dégénéré :
-
-```math
-\rho_{\rm ref}=|\Omega\rangle\langle\Omega|.
-```
-
-S'il est dégénéré :
+Hamiltonien :
 
 ```math
 \boxed{
-\rho_{\rm ref}
-=
-\frac{P_{\rm GS}}{\operatorname{Tr}P_{\rm GS}}
+H(g,\mu,\delta)
+=-\sum_iX_i
++g\sum_iE_i^2
++2\mu N_{even}
++g\delta V_\delta.
 }
 ```
 
-sur tout le sous-espace fondamental.
-
-Aucun vecteur particulier dans un sous-espace dégénéré ne doit être sélectionné après inspection des résultats.
-
-Le rapport doit publier :
+Point de référence :
 
 ```text
-d_GS
+(g_ref,mu_ref,delta_ref)=(1,0,0).
 ```
 
-et vérifier l'activité des générateurs avant toute analyse de réponse.
+Ne pas utiliser `V_stag` pour le terme électrique alterné : cette notation est réservée / historique et crée une collision avec les termes alternés de matière.
+
+Le rééchelonnement global `H -> sH` est exclu de la famille scientifique et conservé uniquement comme oracle de contrôle.
+
+État canonique :
+
+```math
+\rho=|\Omega\rangle\langle\Omega|
+```
+
+si le fondamental est unique, et :
+
+```math
+\boxed{
+\rho=P_{GS}/\operatorname{Tr}P_{GS}
+}
+```
+
+si le fondamental est dégénéré. Aucun vecteur particulier d'un multiplet ne peut être choisi après inspection.
+
+Le rapport doit publier `d_GS` et `gap_GS` à chaque point de campagne. Aucun seuil `NEAR_CROSSING` n'est utilisé comme veto scientifique.
 
 ---
 
-## 8. Degré cyclique et flux uniforme
+## 5. Degré cyclique, flux uniforme et shift de boucle
 
-Sur le secteur physique, Gauss fixe les différences de flux :
-
-```math
-E_i-E_{i-1}=q_i.
-```
-
-On définit le flux uniforme :
+Gauss fixe les différences de flux mais laisse un zéro-mode uniforme.
 
 ```math
 \Phi=\frac16\sum_iE_i.
 ```
 
-Pour une configuration de matière fixée, les solutions de Gauss forment une fibre affine :
+Pour une matière fixée :
 
 ```math
-E=E_{\rm part}(m)+\alpha(1,1,1,1,1,1).
+E=E_{part}(n)+\alpha(1,1,1,1,1,1).
 ```
 
-Avec une solution particulière de moyenne nulle, `α = Φ`.
-
-Le label d'énumération `e` est une autre coordonnée de la même fibre :
+Le label d'énumération `e` est seulement une coordonnée de cette fibre :
 
 ```math
-\Phi=e+c(m),
+\Phi=e+c(n).
 ```
-
-avec un offset dépendant de la matière `c(m)`. Il est donc interdit d'identifier naïvement `e` à une coordonnée plus fondamentale que `Φ`.
 
 Au niveau tangent :
 
 ```math
-D_i^{(E)}=-i[E_i,\rho_{\rm ref}],
+D_{n_i}=-i[n_i,\rho],
+\qquad
+D_{E_i}=-i[E_i,\rho],
+\qquad
+D_\Phi=-i[\Phi,\rho].
 ```
 
-```math
-D_i^{(n)}=-i[n_i,\rho_{\rm ref}].
-```
-
-Gauss impose :
+Gauss donne :
 
 ```math
-D_i^{(E)}-D_{i-1}^{(E)}=D_i^{(n)}.
+D_{n_i}=D_{E_i}-D_{E_{i-1}}.
 ```
 
 Donc :
@@ -390,55 +262,39 @@ Donc :
 ```math
 S_n\subseteq S_E,
 \qquad
-\dim S_n\le5,
+S_E=S_n+span\{D_\Phi\}.
+```
+
+Sur `delta=0`, les symétries exactes imposent :
+
+```math
+\boxed{D_\Phi\perp S_n}
+```
+
+pour toute la variété `(g,mu,0)` et pour l'état canonique pur ou dégénéré.
+
+Si `D_Phi` est actif :
+
+```math
+S_E=S_n\oplus_\perp span\{D_\Phi\}.
+```
+
+La proposition `dim S_E=6` sur toute la variété est rejetée. Les rangs doivent être recalculés à chaque point.
+
+Shift cyclique :
+
+```math
+L=U_0U_1U_2U_3U_4U_5,
 \qquad
-\dim S_E\le6.
-```
-
-Le degré cyclique intrinsèque est représenté par le quotient :
-
-```math
-\boxed{S_E/S_n}
-```
-
-plutôt que par une prétendue « direction de boucle pure » unique.
-
-`D_Φ = -i[Φ,ρ_ref]` est un représentant adapté aux symétries du zéro-mode de flux ; il peut contenir des composantes changeant la configuration de matière et ne doit pas être décrit comme vivant exclusivement dans les blocs à matière fixée.
-
----
-
-## 9. Shift cyclique et harmoniques
-
-On définit :
-
-```math
-L=U_0U_1U_2U_3U_4U_5.
-```
-
-`L` n'est pas une Wilson loop unitaire. C'est un shift cyclique tronqué du zéro-mode de flux.
-
-Il vérifie :
-
-```math
 [\Phi,L]=L.
 ```
 
-La famille harmonique déclarée est le **span linéaire** :
+Harmoniques déclarées :
 
 ```math
-\boxed{
 \mathscr H_\Lambda
-=
-\operatorname{span}_{\mathbb R}
-\left\{
-X_{L^k},Y_{L^k}
-\mid
-1\le k\le2\Lambda
-\right\}
-}
+=span_\mathbb R\{X_{L^k},Y_{L^k}\mid1\le k\le2\Lambda\},
 ```
-
-avec :
 
 ```math
 X_{L^k}=\frac{L^k+(L^\dagger)^k}{2},
@@ -448,1015 +304,810 @@ Y_{L^k}=\frac{L^k-(L^\dagger)^k}{2i}.
 
 Aucune fermeture algébrique implicite n'est autorisée.
 
-Sont explicitement hors famille :
+Oracle de rang : pour `j=2Lambda-k`,
 
 ```math
-f(\Phi)L^k,
-\qquad
-n_iL^k,
-\qquad
-P_mL^k.
-```
-
-Ces objets conditionnent ou croisent des secteurs distincts et constitueraient une nouvelle famille composite à pré-enregistrer séparément.
-
-La motivation des `L^k` est uniquement qu'ils forment les harmoniques naturelles de translation du zéro-mode tronqué ; ils ne sont pas introduits après observation d'un défaut de rang.
-
----
-
-## 10. Oracle analytique des rangs de `L^k`
-
-Pour :
-
-```math
-j=2\Lambda-k,
-```
-
-on a :
-
-```math
-\boxed{
 r_\Lambda(L^k)
-=
-\sum_m
-\max\left(
-0,
-j+1-\operatorname{spread}(m)
-\right)
-}
+=\sum_n\max(0,j+1-spread(n)).
 ```
 
-Le rang dépend donc de `j` seulement.
-
-| `j = 2Λ-k` | 0 | 1 | 2 | 3 | 4 | 5 |
+| `j` | 0 | 1 | 2 | 3 | 4 | 5 |
 |---:|---:|---:|---:|---:|---:|---:|
-| `rank(L^k)` | 1 | 18 | 38 | 58 | 78 | 98 |
-
-Corollaire :
-
-```math
-r_\Lambda(L^k)=r_{\Lambda-1}(L^{k-2})
-```
-
-lorsque les indices ont un sens.
-
-L'harmonique extrême vérifie :
-
-```math
-r_\Lambda(L^{2\Lambda})=1.
-```
-
-Elle ne sonde qu'une cohérence de la configuration `n=b`; toute conclusion portée exclusivement par cette harmonique doit donc être qualifiée de sectorielle et particulièrement sensible à la troncature.
+| rang | 1 | 18 | 38 | 58 | 78 | 98 |
 
 ---
 
-## 11. Familles de mesure statiques
+## 6. Familles de mesure et identifiabilité
 
-La stratification déclarée est :
-
-```math
-F_D
-\subset
-F_{\rm edge}
-\subset
-F_{\rm path}
-\subset
-F_{\rm loop}^{(1)}
-\subset
-F_{\rm loop}^{\rm harm}.
-```
-
-### `F_D`
+Stratification statique :
 
 ```math
-F_D=\{n_i,E_i\}_{i=0}^{5}.
+F_D\subset F_{edge}\subset F_{path}\subset F_{loop}^{(1)}\subset F_{loop}^{harm}.
 ```
-
-Ces observables diagonales locales de premier ordre ne constituent pas une tomographie des populations.
-
-En particulier :
-
-```math
-\dim(\text{diagonal traceless})=d^2_{\rm diagonal}-1=d_{\rm phys}-1,
-```
-
-alors que `F_D` ne contient qu'un nombre linéaire de fonctionnelles.
-
-### `F_edge`
-
-`F_D` plus les parties hermitiennes des transports gauge-dressed sur les arêtes.
-
-### `F_path`
-
-`F_edge` plus les transports ouverts associés aux arcs déclarés du cycle, notamment les deux arcs distincts pour les paires opposées.
-
-### `F_loop^(1)`
-
-`F_path` plus :
-
-```math
-X_L,Y_L.
-```
-
-Cette famille est conservée comme sous-famille diagnostique historique car elle a été utilisée dans les calculs pilotes `Λ=1`.
-
-### `F_loop^harm`
-
-`F_path` plus tout le span harmonique `H_Λ` défini en §9.
-
-La distinction :
-
-```math
-\operatorname{span}(F)\neq\operatorname{Alg}(F)
-```
-
-reste normative. On n'ajoute jamais implicitement des produits d'observables pour augmenter le rang.
-
----
-
-## 12. Résultats pilotes connus avant pré-enregistrement
-
-Les résultats suivants ont été calculés pendant l'étude de faisabilité **à `Λ=1` uniquement**. Ils ne constituent pas des résultats confirmatoires du régime de référence `Λ=2`.
 
 ```text
-PILOT_LAMBDA = 1
-N            = 6
-dim H_phys   = 38
-dim V        = 1443
-
-rank(F_D)          = 6
-rank(F_edge)       = 18
-rank(F_path)       = 36
-rank(F_loop^(1))   = 38
-rank(L)            = 18
+F_D            = {n_i,E_i}
+F_edge         = F_D + transports gauge-dressed d'arête
+F_path         = F_edge + transports ouverts déclarés
+F_loop^(1)     = F_path + {X_L,Y_L}
+F_loop^harm    = F_path + H_Lambda
 ```
 
-Le régime `Λ=2` est vierge de rangs globaux calculés pour :
+Toujours distinguer :
+
+```math
+span(F)\neq Alg(F).
+```
+
+Pilote `Lambda=1`, déjà vu avant pré-enregistrement :
 
 ```text
-F_D
-F_edge
-F_path
-F_loop^(1)
-F_loop^harm
+rank(F_D)        = 6
+rank(F_edge)     = 18
+rank(F_path)     = 36
+rank(F_loop^(1)) = 38
+rank(L)          = 18
 ```
 
-Les faits analytiques des §§4 et 10 ne sont pas des résultats prospectifs : ils doivent être traités comme oracles structurels.
+Ces nombres restent `PILOT_LAMBDA1`, jamais confirmatoires pour `Lambda=2`.
 
-L'inclusion :
+Pour une famille de paramètres déclarée, l'identifiabilité porte sur le sous-espace de réponse `S_resp`, pas sur toute l'algèbre des matrices.
+
+Gate 0 : un générateur `A` est `INACTIVE` si :
 
 ```math
-F_{\rm loop}^{(1)}\subset F_{\rm loop}^{\rm harm}
+[A,P_{GS}]=0.
 ```
 
-implique trivialement :
+Gate statique : tester :
 
 ```math
-r(F_{\rm loop}^{\rm harm})\ge r(F_{\rm loop}^{(1)}).
+S_{resp}\cap\ker\mathcal M_F.
 ```
 
-Cette inégalité ne doit jamais être présentée comme résultat scientifique.
+`STATIC PASS` implique `DYNAMIC PASS` car le span statique est inclus dans le Krylov.
+
+En cas de `STATIC FAIL`, tester le sous-espace de Krylov :
+
+```math
+\mathcal L_H(O)=i[H,O],
+```
+
+```math
+\mathscr W(F,H)=span\{F,\mathcal L_HF,\mathcal L_H^2F,\ldots\}.
+```
+
+`DYNAMIC PASS` autorise l'étude de la réponse temporelle ; il ne valide pas automatiquement `C_eff`.
 
 ---
 
-## 13. Identifiabilité ciblée
+## 7. Symétries déclarées et relations exactes
 
-Pour :
+Le groupe déclaré inclut les transformations unitaires / antiunitaires générées par `T`, `R`, `C` et `K`; il ne prétend pas être le groupe mathématique exhaustif de toutes les symétries possibles.
 
-```math
-\mathcal V=\{A=A^\dagger,\operatorname{Tr}A=0\},
-```
-
-une famille d'observables `F={O_μ}` définit :
-
-```math
-\mathcal M_F(A)
-=
-\left(
-\operatorname{Tr}(A\cdot O_1),\ldots,
-\operatorname{Tr}(A\cdot O_m)
-\right).
-```
-
-0B ne demande pas l'injectivité de `M_F` sur tout `V`.
-
-Pour une famille de paramètres physiques pré-déclarée `θ`, on définit les directions de réponse :
-
-```math
-D_a
-=
-\left.
-\frac{\partial\rho_\theta}{\partial\theta_a}
-\right|_{\theta=\theta_0}
-```
-
-lorsque cette dérivée est pertinente, puis :
-
-```math
-S_{\rm resp}=\operatorname{span}_{\mathbb R}\{D_a\}.
-```
-
-La question d'identifiabilité porte sur :
-
-```math
-S_{\rm resp}\cap\ker\mathcal M_F.
-```
-
-Le rapport d'un verdict doit toujours publier :
+Éléments utiles :
 
 ```text
-Λ
-H / paramètres de fond
-rho_ref
-générateurs / paramètres θ
-dim S_resp
-famille F
-groupe de transformations déclaré applicable
+T^2 : translation de deux sites, conserve le fond
+C   : particule-trou bipartite
+S   = T C, conserve le secteur physique à delta=0 et retourne delta dans la famille
+R   : réflexion j -> -j, retourne delta
+Q   = S R, symétrie exacte de H(g,mu,delta)
+K   : conjugaison complexe dans la base occupation-flux réelle
 ```
 
-Un PASS sur un petit sous-espace de réponse n'est jamais transférable à d'autres perturbations.
-
----
-
-## 14. Gate 0 — activité des générateurs
-
-Pour un kick unitaire généré par `A` autour d'une référence fondamentalement dégénérée :
+Covariance principale :
 
 ```math
-D_A
-=-i[A,\rho_{\rm ref}]
-=-\frac{i}{d_{\rm GS}}[A,P_{\rm GS}].
+R H(g,\mu,\delta)R^\dagger=H(g,\mu,-\delta).
 ```
-
-Si :
-
-```math
-[A,P_{\rm GS}]=0,
-```
-
-alors :
-
-```math
-e^{-i\epsilon A}\rho_{\rm ref}e^{+i\epsilon A}=\rho_{\rm ref}
-```
-
-pour tout `ε`.
-
-Le générateur est alors :
-
-```text
-GENERATOR_ACTIVITY = INACTIVE
-```
-
-et non `PASS`.
-
-Un sous-espace de réponse de dimension nulle ne produit jamais un verdict d'observabilité positif.
-
----
-
-## 15. Observabilité statique et dynamique
-
-On définit la super-opération :
-
-```math
-\mathcal L_H(O)=i[H,O]
-```
-
-et le sous-espace de Krylov d'observables :
-
-```math
-\mathscr W(F,H)
-=
-\operatorname{span}_{\mathbb R}
-\{O_\mu,\mathcal L_H(O_\mu),\mathcal L_H^2(O_\mu),\ldots\}
-```
-
-jusqu'à stabilisation du span.
-
-Comme :
-
-```math
-\operatorname{span}(F)\subseteq\mathscr W(F,H),
-```
-
-on a :
-
-```math
-\mathscr W(F,H)^\perp\subseteq\ker\mathcal M_F.
-```
-
-Donc :
-
-```math
-\boxed{
-S_{\rm resp}\cap\ker\mathcal M_F=\{0\}
-\Longrightarrow
-S_{\rm resp}\cap\mathscr W(F,H)^\perp=\{0\}
-}
-```
-
-Le test statique est donc **suffisant mais non nécessaire** pour l'observabilité dynamique.
-
-Pipeline :
-
-```text
-STATIC = PASS
-    -> DYNAMIC = PASS
-       aucun Krylov nécessaire
-
-STATIC = FAIL
-    -> statut dynamique inconnu
-       construire W(F,H)
-
-DYNAMIC = PASS
-    -> autorise l'étude de G_pq(t)
-       n'autorise pas C_eff
-```
-
-La condition d'invisibilité dynamique s'écrit sans ambiguïté :
-
-```math
-\operatorname{Tr}\!\left(D\cdot O_\mu(t)\right)=0.
-```
-
----
-
-## 16. Secteur collectif au point de référence
-
-Sous le stabilisateur complet du point `δ=0`, les occupations se réduisent collectivement à :
-
-```math
-N_{\rm even}=n_0+n_2+n_4,
-```
-
-car :
-
-```math
-N_{\rm even}+N_{\rm odd}=3.
-```
-
-Côté flux, le seul zéro-mode collectif non fixé par Gauss est `Φ`.
-
-Au point `δ=0`, la réflexion `R` est une symétrie de `H` et de `ρ_ref` :
-
-- `N_even` est pair ;
-- `Φ` est impair.
-
-Donc :
-
-```math
-\langle D_{\rm stag},D_\Phi\rangle_{\rm HS}=0.
-```
-
-Si les deux générateurs passent Gate 0 :
-
-```math
-\boxed{\dim S_{\rm resp}^{\rm collective}=2}
-```
-
-au point `δ=0`.
-
-Cette orthogonalité **n'est pas garantie pour `δ != 0`** et ne doit jamais être transportée le long de la campagne sans recalcul.
-
----
-
-## 17. Transformations discrètes déclarées
-
-La spécification distingue le groupe discret **pré-déclaré et explicitement énuméré** des transformations pertinentes du secteur physique ; elle ne prétend pas avoir démontré l'exhaustivité de toutes les symétries mathématiquement possibles.
-
-### 17.1 Translation de deux sites
-
-```math
-\mathcal T^2:i\mapsto i+2.
-```
-
-Elle préserve le fond alterné et le Hamiltonien familial.
-
-### 17.2 Particule-trou bipartite
-
-On choisit :
-
-```math
-\mathcal C c_i\mathcal C^\dagger=(-1)^ic_i^\dagger,
-```
-
-```math
-\mathcal C E_i\mathcal C^\dagger=-E_i,
-\qquad
-\mathcal C U_i\mathcal C^\dagger=U_i^\dagger.
-```
-
-Pour :
-
-```math
-h_i=c_i^\dagger U_ic_{i+1},
-```
-
-la phase bipartite donne :
-
-```math
-\mathcal C h_i\mathcal C^\dagger=h_i^\dagger.
-```
-
-Le hopping hermitien total est donc invariant.
-
-`C` envoie le fond `b` sur `1-b`.
-
-### 17.3 Transformation composée `S`
-
-On définit :
-
-```math
-\mathcal S=\mathcal T\mathcal C.
-```
-
-La translation d'un site ramène `1-b` sur `b`, donc `S` préserve le secteur physique.
-
-Le terme `2 μ N_even` est également invariant sous `S`.
-
-### 17.4 Réflexion unitaire exacte
-
-On choisit :
-
-```math
-r(j)=-j\pmod6.
-```
-
-La seconde quantification fermionique satisfait :
-
-```math
-\mathcal R_f c_j^\dagger\mathcal R_f^\dagger=c_{r(j)}^\dagger.
-```
-
-Dans le secteur `N_f=3`, le signe de réordonnancement Jordan-Wigner est le même pour tous les états et se réduit à une phase globale. Il ne produit aucune anomalie de bord.
-
-Sur les liens :
-
-```math
-\mathcal R E_i\mathcal R^\dagger=-E_{-i-1},
-```
-
-```math
-\mathcal R U_i\mathcal R^\dagger=U_{-i-1}^\dagger.
-```
-
-Le hopping total est invariant et :
-
-```math
-\boxed{
-\mathcal R H(g,\mu,\delta)\mathcal R^\dagger
-=
-H(g,\mu,-\delta)
-}
-```
-
-est une covariance unitaire exacte.
-
-### 17.5 Transformation `Q`
-
-On définit :
-
-```math
-\mathcal Q=\mathcal S\mathcal R.
-```
-
-`S` et `R` retournent tous deux `δ`, donc :
-
-```math
-\boxed{[\mathcal Q,H(g,\mu,\delta)]=0}
-```
-
-pour toute la famille.
 
 Sur les occupations :
 
 ```math
-\mathcal Q n_p\mathcal Q^\dagger
-=1-n_{\sigma(p)},
-\qquad
-\sigma(p)=1-p.
+Qn_pQ^\dagger=1-n_{1-p}.
 ```
 
-Le sous-groupe spatial pur résiduel à `δ != 0` est `C3=<T^2>`, mais le stabilisateur physique déclaré contient aussi `Q`; l'action générée par `T^2` et `Q` est de type diédral `D3` sur les relations.
+`K` impose :
+
+```math
+\chi_{pq}(-t)=-\chi_{pq}(t).
+```
+
+Stationnarité + `K` donnent :
+
+```math
+\boxed{\chi_{pq}(t)=\chi_{qp}(t)}.
+```
+
+Les relations source-récepteur sont donc traitées comme non orientées. L'ancien `ORDERED_RELATION_CONVENTION=OPEN` est clos.
+
+Classes d'arêtes :
+
+```text
+O1A = {(0,1),(2,3),(4,5)}
+O1B = {(0,5),(1,2),(3,4)}
+```
+
+Oracles exacts :
+
+```math
+\boxed{\Delta_1(g,\mu,0)=0}
+```
+
+```math
+\boxed{\Delta_1(g,\mu,-\delta)=-\Delta_1(g,\mu,+\delta)}
+```
+
+```math
+\boxed{\Delta_2(g,\mu,\delta)=0}
+```
+
+pour toute la famille.
 
 ---
 
-## 18. Règle de stabilisateur
+## 8. Sonde de Kubo et temps court
 
-Pour une famille `H(θ)`, chaque transformation déclarée `g` agit sur les paramètres par :
-
-```math
-U_gH(\theta)U_g^\dagger=H(g\cdot\theta).
-```
-
-Au point `θ`, on définit dans le groupe déclaré :
-
-```math
-\operatorname{Stab}_{\rm declared}(\theta)
-=
-\{g\mid g\cdot\theta=\theta\}.
-```
-
-Avant de déclarer un contraste comme signal, il faut calculer l'action de ce stabilisateur sur les relations comparées.
-
-Si une transformation du stabilisateur échange deux classes, leur contraste est un oracle nul et ne peut pas être utilisé comme signal.
-
-Un contraste non nul reste interprétable **relativement au groupe déclaré**. La découverte ultérieure d'une symétrie exacte omise peut réviser son interprétation.
-
----
-
-## 19. Sonde de propagation de Kubo
-
-Le protocole de propagation est distinct du protocole collectif de boucle.
-
-La source et le récepteur primaires sont strictement site-locaux :
-
-```math
-A_p=n_p,
-\qquad
-B_q=n_q.
-```
-
-Pour un fond physique `θ` :
+Pour un fond `theta=(g,mu,delta)` :
 
 ```math
 \chi_{pq}^{(\theta)}(t)
-=
-i\,\operatorname{Tr}
-\left[
-\rho_\theta
-[n_p,n_q^{(\theta)}(t)]
-\right],
+=iTr\left[\rho_\theta[n_p,n_q^{(\theta)}(t)]\right].
 ```
 
-avec :
-
 ```math
-n_q^{(\theta)}(t)
-=e^{iH_\theta t}n_qe^{-iH_\theta t}.
-```
-
-La fonctionnelle positive et lisse utilisée par les temps est :
-
-```math
-\boxed{
-\mathcal F_{pq}^{(\theta)}(t)
-=
-\frac{\chi_{pq}^{(\theta)}(t)^2}{4}
-}
-```
-
-et :
-
-```math
+\mathcal F_{pq}(t)=\chi_{pq}(t)^2/4,
+\qquad
 0\le\mathcal F\le1.
 ```
 
-Comme :
+Pour `p!=q` :
 
 ```math
-[n_p,n_q]=0
+\mathcal F_{pq}(0)=0.
 ```
 
-pour `p != q` :
+Le paramètre infinitésimal de Kubo est une sonde et ne doit jamais être confondu avec les paramètres physiques du fond.
+
+Convention opératorielle :
 
 ```math
-\boxed{\mathcal F_{pq}(0)=0.}
+ad_H(O)=[H,O],
+\qquad
+\mathcal L_H(O)=i[H,O].
 ```
 
-Le paramètre infinitésimal de Kubo `ε` utilisé conceptuellement pour définir la réponse locale est une **sonde**, et ne doit jamais être confondu avec les paramètres de fond `θ=(g,μ,δ,...)` comparés par `C_eff`.
+Développement :
+
+```math
+n_q(t)=\sum_{r\ge0}\frac{(it)^r}{r!}ad_H^r(n_q).
+```
+
+La symétrie `K` impose que `chi` ne contienne que des puissances impaires.
+
+Règle bipartite :
+
+```text
+d pair   -> nombre impair d'insertions diagonales requis dans tout terme cible physique
+d impair -> nombre pair d'insertions diagonales ; zéro autorisé
+```
+
+Pour N=6 :
+
+```text
+d=1 -> nu=1 si l'arête est régulière
+d=2 -> premier ordre cible physique r=3
+d=3 -> premier ordre physique possible r=3
+pure hopping -> canal cible d=2 exactement inactif
+```
+
+Moments : pour un fondamental pur et `r>=1`,
+
+```math
+M_r^{pq}
+=-2\langle\Omega|n_p(H-E_0)^rn_q|\Omega\rangle
+=-2\langle\Omega|n_p ad_H^r(n_q)|\Omega\rangle.
+```
+
+La généralisation canonique utilise la trace sur `P_GS/d_GS` ; le shell `omega=0` est traité séparément et ne contribue pas aux moments `r>=1`.
+
+Pour une arête `{p,q}={i,i+1}` :
+
+```math
+M_1^{pq}=J\langle X_i\rangle.
+```
+
+Pour `d(p,q)>=2` :
+
+```math
+M_1^{pq}=0.
+```
+
+Le premier moment impair non nul fixe `nu`. Une annulation flottante n'est exacte que si elle découle d'une règle structurelle démontrée ou d'un calcul exact / contrôle numérique préenregistré.
+
+Oracle court : si référence et état ont le même exposant `nu`,
+
+```math
+C_{short}^{pq}=|a_{state}/a_{ref}|^{1/\nu}.
+```
+
+Pour une arête régulière :
+
+```math
+\Delta_1^{short}(\delta)
+=\log\left|\frac{\langle X\rangle_{A,\delta}}{\langle X\rangle_{B,\delta}}\right|.
+```
+
+`Delta1_short` est un oracle algébrique, pas une mesure de propagation.
 
 ---
 
-## 20. Développement à temps court
+## 9. Représentation spectrale exacte
 
-On développe :
+Dans la base `K`-réelle, pour l'état canonique stationnaire :
 
 ```math
-n_q(t)
-=
-\sum_{r\ge0}
-\frac{(it)^r}{r!}
-\operatorname{ad}_H^r(n_q).
+\boxed{
+\chi_{pq}(t)=\sum_{\omega>0}C_{pq}(\omega)\sin(\omega t).
+}
 ```
 
-La localité de `H` impose :
+En cas de dégénérescence excitée, les poids doivent être groupés par projecteur spectral ; le nombre brut de vecteurs propres portant un coefficient non nul n'est pas invariant.
 
-```math
-[n_p,\operatorname{ad}_H^r(n_q)]=0
+Conséquences normatives :
+
+```text
+FINITE_DIFFERENCE_TIME_DERIVATIVE = REJECTED
+INTERPOLATION_AS_FINAL_ESTIMATOR   = REJECTED
+NUMERICAL_QUADRATURE_FOR_P_ALPHA   = NOT_NOMINAL
 ```
 
-pour tout ordre strictement inférieur à la portée minimale imposée par le graphe.
+Les dérivées sont obtenues analytiquement terme à terme.
 
-La distance de graphe fournit donc un **ordre minimal possible au niveau opérateur**, mais l'espérance dans un état peut annuler ce premier terme.
-
-On définit l'exposant d'état :
+Pour un canal sectoriel :
 
 ```math
-\nu_{pq}(\rho)
-=
-\min\{r\mid a_r(\rho)\neq0\},
+\chi_\alpha(t)=\sum_jC_{\alpha j}\sin(\omega_jt),
+```
+
+et :
+
+```math
+P_\alpha(\tau)=\int_0^\tau\chi_\alpha(t)^2dt
+```
+
+est évalué par les intégrales fermées de produits de sinus.
+
+---
+
+## 10. Temps caractéristiques et certification
+
+Définitions scientifiques sur :
+
+```math
+F(t)=\chi(t)^2/4.
+```
+
+Premier pic :
+
+```math
+T_{peak}=\inf\{t>0:F'(t)=0\text{ avec changement }+\to-\}.
+```
+
+Numériquement, le premier pic est cherché comme première racine **qualifiante** de :
+
+```math
+\chi'(t)=0.
+```
+
+Pour une racine non dégénérée :
+
+```math
+\chi(T_{peak})\chi''(T_{peak})<0.
+```
+
+Temps primaire :
+
+```math
+T_{grow}=\inf\operatorname*{argmax}_{0<t<T_{peak}}F'(t).
+```
+
+Candidats intérieurs :
+
+```math
+H_{grow}(t)=\chi'(t)^2+\chi(t)\chi''(t)=0.
+```
+
+Temps de seuil :
+
+```math
+T_{thr}(\eta)=\inf\{0<t<T_{peak}:F(t)=\eta,\ F'(t)>0\}.
+```
+
+Sur le premier lobe, avec signe `s` de `chi`, résoudre :
+
+```math
+\chi(t)-s\,2\sqrt\eta=0.
+```
+
+`T_down(eta)` est le premier croisement descendant du même niveau après `T_peak` dans le premier lobe.
+
+Une seule famille de raffinement :
+
+```math
+\mathcal B=\{\beta_1>\cdots>\beta_K>0\}.
+```
+
+Taille nominale d'une cellule :
+
+```math
+\Delta t_k^{event}
+=\beta_k\frac{\pi}{s_{event}\Omega_{scale}},
 ```
 
 avec :
 
-```math
-a_r(\rho)
-\propto
-\operatorname{Tr}
-\left[
-\rho
-[n_p,\operatorname{ad}_H^r(n_q)]
-\right].
+```text
+s_peak = 1
+s_thr  = 1
+s_down = 1
+s_grow = 2
 ```
 
-Une pente observée supérieure à la distance de graphe n'est pas automatiquement un bug ; elle peut provenir d'une annulation physique ou d'une symétrie.
+et par défaut une borne sûre :
 
-Pour les paires opposées (`d=3`), deux arcs minimaux de même longueur contribuent au même ordre. Une annulation du coefficient de premier ordre autorisé est préenregistrée comme possibilité d'**interférence sensible au secteur cyclique**. Aucun terme « Aharonov-Bohm » ne doit être utilisé sans preuve supplémentaire de dépendance au degré cyclique et de robustesse sous troncature.
+```math
+\Omega_{scale}=E_{max}-E_0.
+```
+
+Une fréquence active déterminée par un seuil numérique sur les coefficients n'est pas utilisée comme borne par défaut.
+
+La famille `beta_k` et les tolérances numériques restent ouvertes.
 
 ---
 
-## 21. Temps caractéristiques
+## 11. Multigraduation et interprétation de chemin
 
-### 21.1 Premier maximum de la réponse
-
-On définit le premier maximum de la première montée par :
+Les superopérateurs :
 
 ```math
-T_{\rm peak}
-=
-\inf\{t>0\mid
-\dot{\mathcal F}(t)=0
-\text{ avec changement }+\to-\}.
+\mathscr L_i(O)=[E_i,O]
 ```
 
-### 21.2 Temps de croissance
+commutent et définissent des projecteurs d'espace d'opérateurs `Pi_m` sur :
 
 ```math
-\boxed{
-T_{\rm grow}
-=
-\inf\operatorname*{arg\,max}_{0<t<T_{\rm peak}}
-\dot{\mathcal F}(t)
-}
+m=(m_0,...,m_5).
 ```
 
-`T_grow` est l'estimateur temporel primaire : il est sans seuil et porte sur une montée finie de la réponse.
-
-### 21.3 Temps de seuil
-
-Pour un seuil `η` :
+Pour une transition de matière :
 
 ```math
-T_{\rm thr}(\eta)
-=
-\inf\{0<t<T_{\rm peak}\mid
-\mathcal F(t)=\eta,
-\dot{\mathcal F}(t)>0\}.
+m_i-m_{i-1}=\Delta n_i.
 ```
 
-`η` n'est pas un paramètre physique privilégié. La courbe complète `C_eff^thr(η)` doit être publiée dans le domaine admissible.
-
-Les détails numériques de l'échantillonnage des courbes, de la grille de `η`, de la fenêtre temporelle et des tolérances restent ouverts dans `validation-plan.md`.
-
----
-
-## 22. Oracle de temps court
-
-Si :
+La fibre compatible est :
 
 ```math
-\chi_x(t)=a_xt^\nu+O(t^{\nu+1}),
+m=m_D+w\mathbf1.
 ```
 
-alors :
-
-```math
-\mathcal F_x(t)
-=
-\frac{a_x^2}{4}t^{2\nu}+\cdots.
-```
-
-Si :
-
-```math
-\nu_{\rm ref}=\nu_{\rm state}=\nu,
-```
-
-alors :
-
-```math
-\boxed{
-C_{\rm short}^{(pq)}
-=
-\left|
-\frac{a_{\rm state}}{a_{\rm ref}}
-\right|^{1/\nu}
-}
-```
-
-est calculable algébriquement sans effectuer l'évolution temporelle complète, et :
-
-```math
-\lim_{\eta\to0}
-C_{\rm eff}^{\rm thr}(\eta)
-=
-C_{\rm short}^{(pq)}.
-```
-
-`C_short` est un **oracle de court temps**, pas un temps d'arrivée ni une vitesse.
-
-Le contenu scientifique dynamique de la sonde seuil vit à `η` fini, après sortie du régime asymptotique de court temps et avant les récurrences.
-
-La quantité :
-
-```math
-D_{pq}^{\rm thr}(\eta)
-=
-\log
-\frac{C_{\rm eff}^{\rm thr}(\eta)}{C_{\rm short}^{(pq)}}
-```
-
-n'est définie que si les exposants de référence et d'état sont égaux et finis.
-
-Sinon :
+Pour `d<N/2` :
 
 ```text
-SHORT_TIME_COMPARISON = NOT_APPLICABLE
-D_thr                 = NOT_DEFINED
+TARGET_DIRECT          = transition ciblée, w=0
+TARGET_WINDING         = transition ciblée, w!=0
+NON_TARGET_TRANSITION  = autre transition de matière
+```
+
+Pour `d=3`, les deux arcs minimaux ont la même longueur ; aucune interprétation d'arrivée mono-arc n'est autorisée.
+
+Canal physique générique : paire adjointe `{m,-m}`. Le cas `m=0` est auto-conjugué et doit être compté une seule fois en algèbre générale.
+
+Dans le secteur physique 0B :
+
+```math
+n_i=b_i+E_i-E_{i-1}.
+```
+
+Les six flux déterminent donc entièrement la matière et les sous-espaces propres conjoints de tous les `E_i` sont unidimensionnels. Ainsi :
+
+```math
+[n_p,\Pi_0(O)]=0
+```
+
+pour tout `O`, donc :
+
+```text
+ZERO_GRADE_KUBO_CHANNEL      = INACTIVE_EXACT
+ZERO_GRADE_NON_TARGET_WEIGHT = ZERO_EXACT
+```
+
+Au niveau des moments sectoriels, il faut conserver le commutateur projeté :
+
+```math
+B_{m,r}^{pq}
+=Tr\left(\rho[n_p,\Pi_m ad_H^r(n_q)]\right).
+```
+
+Pour `m!=0` :
+
+```math
+B_{-m,r}=(-1)^{r+1}\overline{B_{m,r}}.
+```
+
+Dans la base réelle, les ordres pairs s'annulent canal par canal ; pour `r` impair :
+
+```math
+a_{r,[m]}^{pq}
+=\frac{2(-1)^{(r+1)/2}}{r!}B_{m,r}^{pq}.
 ```
 
 ---
 
-## 23. Sonde relative `C_eff`
+## 12. Pureté de chemin et garde de récurrence
 
-Pour une même paire `pq` :
+Pour chaque canal physique distinct `alpha` :
 
 ```math
-C_{\rm eff}^{(pq|\rm ref)}
-=
-\frac{T_{pq}^{\rm ref}}{T_{pq}^{\rm state}}.
+P_\alpha(\tau)=\int_0^\tau\chi_\alpha(t)^2dt.
 ```
 
-Deux estimateurs complémentaires sont conservés :
+Agrégats :
 
 ```math
-C_{\rm eff}^{\rm grow}
-=
-\frac{T_{\rm grow}^{\rm ref}}
-{T_{\rm grow}^{\rm state}},
+P_{sector}=P_{direct}+P_{winding}+P_{non-target}.
+```
+
+```math
+Purity_{direct}=P_{direct}/P_{sector}.
+```
+
+Cette pureté est un indice de composition sectorielle, pas une probabilité ni une décomposition additive de `chi^2`.
+
+Impureté :
+
+```math
+I(\tau)=1-Purity_{direct}(\tau),
+```
+
+```math
+I_{max}(\tau)=\sup_{0<s\le\tau}I(s).
+```
+
+`epsilon_path` est une famille de contrôle préenregistrée. Les valeurs restent ouvertes.
+
+La récurrence est contrôlée par l'autocorrélation locale connectée normalisée :
+
+```math
+C_j(t)
+=\frac{Re\,Tr[\rho\,\delta n_j(t)\delta n_j]}
+{Tr[\rho(\delta n_j)^2]}.
+```
+
+Sites normatifs : source `p` et récepteur `q`; les sites intermédiaires sont diagnostiques seulement.
+
+La famille de récurrence est hystérétique `Gamma`; ses valeurs numériques restent ouvertes.
+
+Un événement temporel est interprétable comme arrivée propre seulement si :
+
+```text
+PATH_CONTROL_ACCEPTABLE
+AND RECURRENCE_CONTROL_ACCEPTABLE
+```
+
+sur les familles de contrôle préenregistrées.
+
+---
+
+## 13. Sonde relative et contrastes
+
+Pour une même paire :
+
+```math
+C_{eff}^{grow}
+=\frac{T_{grow}^{ref}}{T_{grow}^{state}},
+```
+
+```math
+C_{eff}^{thr}(\eta)
+=\frac{T_{thr}^{ref}(\eta)}{T_{thr}^{state}(\eta)}.
+```
+
+Ces deux estimateurs ne sont pas forcés à être égaux. Leur règle finale de cohérence reste à préenregistrer.
+
+Le rééchelonnement `H_s=sH_ref` impose exactement :
+
+```math
+F_s(t)=F_{ref}(st),
 ```
 
 et :
 
 ```math
-C_{\rm eff}^{\rm thr}(\eta)
-=
-\frac{T_{\rm thr}^{\rm ref}(\eta)}
-{T_{\rm thr}^{\rm state}(\eta)}.
+C_{eff}^{grow}=C_{eff}^{thr}(\eta)=s.
 ```
 
-Ils ne doivent pas être égaux numériquement par construction. Leur cohérence porte sur l'interprétation et le classement des fonds, pas sur l'identité de leurs valeurs.
-
-Le mode uniforme :
-
-```math
-H\mapsto sH
-```
-
-implique exactement :
-
-```math
-C_{\rm eff}=s
-```
-
-pour toutes les paires. Il est conventionnel / trivial pour le contraste relationnel et sert d'oracle de contrôle.
-
----
-
-## 24. Contrastes inter-orbites
-
-Un changement uniforme de `C_eff` ne constitue pas le signal relationnel primaire.
-
-Pour deux orbites `O_α`, `O_β` :
+Contraste d'orbites :
 
 ```math
 \Delta_{\alpha\beta}
-=
-\log\frac{C_{\mathcal O_\alpha}}
-{C_{\mathcal O_\beta}}.
+=\log\frac{C_{O_\alpha}}{C_{O_\beta}}.
 ```
 
-Cette quantité élimine exactement le mode de rééchelonnement global.
-
-### 24.1 Signal primaire `Δ1`
-
-À `δ != 0`, les arêtes se séparent sous les translations de deux sites en deux classes non fusionnées par `Q` :
-
-```text
-O_1A = classe d'arêtes de type A
-O_1B = classe d'arêtes de type B
-```
-
-Les représentants canoniques et l'orientation source-récepteur exacte restent à fixer dans le protocole dynamique avant gel complet ; les classes non orientées correspondantes sont :
-
-```text
-{(0,1),(2,3),(4,5)}
-{(0,5),(1,2),(3,4)}
-```
-
-La réflexion échange les deux classes tout en envoyant `δ -> -δ`.
-
-On définit :
+Signal primaire :
 
 ```math
 \boxed{
-\Delta_1(\delta)
-=
-\log
-\frac{C_{\mathcal O_{1A}}(\delta)}
-{C_{\mathcal O_{1B}}(\delta)}
+\Delta_1
+=\log\frac{C_{O1A}}{C_{O1B}}.
 }
 ```
 
-avec les oracles :
+Oracle nul :
 
 ```math
-\boxed{\Delta_1(0)=0}
+\boxed{\Delta_2=0.}
 ```
 
-et :
+La susceptibilité :
 
 ```math
-\boxed{\Delta_1(-\delta)=-\Delta_1(\delta)}.
+\Xi_1
+=\left.\frac{\partial\Delta_1}{\partial\delta}\right|_{\delta=0}
 ```
 
-`Δ1(δ)` est l'observable primaire de la campagne. La susceptibilité :
-
-```math
-\Xi_1=
-\left.\frac{\partial\Delta_1}{\partial\delta}\right|_{\delta=0}
-```
-
-n'est qu'un diagnostic local lorsqu'elle existe. `Xi1 = 0` n'implique pas un FAIL car la première réponse autorisée peut être cubique ou d'ordre impair supérieur.
-
-### 24.2 Oracle nul `Δ2`
-
-`Q = S R` échange les deux classes de relations à distance 2 tout en préservant tout `H(g,μ,δ)`.
-
-Comme :
-
-```math
-\mathcal Qn_p\mathcal Q^\dagger
-=1-n_{\sigma(p)}
-```
-
-et :
-
-```math
-[1-n_a,1-n_b(t)]
-=[n_a,n_b(t)],
-```
-
-la réponse de Kubo est exactement préservée.
-
-Donc :
-
-```math
-\boxed{
-\Delta_2(g,\mu,\delta)=0
-}
-```
-
-pour toute la campagne.
-
-Toute valeur non nulle de `Δ2` au-delà des tolérances gelées est un défaut du pipeline, pas un signal.
-
-### 24.3 Paires opposées
-
-Les relations à distance 3 constituent un protocole secondaire d'interférence cyclique. Elles ne sont pas utilisées comme signal primaire et sont traitées séparément car les deux arcs minimaux de même longueur peuvent annuler le coefficient de court temps dans certains fonds.
+est secondaire et locale. `Xi1=0` n'est pas un FAIL automatique.
 
 ---
 
-## 25. Contrôle de troncature
+## 14. Campagne principale
 
-Deux appariements distincts sont gelés conceptuellement.
-
-### Appariement par `k`
-
-Même harmonique, espace élargi :
-
-```math
-L^k_{\Lambda=2}
-\leftrightarrow
-L^k_{\Lambda=3}.
-```
-
-C'est le contrôle de convergence principal.
-
-Le contrôle de `Λ=2` vers `Λ=3` utilise donc d'abord les mêmes indices :
+Campagne nominale :
 
 ```text
-k = 1,2,3,4
+g     = {0.25, 0.5, 1, 2}
+mu    = {-1, -0.75, -0.5, 0, +0.5, +1}
+delta = {0, 0.1, 0.2, 0.4, 0.6, 0.8}
 ```
 
-à la référence et au contrôle.
+Cette campagne mesure `Delta1` à brisure finie, souvent non linéaire. Elle ne doit pas servir à estimer `Xi1`.
 
-### Appariement par `j`
+Contrôles séparés :
 
-Même position relative au bord :
-
-```math
-j=2\Lambda-k=\text{constante}.
+```text
+g=0, mu=0    -> pure-hopping oracle
+g=0.10       -> stress faible-g hors nominal
+delta=0.9    -> qualification / stress hors nominal
 ```
 
-C'est un diagnostic de localisation au bord, pas un verdict de convergence.
-
-Les harmoniques nouvelles `k=5,6` présentes uniquement à `Λ=3` appartiennent à un diagnostic étendu et ne doivent pas être utilisées pour déclarer la convergence du protocole `Λ=2`.
-
-La convergence doit être examinée harmonique par harmonique ; un effet qui suit `j` plutôt que `k` lors du changement de troncature est un indice de verrouillage relatif au bord.
+La covariance `delta<->-delta` doit être exercée sur un sous-ensemble négatif préenregistré. Le sous-ensemble exact reste ouvert.
 
 ---
 
-## 26. Catégories de connaissance
+## 15. Qualification de troncature
 
-Les résultats doivent être étiquetés selon leur provenance.
+Les données de qualification déjà vues sont **non confirmatoires** et doivent être divulguées.
+
+La saturation :
+
+```math
+B_2=P(\max_i|E_i|=2)
+```
+
+est un indicateur de pression au bord, pas une erreur de troncature.
+
+Tendances de design déjà connues : faible `g` augmente fortement le stress ; `mu<0` est plus tendu ; `delta` est moins dominant aux points testés.
+
+Le résidu de Ritz de l'état `Lambda=2` plongé dans `Lambda=3` est un diagnostic de design plus direct du couplage aux états omis.
+
+Le contrôle scientifique `Lambda=2 -> 3` doit comparer les mêmes observables et les mêmes valeurs physiques des paramètres.
+
+Pour les harmoniques : appariement principal à `k` fixe ; appariement à `j=2Lambda-k` comme diagnostic relatif au bord.
+
+Le sous-ensemble exact des points de stress `Lambda=3` reste à préenregistrer.
+
+---
+
+## 16. Sous-campagne SOFT-LOOP
+
+Sous-campagne :
+
+```text
+g  = 1
+mu = {-1.25, -1.5, -2}
+```
+
+Elle vise le doublet cyclique mou et reste distincte de MAIN.
+
+À `mu<0` fort, la matière se concentre sur le sous-réseau pair et le doublet central de flux est relié par un processus de six hoppings.
+
+Structure analytique :
+
+```math
+\boxed{t_{loop}=O(J^6/|\mu|^5).}
+```
+
+Les données déjà vues montrant une pente vers `-5` sont de la qualification non confirmatoire.
+
+Modèle effectif :
+
+```math
+H_{eff}=E_cI+3g\delta\sigma_z+t_{loop}\sigma_x+\cdots.
+```
+
+Dans le doublet :
+
+```math
+2\Phi\to\sigma_z.
+```
+
+Avec :
+
+```math
+x=\frac{6g\delta}{gap_0},
+```
+
+les deux prédictions statiques sont :
+
+```math
+\frac{gap(\delta)}{gap_0}\simeq\sqrt{1+x^2},
+```
+
+```math
+2\langle\Phi\rangle\simeq-\frac{x}{\sqrt{1+x^2}}
+```
+
+à convention de signe près.
+
+Ces collapses constituent la porte statique de SOFT-LOOP et doivent être testés avant toute interprétation dynamique fondée sur `delta_c`.
+
+```math
+\delta_c=gap_0/(6g).
+```
+
+La dérivée utilise une famille sans dimension :
+
+```math
+h_k=\alpha_k\delta_c.
+```
+
+Les mêmes valeurs physiques `h_k`, générées à partir du gap `Lambda=2`, sont utilisées à `Lambda=3`.
+
+Pour une `Delta1` lisse et impaire :
+
+```math
+\widehat\Xi_1(\alpha)=\Xi_1+C_2\alpha^2+O(\alpha^4).
+```
+
+Pour une famille géométrique `alpha,alpha/2,alpha/4`, le rapport de convergence tend vers `4` lorsque le terme quadratique domine. Richardson peut être utilisé seulement selon une règle préenregistrée et sans masquer les valeurs brutes.
+
+`Delta1` n'est pas obligé de suivre une courbe universelle à deux niveaux ; un éventuel collapse dynamique est une hypothèse secondaire.
+
+---
+
+## 17. Catégories de connaissance
 
 ```text
 STRUCTURAL_ANALYTIC
-    relations de Gauss
-    distribution de spread
-    dim H_phys(Λ)
-    oracle rank(L^k)
-    transformations et covariances prouvées
-    oracles nuls de symétrie
-    implication STATIC PASS => DYNAMIC PASS
+    théorèmes et oracles connus avant exécution confirmatoire
 
 PILOT_LAMBDA1
-    calculs vus avant pré-enregistrement
-    uniquement dans le régime Λ=1
+    résultats historiques Lambda=1
+
+QUALIFICATION_NONCONFIRMATORY
+    données de design vues avant gel
 
 PREREGISTERED_REFERENCE
-    quantités non encore calculées à Λ=2
-    après gel du protocole
+    mesures Lambda=2 exécutées seulement après gel
 
 TRUNCATION_CONTROL
-    comparaison appariée Λ=2 -> 3
+    comparaison appariée Lambda=2 -> 3
 
 EXTENDED_DIAGNOSTIC
-    sondes nouvelles propres au régime de contrôle
-    hors verdict principal de convergence
+    contrôles hors verdict principal
 ```
 
-Un résultat pilote ne doit jamais être présenté comme confirmatoire. Un fait analytique connu ne doit jamais être présenté comme découverte numérique.
+Aucun résultat pilote ou de qualification ne doit être présenté comme confirmatoire.
 
 ---
 
-## 27. Questions encore ouvertes avant gel complet
+## 18. Paramètres réellement ouverts avant gel
 
-Les décisions suivantes restent explicitement ouvertes :
+### Contrôle temporel et précision
 
-1. convention exacte des relations **ordonnées** source-récepteur pour les orbites dynamiques `O_1A/O_1B` ;
-2. ensemble de niveaux `Γ` servant au diagnostic de récurrence de l'autocorrélation locale ;
-3. définition numérique finale de la fenêtre temporelle associée à `Γ` ;
-4. grille de `η` utilisée pour publier `C_eff^thr(η)` ;
-5. algorithme et tolérance de convergence vers l'oracle `C_short` ;
-6. résolution temporelle et stratégie d'interpolation / localisation des extrema ;
-7. tolérances numériques de toutes les identités et verdicts ;
-8. grille de campagne en `(g,μ,δ)` ;
-9. critère formel de cohérence de classement entre `C_eff^grow` et `C_eff^thr(η)` ;
-10. formulation finale de la fenêtre pré-récurrence et du statut `INCONCLUSIVE` associé.
+```text
+BETA_REFINEMENT_VALUES
+ROOT_SOLVER_TOLERANCES
+ARGMAX_TOLERANCES
+SPECTRAL_PRECISION_CONTROL
+DELTA1_PROPAGATED_ERROR_BUDGET
+```
 
-Aucune de ces valeurs ne doit être choisie après inspection des courbes scientifiques.
+### SOFT-LOOP
+
+```text
+STATIC_X_CONTROL_VALUES
+STATIC_COLLAPSE_NUMERICAL_CRITERION
+A_DELTA_VALUES
+DERIVATIVE_STABILITY_CRITERION
+RICHARDSON_USAGE_RULE
+```
+
+### Interprétation temporelle
+
+```text
+ETA_GRID_AND_ADMISSIBLE_DOMAIN
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
+EPS_PATH_CONTROL_DOMAIN_AND_GRID
+GAMMA_CONTROL_DOMAIN_AND_GRID
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
+```
+
+### Campagne / troncature
+
+```text
+NEGATIVE_DELTA_ORACLE_SUBSET
+TRUNCATION_STRESS_POINT_SUBSET
+TRUNCATION_COMPARISON_TOLERANCES
+```
+
+### Verdicts
+
+```text
+ESTIMATOR_COHERENCE_CRITERION
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+```
+
+Ne sont plus ouverts : orientation source-récepteur, grille MAIN `(g,mu,delta)`, choix interpolation vs solveur, différences finies temporelles, seuil `NEAR_CROSSING`, traitement du canal `m=0` et facteur de bande global des événements.
 
 ---
 
-## 28. Non-objectifs et limites
+## 19. Barrière vers l'implémentation
 
-0B ne démontre pas :
+Avant tout code 0B :
 
-- que `C` est une grandeur fondamentale ;
-- que `C_eff` est une vitesse locale ;
-- qu'une métrique a émergé ;
-- que les contrastes inter-orbites sont géométriques ;
-- que le continuum relativiste est obtenu ;
-- que le groupe discret déclaré épuise toutes les symétries possibles ;
-- qu'une sonde à six sites décrit un front macroscopique ;
-- que la troncature finie `Λ=2` est universellement convergée.
+1. faire l'audit critique read-only de clôture ;
+2. classer les objections en `BLOCKING`, `NON_BLOCKING_BACKLOG` ou `REJECTED` ;
+3. fermer en un lot les paramètres du §18 ;
+4. mettre `validation-plan.md` en cohérence avec cette spécification ;
+5. effectuer une revue finale de cohérence et de syntaxe ;
+6. obtenir la décision explicite de gel de Lionel ORCIL ;
+7. autoriser explicitement le lot d'audit / implémentation dans `current-task.md`.
 
-Un signal `Δ1 != 0` est uniquement un signal relationnel non uniforme, relatif au protocole, au groupe déclaré, à la troncature et à la famille de fonds correspondants.
+Claude Code conserve un rôle critique pendant l'implémentation. Une objection bloquante stoppe le lot et retourne à l'arbitrage ; une amélioration non nécessaire à la validité est différée.
 
 ---
 
-## 29. Barrière vers l'implémentation
+## 20. Supports analytiques détaillés
 
-Le présent document n'autorise aucun code.
+Les preuves et qualifications détaillées sont conservées notamment dans :
 
-Avant toute implémentation 0B, il faudra au minimum :
+```text
+symmetry-proof.md
+cyclic-tangent-orthogonality.md
+short-time-oracles.md
+sector-parity-selection.md
+d2-asymptotic-structure.md
+d2-free-hopping-oracle.md
+path-grading.md
+transition-fibers.md
+path-purity-control.md
+zero-grade-self-adjoint-sector.md
+recurrence-control.md
+recurrence-order-domain.md
+recurrence-site-scope.md
+exact-spectral-response.md
+operator-moment-oracles.md
+event-bandwidth-bracketing.md
+temporal-event-solver.md
+parameter-campaign-structure.md
+truncation-design-qualification.md
+negative-mu-soft-loop.md
+soft-loop-static-gate.md
+derivative-control.md
+derivative-error-budget.md
+```
 
-1. fermer les questions du §27 qui affectent les résultats ;
-2. mettre le document en `validé pour gel` global ;
-3. obtenir la validation explicite de Lionel ORCIL pour le gel ;
-4. disposer d'un `validation-plan.md` cohérent ;
-5. mettre à jour `docs/governance/current-task.md` pour autoriser explicitement l'audit Claude Code ;
-6. exécuter le cycle de collaboration normal : audit read-only, revue conceptuelle, autorisation d'implémentation, implémentation, revue distante, acceptation.
+Ces supports documentent les démonstrations ; le statut courant et les choix normatifs doivent rester cohérents avec le présent document et `validation-plan.md`.
