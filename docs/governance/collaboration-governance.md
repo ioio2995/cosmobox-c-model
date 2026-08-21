@@ -2,6 +2,8 @@
 
 Statut : **gelé**
 
+Amendement du 21 août 2026 : préflight d'exécution Claude Code, autorisé explicitement par Lionel ORCIL.
+
 Ce document fixe qui décide, qui produit, qui publie et qui valide dans le dépôt `cosmobox-c-model`.
 
 Il complète `docs/governance/documentation-governance.md`.
@@ -25,6 +27,8 @@ ChatGPT distingue toujours : proposé, gelé, implémenté, poussé et accepté.
 ### Claude Code
 
 Responsable de l'ingénierie : audit du dépôt, architecture interne, code, tests, documentation développeur directement liée au code, commit et push du lot sur la branche autorisée.
+
+Claude Code conserve également un rôle de challenge critique dans les lots scientifiques ou documentaires lorsqu'un mandat le prévoit. Ce droit de challenge n'autorise ni l'ouverture autonome d'une nouvelle branche de recherche ni la modification silencieuse d'une décision scientifique.
 
 Les documents de gouvernance transverse ne font pas partie du périmètre normal de Claude Code. Claude Code ne les modifie que sur demande explicite de Lionel dans un mandat qui l'autorise spécifiquement.
 
@@ -69,6 +73,27 @@ L'absence de message autonome après un `PASS` ne vaut jamais autorisation impli
 
 ## 4. Format d'une mission Claude Code
 
+Toute mission commence par un **bloc de préflight**, avant le contexte scientifique ou technique.
+
+Format minimal :
+
+```text
+EXECUTION_PROFILE
+CLIENT = CLAUDE_CODE_LOCAL
+MODEL = <modèle demandé>
+EFFORT = <niveau demandé>
+SESSION_CONTEXT = CLEAR_REQUIRED | CONTINUE_AUTHORIZED
+
+REPOSITORY_PREFLIGHT
+REPOSITORY = ioio2995/cosmobox-c-model
+REMOTE = https://github.com/ioio2995/cosmobox-c-model.git
+BRANCH = <branche autorisée>
+EXPECTED_HEAD = <SHA si requis, sinon ANY_ON_BRANCH>
+EXPECTED_WORKTREE = CLEAN | DIRTY_ALLOWED
+```
+
+Puis viennent :
+
 ```text
 Contexte
 Branche de travail autorisée
@@ -84,15 +109,90 @@ Critères d'acceptation
 Restrictions Git particulières
 ```
 
-La lecture commence toujours par :
+### 4.1 Préflight utilisateur de session
+
+Sauf continuité explicitement autorisée :
 
 ```text
-docs/governance/collaboration-governance.md
-docs/governance/documentation-governance.md
-docs/governance/software-architecture-governance.md
+SESSION_CONTEXT = CLEAR_REQUIRED
 ```
 
-Puis viennent `docs/governance/current-task.md` et les documents du périmètre concerné lorsque le mandat dépend de l'état courant du projet.
+Lionel initialise alors une session Claude Code propre avant d'envoyer le mandat, notamment via `/clear` lorsqu'une session existante est réutilisée.
+
+Le modèle et le niveau d'effort demandés sont réglés **avant** l'exécution du mandat. Ils ne sont jamais laissés implicites lorsqu'ils participent à la stratégie de coût ou de qualité du lot.
+
+Exemple :
+
+```text
+MODEL = CLAUDE_SONNET_5
+EFFORT = AUTO
+SESSION_CONTEXT = CLEAR_REQUIRED
+```
+
+Un mandat peut au contraire déclarer :
+
+```text
+SESSION_CONTEXT = CONTINUE_AUTHORIZED
+```
+
+uniquement lorsque la continuité du contexte courant est intentionnelle et utile au lot.
+
+### 4.2 Préflight dépôt
+
+Avant toute lecture substantielle ou modification, Claude Code vérifie dans une **seule étape de préflight regroupée autant que possible** :
+
+```text
+remote effectif
+branche courante / branche demandée
+HEAD courant
+état du worktree
+```
+
+Le mandat indique l'état attendu du worktree :
+
+```text
+EXPECTED_WORKTREE = CLEAN
+```
+
+pour un nouveau lot sans diff préalable, ou :
+
+```text
+EXPECTED_WORKTREE = DIRTY_ALLOWED
+```
+
+pour une tâche qui doit précisément examiner ou poursuivre un diff non commité déjà autorisé.
+
+`DIRTY_ALLOWED` ne signifie jamais que des modifications arbitraires peuvent être ignorées : le mandat doit identifier le diff ou les fichiers attendus lorsque leur présence importe.
+
+Si le dépôt, le remote, la branche, le HEAD requis ou l'état du worktree ne correspondent pas au préflight déclaré, Claude Code n'entame pas le lot et retourne :
+
+```text
+PREFLIGHT = FAILED
+```
+
+avec uniquement l'écart constaté et l'action minimale nécessaire pour revenir à l'état attendu.
+
+Claude Code ne substitue jamais un dépôt voisin, un ancien dépôt ou une branche ressemblante au dépôt explicitement déclaré.
+
+### 4.3 Discipline de contexte et de coût
+
+Le dépôt est la mémoire durable du projet. Un mandat ne reconstruit pas l'historique complet de Cosmobox dans le prompt.
+
+Par défaut :
+
+```text
+ONE_TASK = ONE_BOUNDED_SCOPE
+READ_ONLY_WHAT_IS_NEEDED = TRUE
+GLOBAL_AUDIT_BY_DEFAULT = FALSE
+```
+
+Les documents à lire et les fichiers autorisés sont bornés par le mandat. Claude Code n'élargit la lecture que si une contradiction bloquante ne peut pas être évaluée autrement.
+
+Le choix du modèle et de l'effort est proportionné au besoin : un modèle ou un effort supérieur est une **escalade explicite**, pas une valeur implicite pour les opérations mécaniques.
+
+La lecture commence toujours par les documents de gouvernance réellement nécessaires au mandat. Les missions bornées peuvent référencer cette charte au lieu de la relire intégralement lorsque son contenu est déjà disponible dans le contexte propre de projet et qu'aucune modification de gouvernance n'est en jeu.
+
+`docs/governance/current-task.md` et les documents du périmètre concerné sont ensuite utilisés lorsque le mandat dépend de l'état courant du projet.
 
 Une mission ne recopie pas les règles générales déjà définies dans cette charte. Elle les référence, indique explicitement la phase courante du cycle et ne précise que le contexte, le périmètre, les invariants et les restrictions propres au lot.
 
