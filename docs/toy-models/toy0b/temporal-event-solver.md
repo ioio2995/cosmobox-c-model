@@ -363,4 +363,216 @@ ARGMAX_TOLERANCES                      = OPEN
 SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
 DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
 SAME_NUMERICAL_RULES_ACROSS_CUTOFFS    = MANDATORY
+ROOT_SOLVER_TOLERANCES                = VALIDATED_FOR_FREEZE
+SPECTRAL_PRECISION_CONTROL            = VALIDATED_FOR_FREEZE
+SIMPLE_ROOT_CONTROL                   = VALIDATED_FOR_FREEZE
+```
+
+## 15. Backward gate
+
+```math
+E_{bar} = Tr(H)/d
+```
+
+```math
+H_s = \max(J, \|H-E_{bar} I\|_2), \quad J = 1
+```
+
+```math
+R = HV - V \Lambda
+```
+
+```math
+r_H = \|R\|_2 / H_s, \quad r_{orth} = \|V^\dagger V - I\|_2
+```
+
+Critères :
+
+```text
+r_H <= 1e-12
+r_orth <= 1e-12
+BACKWARD_ERROR_PASS != FORWARD_SPECTRAL_PASS
+```
+
+## 16. Clustering numérique
+
+```math
+\epsilon_H = H_s (r_H + r_{orth})
+```
+
+```math
+I_i = [E_i - \epsilon_H, E_i + \epsilon_H]
+```
+
+Frontière résolue si :
+
+```math
+E_{i+1} - E_i > 2 \epsilon_H
+```
+
+Les composantes de recouvrement définissent les clusters numériques.
+
+```text
+Cluster numérique != dégénérescence physique
+Aucune fréquence représentative
+```
+
+## 17. Stabilité des projecteurs
+
+```math
+P_C = \sum_{i \in C} |v_i\rangle\langle v_i|
+```
+
+```math
+d_P = \max_C \|P_C^{(2p)} - P_C^{(p)}\|_2
+```
+
+Critère :
+
+```text
+d_P <= 1e-10
+```
+
+Si un cluster basse précision se scinde, comparer avec la somme des projecteurs haute précision couvrant le même sous-espace.
+
+Échec d'appariement :
+
+```text
+SPECTRAL_CLUSTER_UNRESOLVED
+```
+
+## 18. Poids
+
+```math
+C_C^{(pq)} = -(2/d_{GS}) Tr(P_{GS} n_p P_C n_q)
+```
+
+```math
+d_C = \frac{\sum_C |C_C^{(2p)} - C_C^{(p)}|}{\max(1, \sum_C |C_C^{(2p)}|)}
+```
+
+Critère :
+
+```text
+d_C <= 1e-10
+```
+
+```text
+C_C est un diagnostic signé, pas une borne d'amplitude
+```
+
+## 19. Dynamique de cluster
+
+```math
+\chi_C^{(pq)}(t) = -(2/d_{GS}) Tr\left[ P_{GS} n_p P_C \sin((H-E_0 I)t) P_C n_q \right]
+```
+
+Verdict :
+
+```text
+CLUSTER_COLLAPSE_FOR_DYNAMICS = REJECTED
+```
+
+## 20. Précision
+
+Niveaux de précision :
+
+```text
+P0 = 53 bits
+P1 >= 106 bits
+P2 >= 212 bits
+```
+
+```math
+H^{(p)}``` doit être réassemblé directement à précision `p`.
+
+Règles de stabilité :
+
+```text
+P0/P1 stable -> PRECISION_STABLE
+sinon P2
+
+P1/P2 stable -> PRECISION_ESCALATED
+sinon -> PRECISION_UNRESOLVED
+```
+
+```text
+PRECISION_UNRESOLVED interdit un verdict confirmatoire dépendant
+```
+
+## 21. Coordonnée d'événement
+
+```math
+u_e = \frac{s_{event} \Omega_{safe} t}{\pi}
+```
+
+avec :
+
+```text
+s_peak = 1
+s_thr  = 1
+s_down = 1
+s_grow = 2
+Omega_safe = E_{max} - E_0
+```
+
+Pour comparer `p/2p`, utiliser le même `Omega_safe` haute précision.
+
+## 22. Solveur
+
+```text
+tau_root = 1e-12
+```
+
+```math
+w_u \le 2 \tau_{root} \max(1, |\hat{u}|)
+```
+
+```math
+\epsilon_{u,solver} = w_u / 2
+```
+
+## 23. Racine simple — erreur forward
+
+```math
+\epsilon_{g,spec}(t) = |g^{(2p)}(t) - g^{(p)}(t)|
+```
+
+```math
+\epsilon_{u,spec} = \frac{s_{event} \Omega_{safe}}{\pi} \frac{\epsilon_{g,spec}(t_*)}{|g'(t_*)|}
+```
+
+```text
+tau_event = 1e-10
+```
+
+Critères :
+
+```text
+epsilon_u_spec / max(1, |u_*|) <= 1e-10
+```
+
+et :
+
+```text
+|u_e^{(2p)} - u_e^{(p)}| / max(1, |u_e^{(2p)|}) <= 1e-10
+```
+
+Budget final :
+
+```math
+\epsilon_{u,solver} + \epsilon_{u,spec} \le 1e-10 \max(1, |u_*|)
+```
+
+Défaut de pente insuffisante :
+
+```text
+EVENT_CONDITIONING_UNRESOLVED
+```
+
+## 24. Limites
+
+```text
+DEGENERATE_ROOT_CONTROL = OPEN
+ARGMAX_TOLERANCES = OPEN
 ```

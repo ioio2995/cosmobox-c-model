@@ -1,9 +1,10 @@
 # Toy Model 0B — plan de validation consolidé
 
-Statut : **revue de clôture pré-gel**  
+Statut : **revue de clôture pré-gel**
 Spécification scientifique : `docs/toy-models/toy0b/specification.md`
+Contrôles numériques : `docs/toy-models/toy0b/temporal-event-solver.md` (sections 15-24)
 
-Ce document décrit le protocole de validation de 0B sous une forme compacte. Les preuves détaillées restent dans les supports analytiques du dossier `toy0b/`.
+Ce document décrit le protocole de validation de 0B sous une forme compacte. Les preuves détaillées restent dans les supports analytiques du dossier `toy0b/`. Les tolérances numériques spectrales et la règle de précision sont fixées dans le document normatif `temporal-event-solver.md`.
 
 Aucune exécution confirmatoire 0B ni implémentation n'est autorisée tant que les paramètres marqués `OPEN` ne sont pas fermés et que le lot n'est pas explicitement autorisé dans `docs/governance/current-task.md`.
 
@@ -586,7 +587,7 @@ cancellations in spectral sums
 root / argmax conditioning
 ```
 
-Les tolérances et la règle uniforme de stabilité sous précision sont `OPEN`.
+Les tolérances numériques et la règle uniforme de stabilité sous précision sont fixées dans `temporal-event-solver.md` (sections 15-24) et `VALIDATED_FOR_FREEZE`.
 
 Le budget propagé vers `Delta1` est `OPEN` et doit être fermé avant `A_DELTA_VALUES`.
 
@@ -993,9 +994,7 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # temporal / numerical
-ROOT_SOLVER_TOLERANCES
 ARGMAX_TOLERANCES
-SPECTRAL_PRECISION_CONTROL
 DELTA1_PROPAGATED_ERROR_BUDGET
 
 # soft-loop
@@ -1022,7 +1021,7 @@ ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
-Ne sont plus `OPEN` :
+Ne sont plus `OPEN` (clôturés ou `VALIDATED_FOR_FREEZE`) :
 
 ```text
 ORDERED_RELATION_CONVENTION
@@ -1033,6 +1032,9 @@ GLOBAL_FACTOR_TWO_FOR_ALL_EVENTS
 NEAR_CROSSING_GAP_THRESHOLD
 ZERO_GRADE_PATH_PURITY_CORRECTION
 RAW_EIGENVECTOR_NONZERO_COUNT_ORACLE
+ROOT_SOLVER_TOLERANCES
+SPECTRAL_PRECISION_CONTROL
+SIMPLE_ROOT_CONTROL
 ```
 
 ---
