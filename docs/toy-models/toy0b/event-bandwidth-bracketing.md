@@ -52,7 +52,7 @@ F''(t)=\frac12\left(\chi'(t)^2+\chi(t)\chi''(t)\right).
 
 `T_peak` est le premier maximum strict du premier lobe de `F`.
 
-Avant ce maximum, `chi` conserve le signe de son premier coefficient court non nul. Un zéro de `chi` est un minimum de `F`, pas un pic. Pour un pic strict avec `chi != 0` :
+Avant ce maximum, `chi` conserve le signe de son premier coefficient court non nul. Un zéro de `chi` est un minimum de `F`, pas un pic. Pour un candidat avec `chi != 0` :
 
 ```math
 F'(T_{peak})=0
@@ -60,9 +60,15 @@ F'(T_{peak})=0
 \chi'(T_{peak})=0.
 ```
 
-Le candidat doit en outre satisfaire le changement de signe correspondant à un maximum de `F`.
+Pour un maximum strict non dégénéré il faut en plus :
 
-Ainsi la fonction de certification nominale de `T_peak` est `chi'`, dont la bande reste `Omega_chi`.
+```math
+\boxed{\chi(T_{peak})\chi''(T_{peak})<0.}
+```
+
+La condition `chi != 0` et `chi'' != 0` seule n'est pas suffisante : si `chi chi'' > 0`, le point est un minimum local non nul de `F`. Si `chi''=0`, le protocole revient à la définition scientifique par changement de signe de `F'` et/ou aux dérivées supérieures.
+
+La fonction de certification nominale de `T_peak` est donc `chi'`, dont la bande reste `Omega_chi`.
 
 ### T_thr et T_down
 
@@ -80,7 +86,7 @@ Sur le premier lobe, le signe de `chi` est fixé. Si :
 s=sign(\chi(t))
 ```
 
-sur ce lobe, les croisements sont donc les racines de :
+sur ce lobe, les croisements sont les racines de :
 
 ```math
 \chi(t)-s\,2\sqrt\eta=0.
@@ -152,7 +158,7 @@ Il est interdit de choisir des familles `beta` différentes par estimateur aprè
 
 Les valeurs numériques `beta_k` restent `OPEN`.
 
-## 4. Pourquoi certifier sur chi / chi' plutôt que sur F' pour T_peak
+## 4. Pourquoi certifier sur chi / chi' plutôt que sur F'
 
 La fonction :
 
@@ -175,6 +181,15 @@ T_grow -> certifier les racines de H_grow = chi'^2 + chi chi''
 
 Les définitions scientifiques en termes de `F` restent inchangées ; seules leurs équations numériques équivalentes sont utilisées.
 
+Le gain de la formulation en `chi` n'est **pas** un meilleur conditionnement intrinsèque de la même racine. Si deux formulations vérifient localement `g_2=k g_1` avec `k(t*) != 0`, la pente et l'erreur de fonction sont multipliées par le même facteur au premier ordre lorsque le modèle d'erreur est propagé correctement, et le déplacement de racine est inchangé.
+
+Les avantages réels sont :
+
+- des bornes de dérivées directes et plus serrées ;
+- un modèle d'erreur spectral directement exprimable sur `chi` et ses dérivées ;
+- l'absence des zéros parasites de `F'` dus à `chi=0` ;
+- une bande `Omega_chi` pour `T_peak`, `T_thr` et `T_down`.
+
 ## 5. Densité de zéros : portée limitée
 
 Une somme trigonométrique finie est une fonction entière de type exponentiel après prolongement complexe. Des résultats asymptotiques relient son type fréquentiel à une densité moyenne de zéros sous des hypothèses appropriées.
@@ -191,51 +206,95 @@ La quantité `Omega*tau/pi` peut être utilisée au plus comme estimation de co�
 
 ## 6. Certification par bornes de dérivées
 
-Pour toute fonction de certification `g(t)`, on peut construire une borne :
+On pose :
 
 ```math
-L\ge\sup_{cell}|g'(t)|.
+S_r=\sum_\omega |C_\omega|\omega^r,
 ```
 
-Si la cellule est centrée en `t_c` et de demi-largeur `h` :
+ce qui donne :
+
+```math
+|\chi^{(r)}(t)|\le S_r.
+```
+
+Pour toute fonction de certification `g(t)`, si une cellule est centrée en `t_c` avec demi-largeur `h` et si :
+
+```math
+L\ge\sup_{cell}|g'(t)|,
+```
+
+alors :
 
 ```math
 |g(t_c)|>Lh
 ```
 
-certifie l'absence de racine dans cette cellule.
+certifie l'absence de racine dans la cellule.
 
-Les cellules non exclues doivent être subdivisées ou résolues explicitement. Les racines tangentielles exigent une logique adaptée aux dérivées supérieures et ne sont pas capturées par un simple changement de signe.
-
-## 7. Conditionnement aligné sur la fonction résolue
-
-Le diagnostic numérique doit être attaché à la fonction effectivement résolue :
+Pour les événements simples :
 
 ```text
-T_thr  : |chi'(T_thr)|
-T_down : |chi'(T_down)|
-T_peak : |chi''(T_peak)|
-T_grow : |H_grow'(T_grow)|
+T_thr/down -> g'=chi'  : L <= S_1
+T_peak     -> g'=chi'' : L <= S_2
 ```
 
-avec :
+Pour :
 
 ```math
-H_{grow}'
-=3\chi'\chi''+\chi\chi'''
-=2F'''.
+H_{grow}=\chi'^2+\chi\chi'',
 ```
 
-À `T_peak`, puisque `chi'=0` :
+on a :
 
 ```math
-F''(T_{peak})
-=\frac12\chi(T_{peak})\chi''(T_{peak}).
+H_{grow}'=3\chi'\chi''+\chi\chi'''=2F'''.
 ```
 
-L'ancien diagnostic `|F''(T_peak)|` reste dérivable, mais `|chi''|` est le conditionnement direct de la racine réellement résolue.
+Une borne sûre est donc :
 
-De même, utiliser `|F'(T_thr)|` introduirait artificiellement le facteur `sqrt(eta)` dans le conditionnement d'un croisement de niveau de `chi`; le conditionnement nominal de localisation est donc `|chi'|`.
+```math
+\boxed{
+\sup|H_{grow}'|
+\le3S_1S_2+S_0S_3.
+}
+```
+
+Cette borne produit-de-sommes est généralement plus lâche que les bornes linéaires `S_1` ou `S_2`. `T_grow` paie donc deux fois : par sa bande jusqu'à `2 Omega_chi` et par une certification composite potentiellement beaucoup plus coûteuse en subdivisions.
+
+La famille commune `B` reste valide ; elle n'implique pas un coût uniforme entre estimateurs.
+
+## 7. Conditionnement des racines
+
+Pour une racine simple de `g(t*)=0`, le déplacement au premier ordre est contrôlé par :
+
+```math
+|\delta t_*|
+\sim
+\frac{|\delta g(t_*)|}{|g'(t_*)|}.
+```
+
+Le protocole doit donc associer à la pente locale une borne ou estimation de l'erreur sur la fonction réellement évaluée. Une pente brute n'est pas, à elle seule, un nombre de conditionnement invariant.
+
+Les fonctions résolues sont :
+
+```text
+T_thr/down -> g = chi - s 2 sqrt(eta)
+T_peak     -> g = chi'
+T_grow     -> g = H_grow
+```
+
+Les pentes locales correspondantes peuvent être publiées :
+
+```text
+T_thr/down -> |chi'|
+T_peak     -> |chi''|
+T_grow     -> |H_grow'|
+```
+
+mais le diagnostic de précision sur le temps doit utiliser le rapport `error_on_g / |g'|`.
+
+Pour les seuils, l'ancienne affirmation selon laquelle la formulation en `F` introduirait artificiellement un facteur `sqrt(eta)` dans le conditionnement est rejetée : ce facteur multiplie simultanément la pente et l'erreur propagée et s'annule au premier ordre.
 
 ## 8. Statut
 
@@ -252,11 +311,15 @@ FPRIME_AS_PEAK_CERTIFICATION_FUNCTION   = REJECTED
 CHI_PRIME_PEAK_CERTIFICATION            = VALIDATED_FOR_FREEZE
 CHI_LEVEL_THRESHOLD_CERTIFICATION       = VALIDATED_FOR_FREEZE
 HGROW_CERTIFICATION                     = VALIDATED_FOR_FREEZE
+PEAK_NONDEGENERATE_CRITERION            = chi*chi'' < 0
+SQRT_ETA_CONDITIONING_PENALTY           = REJECTED
+ROOT_ERROR_NORMALIZATION_REQUIRED       = VALIDATED_FOR_FREEZE
+HGROW_DERIVATIVE_BOUND                  = 3 S1 S2 + S0 S3
+GROW_COMPOSITE_CERTIFICATION_COST       = VALIDATED_FOR_FREEZE
 ACTIVE_OMEGA_FROM_NUMERICAL_ZERO_CUT    = REJECTED_AS_DEFAULT
 SAFE_SPECTRAL_BANDWIDTH                 = VALIDATED_FOR_FREEZE
 ZERO_DENSITY_AS_COMPLETENESS_BOUND      = REJECTED
 ZERO_DENSITY_AS_COST_HEURISTIC          = ALLOWED_WITH_SCOPE
 DERIVATIVE_CELL_EXCLUSION               = VALIDATED_IN_PRINCIPLE
-EVENT_ROOT_CONDITIONING_BY_SOLVED_FUNC  = VALIDATED_FOR_FREEZE
 BETA_GRID_VALUES                        = OPEN
 ```
