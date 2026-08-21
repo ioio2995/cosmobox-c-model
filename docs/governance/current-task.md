@@ -21,7 +21,6 @@ TESTS_0A                       = 89 PASS
 
 MODEL0B_SPECIFICATION          = CONSOLIDATED / CLOSURE_REVIEW
 MODEL0B_VALIDATION_PLAN        = CONSOLIDATED / CLOSURE_REVIEW
-MODEL0B_PREFREEZE_INDEX        = CURRENT_STATUS_INDEX
 MODEL0B_NUMERICAL_CONTROLS     = OPEN
 MODEL0B_FINAL_ACCEPTANCE_RULES = OPEN
 IMPLEMENTATION_0B              = NOT_AUTHORIZED
@@ -29,15 +28,14 @@ IMPLEMENTATION_0B              = NOT_AUTHORIZED
 SCIENTIFIC_METHOD_GOVERNANCE   = DRAFT_IN_FEATURES
 ```
 
-Sources de travail :
+Sources principales :
 
 ```text
 docs/toy-models/toy0b/specification.md
 docs/toy-models/toy0b/validation-plan.md
-docs/toy-models/toy0b/pre-freeze-consolidation.md
 ```
 
-Les supports spécialisés de `docs/toy-models/toy0b/` conservent les preuves et qualifications détaillées ; ils ne constituent plus un contexte obligatoire lorsque les sources consolidées suffisent.
+Les supports spécialisés de `docs/toy-models/toy0b/` conservent les preuves et qualifications détaillées ; ils ne constituent plus un contexte obligatoire lorsque les deux sources consolidées suffisent.
 
 ---
 
@@ -246,7 +244,7 @@ Une objection `BLOCKING` stoppe le lot et revient à l'arbitrage conceptuel. Un 
 
 ```text
 CURRENT_LOT = Toy Model 0B closure review
-PHASE       = READ-ONLY CRITICAL AUDIT PREPARATION
+PHASE       = READ-ONLY CRITICAL AUDIT
 NEXT_STEP   = Claude Code read-only closure audit
 ```
 
