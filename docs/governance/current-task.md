@@ -166,6 +166,8 @@ BETA_COMMIT = 1b37a96b832f45549bc24e41347a46e68d172db0
 ROOT_SOLVER_TOLERANCES                = VALIDATED_FOR_FREEZE
 SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
 SIMPLE_ROOT_CONTROL                    = VALIDATED_FOR_FREEZE
+ARGMAX_TOLERANCES                     = VALIDATED_FOR_FREEZE
+ARGMAX_TOLERANCE                      = 1e-10
 
 # Delta1 error budget
 DELTA1_PROPAGATED_ERROR_BUDGET          = VALIDATED_FOR_FREEZE
@@ -186,7 +188,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 
 ```text
 # temporal / numerical
-ARGMAX_TOLERANCES                      = OPEN
 DEGENERATE_ROOT_CONTROL                = OPEN
 
 # SOFT-LOOP
@@ -275,10 +276,10 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : sept paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : huit paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
-SIMPLE_ROOT_CONTROL, DELTA1_PROPAGATED_ERROR_BUDGET, A_DELTA_VALUES,
-DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE).
+SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
+A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.

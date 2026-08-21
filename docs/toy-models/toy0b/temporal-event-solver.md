@@ -359,7 +359,8 @@ HGROW_DERIVATIVE_BOUND                 = 3 S1 S2 + S0 S3
 GROW_COMPOSITE_CERTIFICATION_COST      = VALIDATED_FOR_FREEZE
 BRACKETING_REFINEMENT_VALUES           = VALIDATED_FOR_FREEZE
 ROOT_SOLVER_TOLERANCES                 = VALIDATED_FOR_FREEZE
-ARGMAX_TOLERANCES                      = OPEN
+ARGMAX_TOLERANCES                      = VALIDATED_FOR_FREEZE
+ARGMAX_TOLERANCE                       = 1e-10
 SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
 DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
 SAME_NUMERICAL_RULES_ACROSS_CUTOFFS    = MANDATORY
@@ -577,5 +578,487 @@ EVENT_CONDITIONING_UNRESOLVED
 
 ```text
 DEGENERATE_ROOT_CONTROL = OPEN
-ARGMAX_TOLERANCES = OPEN
+ARGMAX_TOLERANCES = VALIDATED_FOR_FREEZE
+ARGMAX_TOLERANCE = 1e-10
+```
+
+## 25. Certification numérique de l'argmax de `T_grow`
+
+Cette certification s'applique uniquement au chemin nominal où toutes les
+cellules candidates pertinentes de `(0,T_peak)` sont soit certifiées vides,
+soit résolues en candidats appariés associés à des racines simples qualifiantes
+de `H_grow`.
+
+Une cellule candidate non exclue dont la racine de `H_grow` est dégénérée,
+non résolue ou non certifiée comme racine simple appariée n'est jamais écartée
+silencieusement de la comparaison.
+
+Sa présence interdit tout verdict argmax nominal et renvoie au statut
+non résolu approprié, notamment `TIME_EVENT_CONTROL_SENSITIVE`, ou au traitement
+encore ouvert de :
+
+```text
+DEGENERATE_ROOT_CONTROL = OPEN
+```
+
+### 25.1 Coordonnée et hauteur sans dimension
+
+Pour `T_grow` :
+
+```math
+u
+=
+\frac{2\Omega_{safe}t}{\pi}.
+```
+
+Définir :
+
+```math
+\kappa
+=
+\frac{\pi}{2\Omega_{safe}},
+```
+
+et :
+
+```math
+\boxed{
+a(u)
+=
+\frac{dF}{du}
+=
+\kappa F'(t(u)).
+}
+```
+
+Comme `\kappa>0` est constant pour un fond et un cutoff donnés, maximiser
+`a(u)` est exactement équivalent à maximiser `F'(t)`.
+
+À un candidat stationnaire :
+
+```math
+a'(u)=0.
+```
+
+Avec :
+
+```math
+H_{grow}'(t)
+=
+3\chi'(t)\chi''(t)+\chi(t)\chi'''(t)
+=
+2F'''(t),
+```
+
+on obtient :
+
+```math
+a''(u)
+=
+\frac{\kappa^3}{2}H_{grow}'(t).
+```
+
+La borne déjà validée :
+
+```math
+L_H
+=
+3S_1S_2+S_0S_3
+```
+
+donne donc la borne sûre :
+
+```math
+\boxed{
+B_{a''}
+=
+\frac{\kappa^3}{2}L_H.
+}
+```
+
+Les hauteurs `a` sont comparées uniquement entre candidats du même fond et du
+même cutoff. Elles ne sont jamais comparées directement entre `Lambda=2` et
+`Lambda=3`.
+
+### 25.2 Exhaustivité des candidats sur un premier lobe actif
+
+Sur le premier lobe :
+
+```math
+\chi(0)=0,
+```
+
+et, par définition de `T_peak` :
+
+```math
+\chi'(T_{peak})=0.
+```
+
+Donc :
+
+```math
+F'(0)=0,
+\qquad
+F'(T_{peak})=0.
+```
+
+La voie nominale exige un premier lobe actif certifié :
+
+```text
+T_peak > 0
+chi non identiquement nul
+F' > 0 en au moins un point de (0,T_peak), avec signe certifié
+```
+
+Comme `F'` est continue sur `[0,T_peak]`, son maximum global positif est alors
+atteint strictement dans `(0,T_peak)`.
+
+Tout maximiseur intérieur satisfait :
+
+```math
+F''(t)=0,
+```
+
+soit :
+
+```math
+H_{grow}(t)=0.
+```
+
+Comme `chi` est une somme trigonométrique finie, `H_grow` est analytique réel.
+Sur un premier lobe actif, `H_grow` n'est pas identiquement nul ; ses zéros sur
+l'intervalle compact sont donc isolés et en nombre fini.
+
+L'exclusion ou la résolution certifiée de toutes les cellules candidates
+pertinentes suffit ainsi à énumérer tous les maximiseurs globaux possibles de
+`F'`.
+
+Pour une racine simple, un candidat de maximum local de `F'` vérifie :
+
+```math
+H_{grow}'(t_i)<0.
+```
+
+### 25.3 Incertitude de localisation d'un candidat
+
+Pour chaque candidat simple apparié `i`, réutiliser le budget déjà validé en
+coordonnée `u` :
+
+```math
+e_{u,i}
+=
+\epsilon_{u,solver,i}
++
+\max\left(
+\epsilon_{u,spec,i},
+|u_i^{(2p)}-u_i^{(p)}|
+\right).
+```
+
+Aucune nouvelle tolérance de racine n'est introduite.
+
+Comme `a'(u_i^*)=0`, l'incertitude de localisation contribue à la hauteur au
+second ordre :
+
+```math
+\epsilon_{a,loc,i}
+=
+\frac12 B_{a''}e_{u,i}^2.
+```
+
+Donc :
+
+```math
+\boxed{
+\epsilon_{a,loc,i}
+=
+\frac{\kappa^3L_H}{4}e_{u,i}^2.
+}
+```
+
+### 25.4 Contrôle spectral de la hauteur
+
+Au même point physique haute précision `u_i^{(2p)}`, définir :
+
+```math
+\epsilon_{a,spec,i}
+=
+\left|
+a^{(2p)}(u_i^{(2p)})
+-
+a^{(p)}(u_i^{(2p)})
+\right|.
+```
+
+Pour le candidat apparié évalué à sa propre racine à chaque précision :
+
+```math
+d_{a,i}
+=
+\left|
+a_i^{(2p)}
+-
+a_i^{(p)}
+\right|.
+```
+
+Le budget numérique final de hauteur est :
+
+```math
+\boxed{
+e_{a,i}
+=
+\max\left(
+d_{a,i},
+\epsilon_{a,spec,i}+\epsilon_{a,loc,i}
+\right).
+}
+```
+
+La porte de précision est :
+
+```text
+tau_argmax = 1e-10
+```
+
+avec :
+
+```math
+\boxed{
+\frac{e_{a,i}}
+{\max(1,|a_i^{(2p)}|)}
+\le
+10^{-10}.
+}
+```
+
+Cette condition doit être satisfaite par chaque candidat participant à la
+comparaison globale.
+
+Sinon :
+
+```text
+ARGMAX_PRECISION_UNRESOLVED
+```
+
+et aucun `T_grow` confirmatoire n'est publié.
+
+### 25.5 Maximiseur global unique
+
+Pour chaque candidat qualifiant `i`, former :
+
+```math
+I_i
+=
+[
+a_i^{(2p)}-e_{a,i},
+a_i^{(2p)}+e_{a,i}
+].
+```
+
+Le candidat `k` est un maximiseur global unique numériquement résolu si :
+
+```math
+\boxed{
+a_k^{(2p)}-e_{a,k}
+>
+\max_{j\ne k}
+\left(
+a_j^{(2p)}+e_{a,j}
+\right).
+}
+```
+
+Alors :
+
+```text
+ARGMAX_UNIQUE_RESOLVED
+```
+
+et :
+
+```text
+T_grow = t_k
+```
+
+Aucune tolérance indépendante de « quasi-égalité » des maxima n'est utilisée.
+
+Si les intervalles des meilleurs candidats se recouvrent sans oracle exact
+applicable :
+
+```text
+ARGMAX_AMPLITUDE_UNRESOLVED
+```
+
+et aucun `T_grow` confirmatoire n'est publié.
+
+### 25.6 Égalité exacte de plusieurs maxima
+
+Une branche d'égalité exacte n'est autorisée que si l'égalité des hauteurs
+exactes d'un ensemble fini `T` de candidats qualifiants est établie par un
+oracle `STRUCTURAL_ANALYTIC` du modèle exact, par exemple une symétrie exacte ou
+une identité démontrée.
+
+Un cluster spectral numérique, une coïncidence numérique ou un recouvrement
+d'intervalles ne constitue jamais un tel oracle.
+
+`T` doit être la classe d'égalité complète identifiée par cet oracle parmi les
+candidats auxquels il s'applique.
+
+Pour chaque `i in T`, utiliser :
+
+```math
+I_i
+=
+[
+a_i^{(2p)}-e_{a,i},
+a_i^{(2p)}+e_{a,i}
+].
+```
+
+Comme l'oracle impose une hauteur exacte commune, définir l'intervalle certifié
+de cette hauteur commune par intersection :
+
+```math
+L_T
+=
+\max_{i\in T}
+\left(
+a_i^{(2p)}-e_{a,i}
+\right),
+```
+
+```math
+U_T
+=
+\min_{i\in T}
+\left(
+a_i^{(2p)}+e_{a,i}
+\right).
+```
+
+La porte d'oracle est :
+
+```math
+\boxed{
+L_T\le U_T.
+}
+```
+
+Dès qu'un oracle exact applicable est invoqué, cette porte est évaluée avant
+tout autre verdict argmax.
+
+Si elle échoue :
+
+```text
+ARGMAX_EXACT_ORACLE_NUMERICAL_INCONSISTENCY
+```
+
+et aucun verdict confirmatoire, y compris `ARGMAX_UNIQUE_RESOLVED`, n'est
+autorisé.
+
+Si elle passe, la classe liée `T` n'est certifiée globalement maximale que si :
+
+```math
+\boxed{
+L_T
+>
+\max_{j\notin T}
+\left(
+a_j^{(2p)}+e_{a,j}
+\right).
+}
+```
+
+Si cette dominance résiduelle échoue :
+
+```text
+ARGMAX_AMPLITUDE_UNRESOLVED
+```
+
+et aucun `T_grow` confirmatoire n'est publié.
+
+### 25.7 Plus ancien membre d'une égalité globale exacte
+
+Une fois `T` certifié comme ensemble des maximiseurs globaux, le candidat
+`k in T` est certifié comme le plus ancien si :
+
+```math
+\boxed{
+u_k+e_{u,k}
+<
+\min_{\substack{j\in T\\j\ne k}}
+\left(
+u_j-e_{u,j}
+\right).
+}
+```
+
+Alors :
+
+```text
+ARGMAX_EXACT_TIE_EARLIEST_RESOLVED
+```
+
+et :
+
+```text
+T_grow = t_k
+```
+
+conformément à la définition scientifique de `T_grow` comme infimum des
+maximiseurs globaux.
+
+Si l'ordre temporel des membres de `T` n'est pas résolu :
+
+```text
+ARGMAX_TIME_ORDER_UNRESOLVED
+```
+
+et aucun `T_grow` confirmatoire n'est publié.
+
+### 25.8 Porte de complétude et statut épistémique
+
+La certification argmax n'est valide que si :
+
+```text
+- toutes les cellules candidates pertinentes avant T_peak sont certifiées
+  vides ou résolues en racines simples appariées qualifiantes ;
+- aucun candidat dégénéré ou non résolu ne subsiste ;
+- tous les candidats comparés satisfont la porte de précision de hauteur ;
+- l'identité et l'ordre des candidats sont stables sous la famille beta
+  préenregistrée ;
+- l'appariement p / 2p est résolu ;
+- aucune cellule candidate antérieure non résolue ne subsiste.
+```
+
+La certification argmax ne peut jamais écraser un statut
+`TIME_EVENT_CONTROL_SENSITIVE`, spectralement non résolu ou conditionnellement
+non résolu.
+
+Les statuts :
+
+```text
+ARGMAX_UNIQUE_RESOLVED
+ARGMAX_EXACT_TIE_EARLIEST_RESOLVED
+```
+
+sont des statuts :
+
+```text
+NUMERICAL_CONTROL / PREREGISTERED_CONFIRMATORY
+```
+
+et non des énoncés `STRUCTURAL_ANALYTIC`.
+
+La même règle numérique est appliquée à `Lambda=2` et `Lambda=3`, mais les
+hauteurs adimensionnées `a` ne sont comparées qu'à l'intérieur d'un même cutoff.
+Les temps physiques d'événement restent les quantités comparées entre cutoffs.
+
+### 25.9 Statut
+
+```text
+ARGMAX_TOLERANCES = VALIDATED_FOR_FREEZE
+ARGMAX_TOLERANCE = 1e-10
+DEGENERATE_ROOT_CONTROL = OPEN
 ```

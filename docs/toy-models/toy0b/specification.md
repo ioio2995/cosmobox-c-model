@@ -1289,13 +1289,13 @@ Aucun résultat pilote ou de qualification ne doit être présenté comme confir
 
 ### Contrôle temporel et précision
 
-```text
-ARGMAX_TOLERANCES
-```
-
 `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL` et `DELTA1_PROPAGATED_ERROR_BUDGET`
 sont `VALIDATED_FOR_FREEZE`.
+
+`ARGMAX_TOLERANCES` est également `VALIDATED_FOR_FREEZE`, avec
+`ARGMAX_TOLERANCE = 1e-10`; sa définition normative détaillée est portée par
+`temporal-event-solver.md` §25.
 
 `DEGENERATE_ROOT_CONTROL` reste `OPEN` et est traité séparément
 car il ne relève pas du contrôle de racine simple.
@@ -1345,7 +1345,8 @@ Ne sont notamment plus ouverts : orientation source-récepteur, grille MAIN
 seuil `NEAR_CROSSING`, traitement du canal `m=0`, facteur de bande global
 des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
-`DERIVATIVE_STABILITY_CRITERION` et `RICHARDSON_USAGE_RULE`.
+`DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE` et
+`ARGMAX_TOLERANCES`.
 
 ---
 
