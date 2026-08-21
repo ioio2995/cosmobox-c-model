@@ -122,7 +122,13 @@ Le protocole doit :
 \boxed{\chi(T_{peak})\chi''(T_{peak})<0;}
 ```
 
-5. dans les cas dégénérés où `chi''=0`, revenir à la définition scientifique par changement de signe de `F'` et/ou examiner les dérivées supérieures.
+5. dans les cas dégénérés où `chi''=0`, la voie numérique nominale ne revient
+   jamais au changement de signe de `F'` ni à l'examen des dérivées
+   supérieures pour récupérer un verdict confirmatoire ; une racine ayant
+   échoué à la certification de racine simple n'est jamais restaurée par des
+   dérivées supérieures dans la voie numérique nominale. Seul un oracle
+   `STRUCTURAL_ANALYTIC` explicite, tel que défini en §26.9, peut établir un
+   verdict de dégénérescence exacte au moyen de dérivées supérieures.
 
 La condition `chi != 0` et `chi'' != 0` n'est pas suffisante à elle seule : `chi chi'' > 0` correspond à un minimum local non nul de `F`.
 
@@ -365,6 +371,8 @@ SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
 DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
 SAME_NUMERICAL_RULES_ACROSS_CUTOFFS    = MANDATORY
 SIMPLE_ROOT_CONTROL                   = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_CONTROL                = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE          = NONE
 ```
 
 ## 15. Backward gate
@@ -577,7 +585,8 @@ EVENT_CONDITIONING_UNRESOLVED
 ## 24. Limites
 
 ```text
-DEGENERATE_ROOT_CONTROL = OPEN
+DEGENERATE_ROOT_CONTROL = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE = NONE
 ARGMAX_TOLERANCES = VALIDATED_FOR_FREEZE
 ARGMAX_TOLERANCE = 1e-10
 ```
@@ -587,18 +596,21 @@ ARGMAX_TOLERANCE = 1e-10
 Cette certification s'applique uniquement au chemin nominal où toutes les
 cellules candidates pertinentes de `(0,T_peak)` sont soit certifiées vides,
 soit résolues en candidats appariés associés à des racines simples qualifiantes
-de `H_grow`.
+de `H_grow` dans une cellule `CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL` au sens du
+certificat d'unicité par cellule défini en §26.3.
 
 Une cellule candidate non exclue dont la racine de `H_grow` est dégénérée,
-non résolue ou non certifiée comme racine simple appariée n'est jamais écartée
-silencieusement de la comparaison.
+non résolue, ou dont la cellule ne satisfait pas le certificat d'unicité
+`CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL`, n'est jamais écartée silencieusement de
+la comparaison.
 
 Sa présence interdit tout verdict argmax nominal et renvoie au statut
-non résolu approprié, notamment `TIME_EVENT_CONTROL_SENSITIVE`, ou au traitement
-encore ouvert de :
+non résolu approprié, notamment `TIME_EVENT_CONTROL_SENSITIVE`, ou au statut
+`DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED` défini en §26 :
 
 ```text
-DEGENERATE_ROOT_CONTROL = OPEN
+DEGENERATE_ROOT_CONTROL = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE = NONE
 ```
 
 ### 25.1 Coordonnée et hauteur sans dimension
@@ -1023,7 +1035,8 @@ La certification argmax n'est valide que si :
 
 ```text
 - toutes les cellules candidates pertinentes avant T_peak sont certifiées
-  vides ou résolues en racines simples appariées qualifiantes ;
+  vides ou résolues en racines simples appariées qualifiantes dans une
+  cellule CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL (§26.3) ;
 - aucun candidat dégénéré ou non résolu ne subsiste ;
 - tous les candidats comparés satisfont la porte de précision de hauteur ;
 - l'identité et l'ordre des candidats sont stables sous la famille beta
@@ -1060,5 +1073,276 @@ Les temps physiques d'événement restent les quantités comparées entre cutoff
 ```text
 ARGMAX_TOLERANCES = VALIDATED_FOR_FREEZE
 ARGMAX_TOLERANCE = 1e-10
-DEGENERATE_ROOT_CONTROL = OPEN
+DEGENERATE_ROOT_CONTROL = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE = NONE
+```
+
+## 26. Contrôle des racines dégénérées ou quasi-dégénérées
+
+### 26.1 Règle épistémique
+
+En précision finie, une évaluation numérique n'affirme jamais une
+multiplicité exacte de racine. Aucun seuil sur `|g'|` n'est introduit pour
+classer une racine multiple exacte.
+
+Les statuts opérationnels distinguent uniquement :
+
+```text
+CERTIFIED_EMPTY_CELL
+CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL
+DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED
+```
+
+### 26.2 Fonctions de racine concernées
+
+```text
+peak            -> g(t) = chi'(t)
+threshold/down  -> g(t) = chi(t) - s 2 sqrt(eta)
+grow            -> g(t) = H_grow(t) = chi'(t)^2 + chi(t) chi''(t)
+```
+
+### 26.3 Certificat d'unicité de racine par cellule
+
+Pour une cellule centrée en `t_c` de demi-largeur `h`, soit :
+
+```math
+L_2\ge\sup_{cell}|g''(t)|.
+```
+
+Si :
+
+```math
+|g'(t_c)|>L_2h,
+```
+
+alors `g'` garde un signe constant non nul sur toute la cellule, donc `g` y
+est strictement monotone et la cellule contient au plus une racine.
+
+Choix globaux sûrs, déjà disponibles à partir des sommes spectrales finies
+déjà validées, avec `S_r = sum_omega |C_omega| omega^r` :
+
+```text
+peak            -> L_2 = S_3
+threshold/down  -> L_2 = S_2
+grow            -> L_2 = 3 S_2^2 + 4 S_1 S_3 + S_0 S_4
+```
+
+car :
+
+```math
+H_{grow}''=3\chi''^2+4\chi'\chi'''+\chi\chi''''.
+```
+
+Une cellule ne peut être déclarée `CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL` que si :
+
+- l'inégalité de monotonie/unicité ci-dessus est vérifiée ; ET
+- le solveur continu / protocole de racine simple existant certifie la
+  racine unique dans cette cellule.
+
+Localiser une racine simple sans le certificat d'unicité de cellule ne
+résout pas la cellule.
+
+Une racine trouvée et classée non qualifiante ne peut retirer la cellule de
+la suite du traitement des événements que si le certificat d'unicité de
+cellule est également vérifié.
+
+Ceci empêche une racine simple non qualifiante trouvée de masquer une autre
+racine qualifiante dans la même cellule.
+
+### 26.4 Cellules vides
+
+L'exclusion déjà validée fondée sur la dérivée reste valide :
+
+```math
+|g(t_c)|>Lh,
+\quad
+L\ge\sup_{cell}|g'|
+\quad\Longrightarrow\quad
+CERTIFIED\_EMPTY\_CELL.
+```
+
+Une cellule monotone peut aussi être certifiée vide lorsque les signes aux
+bornes et le certificat de stricte monotonie prouvent qu'aucun zéro ne s'y
+trouve.
+
+Aucune conclusion sur le nombre de racines n'est inférée du seul échec du
+test d'exclusion.
+
+### 26.5 Exhaustion de subdivision finie
+
+Le protocole doit se terminer de manière déterministe.
+
+En coordonnée d'événement :
+
+```math
+u=\frac{s_{event}\Omega_{safe}t}{\pi},
+```
+
+une cellule beta initiale a pour largeur `Delta u = beta`.
+
+Avec `tau_root = 1e-12` déjà validé et sans nouvelle tolérance libre :
+
+```math
+\boxed{
+N_{exhaust}(\beta)
+=
+\max\left(
+0,
+\left\lceil
+\log_2\left(\frac{\beta}{2\tau_{root}}\right)
+\right\rceil
+\right).
+}
+```
+
+Pour la famille `beta` préenregistrée :
+
+```text
+beta = 1     -> N_exhaust = 39
+beta = 1/2   -> N_exhaust = 38
+beta = 1/4   -> N_exhaust = 37
+beta = 1/8   -> N_exhaust = 36
+```
+
+Ceci garantit qu'après exhaustion `Delta u <= 2 tau_root`, au moins aussi
+strict que la cible déjà validée du solveur (§22) :
+
+```math
+w_u\le2\tau_{root}\max(1,|\hat u|).
+```
+
+Le budget de subdivision est donc DÉRIVÉ des contrôles déjà validés (`beta`,
+`tau_root`) ; ce n'est pas une nouvelle tolérance indépendante.
+
+Si, à l'exhaustion, une cellule non exclue n'est pas
+`CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL`, alors :
+
+```text
+DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED
+```
+
+est retourné. Aucune subdivision supplémentaire après inspection n'est
+effectuée pour récupérer un verdict confirmatoire.
+
+### 26.6 Voie de racine simple
+
+Seule une cellule `CERTIFIED_UNIQUE_SIMPLE_ROOT_CELL` entre dans le budget
+forward `SIMPLE_ROOT_CONTROL` déjà validé (§23).
+
+Aucun nouveau seuil de pente n'est introduit.
+
+L'échec de la certification forward de racine simple existante, après
+l'escalade de précision déjà validée, retourne également :
+
+```text
+DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED
+```
+
+sauf si un statut non résolu existant plus fort s'applique.
+
+### 26.7 Qualification des événements
+
+`T_peak` : une racine simple unique de `chi'` n'est qualifiante que sous les
+critères de pic déjà existants (§4).
+
+Une cellule non exclue avant le pic sélectionné, ni `CERTIFIED_EMPTY_CELL`,
+ni pleinement résolue en une racine simple unique dont la nature
+qualifiante/non qualifiante est certifiée, bloque la revendication de
+premier pic.
+
+`T_thr` / `T_down` : une cellule candidate de racine de niveau doit être
+certifiée vide ou résolue en un unique candidat de croisement/non-croisement
+directionnel simple.
+
+Un contact tangentiel ou quasi-multiple non résolu n'est jamais
+réinterprété comme un croisement de seuil.
+
+`T_grow` : chaque cellule `H_grow` pertinente de `(0,T_peak)` doit être
+certifiée vide ou résolue en un unique candidat simple avant que la
+comparaison argmax existante (§25) soit autorisée.
+
+### 26.8 Propagation de dépendance inter-événements
+
+Le statut non résolu est DOMANIAL, pas seulement chronologique.
+
+Si un candidat pertinent pour `T_peak` donne
+`DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED`, alors :
+
+```text
+T_peak = NONCONFIRMATORY
+T_grow = NONCONFIRMATORY
+T_thr  = NONCONFIRMATORY
+T_down = NONCONFIRMATORY
+```
+
+car le domaine / la frontière du premier lobe n'est pas certifié.
+
+Tout contrôle de récurrence dont l'horizon dépend de ce `T_peak` non résolu
+est également `NONCONFIRMATORY`.
+
+Si un candidat pertinent pour `T_down` donne le statut non résolu, alors :
+
+```text
+T_down = NONCONFIRMATORY
+```
+
+et tout contrôle de récurrence utilisant `T_down` comme horizon est
+`NONCONFIRMATORY`.
+
+Si un candidat pertinent pour `T_thr` donne le statut non résolu :
+
+```text
+T_thr = NONCONFIRMATORY
+```
+
+Si un candidat pertinent pour `T_grow` donne le statut non résolu :
+
+```text
+T_grow = NONCONFIRMATORY
+```
+
+Toute quantité `Delta1` ou dérivée consommant un temps d'événement
+`NONCONFIRMATORY` est elle-même `NONCONFIRMATORY`.
+
+Aucun verdict confirmatoire en aval ne peut contourner une dépendance
+non confirmatoire.
+
+### 26.9 Oracle analytique exact
+
+Un énoncé de multiplicité exacte / racine exactement dégénérée ne peut
+provenir que d'un oracle `STRUCTURAL_ANALYTIC` du modèle exact, par exemple
+une symétrie exacte ou une identité démontrée.
+
+Il ne peut jamais être inféré :
+
+- d'un `|g'|` numériquement petit ;
+- d'un regroupement spectral numérique ;
+- d'une stabilité `p/2p` ;
+- d'intervalles se recouvrant ;
+- d'une dérivée numériquement petite.
+
+L'analyse par dérivées supérieures d'un candidat `T_peak` exactement
+dégénéré n'est autorisée que dans cette branche d'oracle
+`STRUCTURAL_ANALYTIC` (cf. §4).
+
+Un tel oracle ne restaure un événement confirmatoire que s'il établit
+pleinement la nature qualifiante de l'événement et toutes les conditions
+requises d'ordonnancement/complétude du premier événement. Sinon, la voie
+numérique reste fail-closed.
+
+### 26.10 Statut épistémique
+
+```text
+DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED
+=
+NUMERICAL_CONTROL / NONCONFIRMATORY
+```
+
+Ceci n'affirme jamais une dégénérescence exacte.
+
+```text
+DEGENERATE_ROOT_CONTROL           = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE     = NONE
+CELL_ROOT_UNIQUENESS_CERTIFICATE  = STRICT_MONOTONICITY
+SUBDIVISION_EXHAUSTION_RULE       = DERIVED_FROM_BETA_AND_TAU_ROOT
 ```

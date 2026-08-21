@@ -1005,9 +1005,6 @@ TRUNCATION_COMPARISON_TOLERANCES = OPEN
 Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
-# temporal / numerical
-DEGENERATE_ROOT_CONTROL
-
 # soft-loop
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
@@ -1048,7 +1045,12 @@ DELTA1_PROPAGATED_ERROR_BUDGET
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
+DEGENERATE_ROOT_CONTROL
 ```
+
+`DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
+`DEGENERATE_ROOT_NEW_TOLERANCE = NONE` (protocole détaillé :
+`temporal-event-solver.md` §26).
 
 ---
 

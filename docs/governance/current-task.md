@@ -176,6 +176,10 @@ DELTA1_PROPAGATED_ERROR_BUDGET          = VALIDATED_FOR_FREEZE
 A_DELTA_VALUES                          = VALIDATED_FOR_FREEZE
 DERIVATIVE_STABILITY_CRITERION          = VALIDATED_FOR_FREEZE
 RICHARDSON_USAGE_RULE                   = VALIDATED_FOR_FREEZE
+
+# degenerate root fail-closed control
+DEGENERATE_ROOT_CONTROL                 = VALIDATED_FOR_FREEZE
+DEGENERATE_ROOT_NEW_TOLERANCE           = NONE
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -187,9 +191,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 ## Paramètres encore OPEN avant gel
 
 ```text
-# temporal / numerical
-DEGENERATE_ROOT_CONTROL                = OPEN
-
 # SOFT-LOOP
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
@@ -276,10 +277,11 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : huit paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : neuf paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
-A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE).
+A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
+DEGENERATE_ROOT_CONTROL).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.

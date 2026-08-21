@@ -1297,8 +1297,10 @@ sont `VALIDATED_FOR_FREEZE`.
 `ARGMAX_TOLERANCE = 1e-10`; sa définition normative détaillée est portée par
 `temporal-event-solver.md` §25.
 
-`DEGENERATE_ROOT_CONTROL` reste `OPEN` et est traité séparément
-car il ne relève pas du contrôle de racine simple.
+`DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
+`DEGENERATE_ROOT_NEW_TOLERANCE = NONE` ; le protocole normatif détaillé du
+contrôle fail-closed des racines dégénérées ou quasi-dégénérées est porté par
+`temporal-event-solver.md` §26.
 
 ### SOFT-LOOP
 
@@ -1345,8 +1347,8 @@ Ne sont notamment plus ouverts : orientation source-récepteur, grille MAIN
 seuil `NEAR_CROSSING`, traitement du canal `m=0`, facteur de bande global
 des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
-`DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE` et
-`ARGMAX_TOLERANCES`.
+`DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
+`ARGMAX_TOLERANCES` et `DEGENERATE_ROOT_CONTROL`.
 
 ---
 
