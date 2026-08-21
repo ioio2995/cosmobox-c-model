@@ -20,13 +20,19 @@ avec :
 Xi_1=a_1.
 ```
 
-Dans SOFT-LOOP :
+Dans le protocole numérique SOFT-LOOP, l'échelle opérationnelle est :
 
 ```math
-h=alpha\,delta_c,
-\qquad
-\delta_c=\frac{gap_0}{6g}.
+h=\alpha\,\delta_c,
 ```
+
+avec :
+
+```math
+\delta_c(g,\mu)=\frac{gap_{GS}^{(\Lambda=2)}(g,\mu,0)}{6g}.
+```
+
+Le `gap_0` du modèle effectif motive analytiquement cette coordonnée, mais le pas confirmatoire est construit à partir du gap calculé à `Lambda=2`. Les mêmes valeurs physiques de `h` sont ensuite utilisées à `Lambda=2` et `Lambda=3`.
 
 L'estimateur central est donc :
 
@@ -105,6 +111,79 @@ n'est pas dimensionnellement suffisante : le niveau absolu `1e-4` doit être com
 
 Comme `delta_c` s'effondre dans le régime cyclique mou, la demande de précision sur `Delta_1` devient automatiquement plus sévère lorsque `mu` devient très négatif.
 
+## 3.1 Budget propagé depuis les événements temporels
+
+Pour un estimateur temporel :
+
+```math
+C_O = \frac{T_O^{state}}{T_O^{ref}}.
+```
+
+Dans :
+
+```math
+N(h) = \Delta_1(+h) - \Delta_1(-h),
+```
+
+les mêmes temps de référence calculés sont réutilisés aux deux signes. Ils s'annulent donc algébriquement exactement.
+
+Le budget central dépend uniquement des quatre temps d'état :
+
+```text
+T_{A,+h}
+T_{B,+h}
+T_{A,-h}
+T_{B,-h}
+```
+
+Pour chacun de ces événements, dans la coordonnée `u_e` définie par `temporal-event-solver.md` :
+
+```math
+e_u = \epsilon_{u,solver} + \max(\epsilon_{u,spec}, |u_e^{(2p)} - u_e^{(p)}|).
+```
+
+Définir :
+
+```math
+r_T = \frac{u_e}{e_u},
+```
+
+avec la garde obligatoire :
+
+```math
+r_T < 1.
+```
+
+Alors :
+
+```math
+|\delta\log T| \le L(r_T),
+```
+
+avec :
+
+```math
+L(r) = -\log(1-r).
+```
+
+Le budget absolu sur le numérateur central est :
+
+```math
+E_N(h) = \sum_{\sigma=\pm} [L(r_{A,\sigma}) + L(r_{B,\sigma})].
+```
+
+Le budget numérique propagé sur la dérivée est donc :
+
+```math
+E_\Xi^{num}(h) = \frac{E_N(h)}{2h} = \frac{E_N(h)}{2\alpha\delta_c}.
+```
+
+Ce budget est un budget numérique propagé ; il ne constitue pas une borne sur l'erreur de troncature asymptotique de la différence finie.
+
+```text
+DELTA1_PROPAGATED_ERROR_BUDGET = VALIDATED_FOR_FREEZE
+```
+
 ## 4. Position qualitative de l'optimum
 
 Si l'on modélise l'erreur relative totale par :
@@ -150,31 +229,99 @@ R_2
 \to4.
 ```
 
-Ce rapport est un diagnostic utile d'entrée dans le régime asymptotique de l'estimateur central.
+La limite 4 reste un diagnostic asymptotique, mais le protocole confirmatoire n'utilise pas le seul ratio ponctuel observé.
 
-Il n'est **pas** un test spécifique de la réduction à deux niveaux : toute fonction `Delta_1` lisse et impaire possédant un terme cubique générique produit la même convergence quadratique.
+En présence des budgets numériques sur les différences, le critère opérationnel est l'intervalle certifié `[Q_min, Q_max]` défini dans `derivative-control.md §6`.
 
-Les collapses statiques de `gap` et `<Phi>` restent les tests propres de la réduction à deux niveaux.
+La voie :
 
-Si les différences au dénominateur deviennent comparables au plancher numérique, `R_2` devient lui-même non résolu et ne doit pas recevoir un verdict physique.
+```text
+DERIVATIVE_STABLE_QUADRATIC
+```
+
+n'est autorisée que si cet intervalle complet est contenu dans `[2,8]` et si les deux différences résolues ont le même signe certifié.
+
+Une différence noyée dans son budget numérique ne peut donc pas produire artificiellement un verdict de convergence.
+
+Ce contrôle n'est pas spécifique au modèle à deux niveaux : toute `Delta_1` lisse et impaire avec terme cubique générique possède la même structure asymptotique quadratique.
+
+Les collapses statiques du gap et de `<Phi>` restent les tests propres de la réduction effective à deux niveaux.
 
 ## 6. Extrapolation de Richardson
 
-Dans le régime quadratique :
+Richardson est strictement une extrapolation secondaire.
+
+L'estimateur primaire publié reste :
 
 ```math
-Xi_R(alpha)
-=\frac{4\widehat\Xi(alpha/2)-\widehat\Xi(alpha)}{3}
-=Xi+O(alpha^4).
+X_3 = \Xi_1(1/16).
 ```
 
-Une extrapolation de Richardson peut donc être publiée comme estimateur amélioré lorsque :
+Richardson est autorisé si et seulement si :
 
-- le rapport de convergence est compatible avec le régime quadratique selon la règle numérique préenregistrée ;
-- les deux points utilisés sont au-dessus du plancher numérique ;
-- la même procédure est appliquée à tous les fonds concernés.
+```text
+DERIVATIVE_STABLE_QUADRATIC
+```
 
-Richardson ne remplace pas la publication des valeurs brutes `Xi_hat(alpha_k)`.
+On définit alors :
+
+```math
+R_2 = \frac{4X_3 - X_2}{3}.
+```
+
+Son budget numérique, et uniquement numérique, est :
+
+```math
+e_{R_2}^{num} = \frac{4e_3 + e_2}{3}.
+```
+
+On peut également former :
+
+```math
+R_1 = \frac{4X_2 - X_1}{3}.
+```
+
+La quantité :
+
+```math
+|R_1 - R_2|
+```
+
+est publiée comme :
+
+```text
+TRUNCATION_DIAGNOSTIC_ONLY
+```
+
+Elle n'est pas une borne rigoureuse sur :
+
+```math
+|R_2 - \Xi_1|.
+```
+
+Statut :
+
+```text
+RICHARDSON = SECONDARY_EXTRAPOLATION
+```
+
+Richardson :
+
+- ne remplace pas `X_3` comme estimateur primaire ;
+- ne peut pas modifier seul le verdict confirmatoire ;
+- est interdit sous `DERIVATIVE_NUMERICAL_FLOOR` ;
+- est interdit sous `DERIVATIVE_CONTROL_SENSITIVE`.
+
+Les valeurs brutes :
+
+```text
+X_0
+X_1
+X_2
+X_3
+```
+
+restent obligatoirement publiées.
 
 ## 7. Lot numérique couplé
 
@@ -203,7 +350,10 @@ RAW_SIGMA_DELTA_CUBEROOT_RULE          = REJECTED
 DIMENSIONLESS_ERROR_BALANCE            = VALIDATED_IN_PRINCIPLE
 QUADRATIC_CONVERGENCE_RATIO_4          = VALIDATED_FOR_FREEZE_AS_ASYMPTOTIC_DIAGNOSTIC
 RATIO_4_TWO_LEVEL_SPECIFIC             = REJECTED
-RICHARDSON_EXTRAPOLATION               = VALIDATED_IN_PRINCIPLE
+RICHARDSON_USAGE_RULE                  = VALIDATED_FOR_FREEZE
+RICHARDSON_ROLE                        = SECONDARY_EXTRAPOLATION
 A_DELTA_VALUES                         = VALIDATED_FOR_FREEZE
+DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
+DERIVATIVE_STABILITY_CRITERION         = VALIDATED_FOR_FREEZE
 NUMERICAL_EVENT_LOT                    = OPEN
 ```

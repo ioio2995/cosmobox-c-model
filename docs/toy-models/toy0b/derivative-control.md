@@ -122,7 +122,36 @@ h_k(g,\mu)
 =\alpha_k\frac{gap_{GS}^{(2)}(g,\mu,0)}{6g}.
 ```
 
-Les valeurs de `alpha_k` restent `OPEN` jusqu'au gel numérique.
+Les valeurs préenregistrées pour SOFT-LOOP sont :
+
+```math
+\boxed{
+\mathcal A_\delta
+=
+\left\{
+\frac12,\frac14,\frac18,\frac1{16}
+\right\}.
+}
+```
+
+Avec l'indexation utilisée pour le contrôle :
+
+```text
+alpha_0 = 1/2
+alpha_1 = 1/4
+alpha_2 = 1/8
+alpha_3 = 1/16
+```
+
+Les pas physiques restent :
+
+```math
+h_k(g,\mu)=\alpha_k\frac{gap_{GS}^{(2)}(g,\mu,0)}{6g}.
+```
+
+La famille est dyadique dans la coordonnée naturelle du doublet mou.
+
+`alpha_0=1/2` est conservé comme point grossier de diagnostic. L'estimateur primaire de dérivée publié est construit au pas le plus fin `alpha_3=1/16`.
 
 Cette construction n'est pas un ajustement post-hoc :
 
@@ -162,25 +191,96 @@ Le gap `Lambda=3` est publié comme contrôle de convergence et peut servir à c
 
 ## 6. Stabilité plutôt que seuil unique
 
-La dérivée n'est acceptée comme estimée de manière stable que si les valeurs :
+Pour :
 
 ```math
-\widehat\Xi_1(h_k)
+X_k = \Xi_1(\alpha_k),
 ```
 
-présentent une stabilité sur la famille préenregistrée selon une règle numérique qui sera gelée avec les tolérances générales.
+le budget numérique associé est :
 
-Les statuts conceptuels sont :
+```math
+e_k = E_\Xi^{num}(\alpha_k),
+```
+
+défini dans `derivative-error-budget.md`.
+
+L'estimateur primaire publié est :
+
+```math
+X_3 = \Xi_1(1/16).
+```
+
+`X_0` est `DIAGNOSTIC_ONLY` pour le critère final de convergence.
+
+Pour `k=1,2`, définir :
+
+```math
+D_k = X_k - X_{k+1}, \quad
+\widetilde{e}_{D_k} = e_k + e_{k+1}, \quad
+m_k = |D_k| - \widetilde{e}_{D_k}, \quad
+M_k = |D_k| + \widetilde{e}_{D_k}.
+```
+
+Une différence est résolue numériquement si :
+
+```math
+m_k > 0.
+```
+
+Lorsque `m_1>0` et `m_2>0`, définir :
+
+```math
+Q_{\min} = \frac{M_2}{m_1}, \quad
+Q_{\max} = \frac{m_2}{M_1}.
+```
+
+La voie de convergence compatible avec le régime quadratique exige simultanément :
 
 ```text
-DERIVATIVE_STABLE
+m_1 > 0
+m_2 > 0
+les intervalles signés de D_1 et D_2 ont le même signe
+[Q_min, Q_max] ⊂ [2,8]
+```
+
+Alors seulement :
+
+```text
+DERIVATIVE_STABLE_QUADRATIC
+```
+
+La bande `[2,8]` est une bande opérationnelle compatible avec le régime quadratique attendu autour de la limite asymptotique `Q=4`. Elle ne signifie pas que tout `Q` de cette bande constitue une convergence quadratique exacte.
+
+`Q_min` et `Q_max` doivent être publiés.
+
+Si :
+
+```math
+|D_2| \le \widetilde{e}_{D_2},
+```
+
+alors :
+
+```text
+DERIVATIVE_NUMERICAL_FLOOR
+```
+
+Ce statut signifie uniquement que la variation entre les deux plus petits pas n'est pas résolue au-dessus du budget numérique courant. Il ne constitue pas une preuve de convergence et n'autorise pas Richardson.
+
+Dans tous les autres cas :
+
+```text
 DERIVATIVE_CONTROL_SENSITIVE
+```
+
+Lorsque la dérivée elle-même n'est pas applicable :
+
+```text
 DERIVATIVE_NOT_APPLICABLE
 ```
 
-`DERIVATIVE_CONTROL_SENSITIVE` signifie que l'estimation dépend matériellement de la famille de pas déclarée ; ce n'est pas un échec physique automatique.
-
-Dans le régime SOFT-LOOP, une absence de plateau lorsque `alpha` diminue signifie que l'estimation de la dérivée n'est pas résolue de manière robuste. À l'inverse, l'échec de pas absolus trop grands dans un régime où `delta_c` est minuscule ne doit pas être interprété comme une propriété physique de `Xi_1`.
+Toute valeur primaire `X_3` publiée doit être accompagnée de l'un de ces statuts.
 
 ## 7. Gap spectral et conditionnement
 
@@ -265,13 +365,14 @@ ABSOLUTE_STEP_FAMILY_H_DELTA         = VALIDATED_FOR_FREEZE_OUTSIDE_SOFT_LOOP
 SOFT_LOOP_FIXED_ABSOLUTE_STEPS       = REJECTED
 SOFT_LOOP_DIMENSIONLESS_ALPHA        = VALIDATED_FOR_FREEZE
 SOFT_LOOP_DELTA_C                    = gap_GS^(Lambda2)/(6g)
-SOFT_LOOP_ALPHA_VALUES               = OPEN
+SOFT_LOOP_ALPHA_VALUES               = {1/2, 1/4, 1/8, 1/16}
+A_DELTA_VALUES                       = VALIDATED_FOR_FREEZE
 SAME_PHYSICAL_H_ACROSS_CUTOFFS       = MANDATORY
 GAP_GS_PUBLICATION                   = MANDATORY
 NEAR_CROSSING_FROM_GAP_ONLY         = REJECTED
 KAPPA_DELTA_DIAGNOSTIC              = VALIDATED_IN_PRINCIPLE
 SMALL_GAP_PHYSICAL_THRESHOLD        = NOT_REQUIRED
 H_DELTA_VALUES                      = OPEN
-DERIVATIVE_NUMERICAL_TOLERANCE      = OPEN
+DERIVATIVE_STABILITY_CRITERION      = VALIDATED_FOR_FREEZE
 CONTROL_FAMILY_COMMON_PRINCIPLE     = VALIDATED_FOR_FREEZE
 ```
