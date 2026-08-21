@@ -295,6 +295,71 @@ questions ouvertes
 
 Le dépôt est la mémoire durable. Une décision devant survivre à la session doit être inscrite dans la documentation.
 
-## 12. Évolution
+## 12. Profils d'exécution Claude Code
+
+### 12.1 MECHANICAL_DOCUMENTATION
+
+```text
+MODEL = CLAUDE_HAIKU_4_5
+EFFORT = AUTO
+```
+
+**Usage** :
+
+- intégration documentaire d'une décision déjà arbitrée ;
+- synchronisation de statuts ;
+- corrections mécaniques ;
+- opérations Git simples ;
+- commit / push d'un lot déjà validé.
+
+Haiku exécute une décision déjà prise. Il ne doit pas arbitrer une question scientifique.
+
+### 12.2 REVIEW_OR_ENGINEERING
+
+```text
+MODEL = CLAUDE_SONNET_5
+EFFORT = AUTO
+```
+
+**Usage** :
+
+- revue nécessitant un raisonnement non trivial ;
+- contrôle de cohérence documentaire ;
+- conception ou implémentation logicielle ;
+- analyse technique.
+
+### 12.3 SCIENTIFIC_ESCALATION
+
+```text
+MODEL = CLAUDE_OPUS_5
+EFFORT = AUTO
+```
+
+**Usage** :
+
+- contre-expertise scientifique ciblée ;
+- démonstration difficile ;
+- recherche de contre-exemple ;
+- contradiction conceptuelle bornée.
+
+### 12.4 SCIENTIFIC_HARD_BLOCKING
+
+```text
+MODEL = CLAUDE_OPUS_5
+EFFORT = HIGH
+```
+
+Usage exceptionnel uniquement pour un BLOCKING scientifique précis lorsque le niveau inférieur est insuffisant.
+
+### 12.5 Principe normatif
+
+```text
+LOWEST_SUFFICIENT_MODEL = REQUIRED
+MODEL_ESCALATION = EXPLICIT
+```
+
+Le modèle le moins coûteux capable d'exécuter correctement le lot doit être utilisé. Une escalade vers Sonnet ou Opus doit correspondre à une nécessité de raisonnement identifiée, pas à un réglage par défaut.
+
+## 13. Évolution
 
 Toute modification de cette charte exige une décision explicite, la mise à jour des documents qui la référencent si leur sens est affecté, la vérification du diff réel et la validation de Lionel.

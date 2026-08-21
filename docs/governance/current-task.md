@@ -147,11 +147,12 @@ s_down = 1
 s_grow = 2
 ```
 
-Décision scientifique courante en cours d'intégration documentaire :
+Décision scientifique validée et intégrée :
 
 ```text
 BETA_REFINEMENT_VALUES = VALIDATED_FOR_FREEZE
 BETA_VALUES = {1, 1/2, 1/4, 1/8}
+BETA_COMMIT = 1b37a96b832f45549bc24e41347a46e68d172db0
 ```
 
 `beta` contrôle le bracketing initial, pas la précision finale du temps continu.
@@ -161,7 +162,7 @@ BETA_VALUES = {1, 1/2, 1/4, 1/8}
 ## Paramètres encore OPEN avant gel
 
 ```text
-# temporal / precision
+# temporal / numerical
 ROOT_SOLVER_TOLERANCES
 ARGMAX_TOLERANCES
 SPECTRAL_PRECISION_CONTROL
@@ -195,18 +196,25 @@ NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 
 ## Workflow Claude Code courant
 
-La gouvernance de collaboration impose désormais un préflight explicite pour chaque mandat.
+La gouvernance de collaboration impose un préflight explicite et un profil d'exécution déclaré pour chaque mandat.
 
-Profil par défaut pour les opérations documentaires, Git, revue de diff et future implémentation :
+Profils disponibles (cf. `docs/governance/collaboration-governance.md` §12) :
 
 ```text
-CLIENT = CLAUDE_CODE_LOCAL
-MODEL = CLAUDE_SONNET_5
-EFFORT = AUTO
-SESSION_CONTEXT = CLEAR_REQUIRED
+MECHANICAL_DOCUMENTATION        = CLAUDE_HAIKU_4_5 / AUTO
+REVIEW_OR_ENGINEERING            = CLAUDE_SONNET_5 / AUTO
+SCIENTIFIC_ESCALATION            = CLAUDE_OPUS_5 / AUTO
+SCIENTIFIC_HARD_BLOCKING         = CLAUDE_OPUS_5 / HIGH
 ```
 
-`Opus` est une escalade ponctuelle pour une question scientifique difficile et bornée ; il n'est pas le modèle par défaut des opérations mécaniques.
+Le profil mécanique Haiku est le profil normal pour les opérations documentaires et les tâches de secrétariat technique. Sonnet est réservé aux revues et à l'ingénierie nécessitant un raisonnement non trivial. Opus est une escalade explicite et ciblée, jamais un réglage par défaut.
+
+Principe :
+
+```text
+LOWEST_SUFFICIENT_MODEL = REQUIRED
+MODEL_ESCALATION = EXPLICIT
+```
 
 Chaque mandat déclare aussi :
 
@@ -218,7 +226,7 @@ EXPECTED_HEAD
 EXPECTED_WORKTREE
 ```
 
-Principe :
+Autre principe :
 
 ```text
 ONE_TASK = ONE_BOUNDED_SCOPE
