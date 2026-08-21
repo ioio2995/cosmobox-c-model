@@ -545,7 +545,15 @@ Le coût de `T_grow` est plus élevé : `H_grow` a la bande `2 Omega` et ses bor
 
 La certification de cellules peut utiliser des bornes de Lipschitz / dérivées. Une densité moyenne de zéros ne constitue jamais un certificat de complétude.
 
-Valeurs `beta_k` : `OPEN`.
+Valeurs `beta_k` préenregistrées :
+
+```text
+BETA_VALUES = {1, 1/2, 1/4, 1/8}
+```
+
+`beta` contrôle uniquement le maillage initial de certification / bracketing, pas une tolérance sur le temps final (obtenu par le solveur spectral continu). `beta=1` correspond à une demi-période de la bande maximale de la fonction de certification ; raffinement dyadique imbriqué ; `beta=1/8` donne une phase maximale `pi/8` par cellule à la bande limite. Aucune finesse supplémentaire n'est requise comme garantie de complétude, celle-ci reposant sur l'exclusion certifiée des cellules, leur subdivision adaptative et le solveur continu.
+
+Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques (`OPEN`). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
 
 ---
 
@@ -985,7 +993,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # temporal / numerical
-BETA_REFINEMENT_VALUES
 ROOT_SOLVER_TOLERANCES
 ARGMAX_TOLERANCES
 SPECTRAL_PRECISION_CONTROL

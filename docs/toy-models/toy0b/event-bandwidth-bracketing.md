@@ -156,7 +156,15 @@ par défaut.
 
 Il est interdit de choisir des familles `beta` différentes par estimateur après inspection. Seul le facteur `s_event`, fixé analytiquement ci-dessus, diffère.
 
-Les valeurs numériques `beta_k` restent `OPEN`.
+Valeurs numériques préenregistrées :
+
+```text
+BETA_VALUES = {1, 1/2, 1/4, 1/8}
+```
+
+`beta` contrôle uniquement le maillage initial de certification / bracketing ; ce n'est pas une tolérance sur le temps final, obtenu par le solveur spectral continu. `beta=1` correspond à une demi-période de la bande maximale de la fonction de certification ; raffinement dyadique imbriqué ; `beta=1/8` donne une phase maximale `pi/8` par cellule à la bande limite. Aucune finesse supplémentaire n'est requise comme garantie de complétude, celle-ci reposant sur l'exclusion certifiée des cellules, leur subdivision adaptative et le solveur continu.
+
+Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques (`OPEN`). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
 
 ## 4. Pourquoi certifier sur chi / chi' plutôt que sur F'
 
@@ -321,5 +329,5 @@ SAFE_SPECTRAL_BANDWIDTH                 = VALIDATED_FOR_FREEZE
 ZERO_DENSITY_AS_COMPLETENESS_BOUND      = REJECTED
 ZERO_DENSITY_AS_COST_HEURISTIC          = ALLOWED_WITH_SCOPE
 DERIVATIVE_CELL_EXCLUSION               = VALIDATED_IN_PRINCIPLE
-BETA_GRID_VALUES                        = OPEN
+BETA_GRID_VALUES                        = VALIDATED_FOR_FREEZE
 ```
