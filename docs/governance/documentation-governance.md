@@ -22,7 +22,8 @@ docs/
 │   ├── software-architecture-governance.md
 │   ├── current-task.md
 │   └── agents/
-│       └── cosmobox-physics-governance.md
+│       ├── cosmobox-physics-governance.md
+│       └── cosmobox-doc-governance.md
 ├── model/
 │   └── c-hypothesis.md
 ├── decisions/
@@ -173,6 +174,7 @@ docs/governance/documentation-governance.md                    — gelé
 docs/governance/software-architecture-governance.md            — gelé
 docs/governance/current-task.md                                — état courant
 docs/governance/agents/cosmobox-physics-governance.md          — validé pour gel
+docs/governance/agents/cosmobox-doc-governance.md              — validé pour gel
 docs/model/c-hypothesis.md                                     — gelé conceptuellement
 docs/toy-models/toy0/specification.md                          — gelé conceptuellement
 docs/toy-models/toy0/implementation-design.md                  — gelé ; contrat 0A exécuté
