@@ -1167,25 +1167,93 @@ les deux prédictions statiques sont :
 
 Ces collapses constituent la porte statique de SOFT-LOOP et doivent être testés avant toute interprétation dynamique fondée sur `delta_c`.
 
+Le modèle effectif motive l'échelle analytique :
+
 ```math
-\delta_c=gap_0/(6g).
+\delta_c^{eff}=\frac{gap_0}{6g}.
 ```
 
-La dérivée utilise une famille sans dimension :
+Pour le protocole numérique confirmatoire, l'échelle opérationnelle est définie à partir du gap calculé au cutoff de référence :
+
+```math
+\boxed{
+\delta_c(g,\mu)
+=
+\frac{gap_{GS}^{(\Lambda=2)}(g,\mu,0)}{6g}.
+}
+```
+
+La famille SOFT-LOOP préenregistrée est :
+
+```math
+\boxed{
+\mathcal A_\delta
+=
+\left\{
+\frac12,\frac14,\frac18,\frac1{16}
+\right\}.
+}
+```
+
+Les pas physiques sont :
 
 ```math
 h_k=\alpha_k\delta_c.
 ```
 
-Les mêmes valeurs physiques `h_k`, générées à partir du gap `Lambda=2`, sont utilisées à `Lambda=3`.
+Les mêmes valeurs physiques `h_k`, générées à partir de `Lambda=2`,
+sont utilisées à `Lambda=3`.
 
 Pour une `Delta1` lisse et impaire :
 
 ```math
-\widehat\Xi_1(\alpha)=\Xi_1+C_2\alpha^2+O(\alpha^4).
+\widehat\Xi_1(\alpha)
+=
+\Xi_1+C_2\alpha^2+O(\alpha^4).
 ```
 
-Pour une famille géométrique `alpha,alpha/2,alpha/4`, le rapport de convergence tend vers `4` lorsque le terme quadratique domine. Richardson peut être utilisé seulement selon une règle préenregistrée et sans masquer les valeurs brutes.
+L'estimateur primaire publié est :
+
+```math
+\boxed{
+X_3=\widehat\Xi_1(1/16).
+}
+```
+
+Le contrôle de stabilité est défini intégralement dans
+`derivative-control.md`.
+
+Ses statuts sont :
+
+```text
+DERIVATIVE_STABLE_QUADRATIC
+DERIVATIVE_NUMERICAL_FLOOR
+DERIVATIVE_CONTROL_SENSITIVE
+DERIVATIVE_NOT_APPLICABLE
+```
+
+La voie `DERIVATIVE_STABLE_QUADRATIC` exige notamment l'intervalle certifié
+`[Q_min,Q_max] subset [2,8]` défini dans `derivative-control.md`.
+
+Le budget numérique propagé depuis les temps est défini dans
+`derivative-error-budget.md` et porte le statut :
+
+```text
+DELTA1_PROPAGATED_ERROR_BUDGET = VALIDATED_FOR_FREEZE
+```
+
+Richardson est strictement secondaire :
+
+```text
+RICHARDSON = SECONDARY_EXTRAPOLATION
+```
+
+Il est autorisé uniquement sous `DERIVATIVE_STABLE_QUADRATIC`,
+ne remplace pas `X_3` et ne peut pas modifier seul le verdict confirmatoire.
+
+Les détails normatifs de `Q_min`, `Q_max`, `E_Xi_num`, `R_1`, `R_2`
+et de leurs budgets restent dans les deux documents spécialisés ;
+ne pas les dupliquer ici.
 
 `Delta1` n'est pas obligé de suivre une courbe universelle à deux niveaux ; un éventuel collapse dynamique est une hypothèse secondaire.
 
@@ -1222,17 +1290,26 @@ Aucun résultat pilote ou de qualification ne doit être présenté comme confir
 ### Contrôle temporel et précision
 
 ```text
-ROOT_SOLVER_TOLERANCES
 ARGMAX_TOLERANCES
-SPECTRAL_PRECISION_CONTROL
-DELTA1_PROPAGATED_ERROR_BUDGET
 ```
+
+`ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
+`SIMPLE_ROOT_CONTROL` et `DELTA1_PROPAGATED_ERROR_BUDGET`
+sont `VALIDATED_FOR_FREEZE`.
+
+`DEGENERATE_ROOT_CONTROL` reste `OPEN` et est traité séparément
+car il ne relève pas du contrôle de racine simple.
 
 ### SOFT-LOOP
 
 ```text
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
+```
+
+Les éléments suivants sont `VALIDATED_FOR_FREEZE` :
+
+```text
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
@@ -1263,7 +1340,12 @@ ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
-Ne sont plus ouverts : orientation source-récepteur, grille MAIN `(g,mu,delta)`, choix interpolation vs solveur, différences finies temporelles, seuil `NEAR_CROSSING`, traitement du canal `m=0` et facteur de bande global des événements.
+Ne sont notamment plus ouverts : orientation source-récepteur, grille MAIN
+`(g,mu,delta)`, choix interpolation vs solveur, différences finies temporelles,
+seuil `NEAR_CROSSING`, traitement du canal `m=0`, facteur de bande global
+des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
+`SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
+`DERIVATIVE_STABILITY_CRITERION` et `RICHARDSON_USAGE_RULE`.
 
 ---
 

@@ -589,7 +589,19 @@ root / argmax conditioning
 
 Les tolérances numériques et la règle uniforme de stabilité sous précision sont fixées dans `temporal-event-solver.md` (sections 15-24) et `VALIDATED_FOR_FREEZE`.
 
-Le budget propagé vers `Delta1` est `OPEN` et doit être fermé avant `A_DELTA_VALUES`.
+Le budget propagé vers `Delta1` est désormais défini dans
+`derivative-error-budget.md` et porte le statut :
+
+```text
+DELTA1_PROPAGATED_ERROR_BUDGET = VALIDATED_FOR_FREEZE
+```
+
+La famille `A_DELTA_VALUES`, le critère de stabilité de la dérivée et la
+règle d'usage de Richardson sont également `VALIDATED_FOR_FREEZE`.
+
+Le plan de validation renvoie à `derivative-control.md` et
+`derivative-error-budget.md` pour leurs définitions normatives détaillées ;
+il ne les duplique pas ici.
 
 ---
 
@@ -995,14 +1007,11 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 ```text
 # temporal / numerical
 ARGMAX_TOLERANCES
-DELTA1_PROPAGATED_ERROR_BUDGET
+DEGENERATE_ROOT_CONTROL
 
 # soft-loop
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
-A_DELTA_VALUES
-DERIVATIVE_STABILITY_CRITERION
-RICHARDSON_USAGE_RULE
 
 # threshold / interpretation
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
@@ -1035,6 +1044,10 @@ RAW_EIGENVECTOR_NONZERO_COUNT_ORACLE
 ROOT_SOLVER_TOLERANCES
 SPECTRAL_PRECISION_CONTROL
 SIMPLE_ROOT_CONTROL
+DELTA1_PROPAGATED_ERROR_BUDGET
+A_DELTA_VALUES
+DERIVATIVE_STABILITY_CRITERION
+RICHARDSON_USAGE_RULE
 ```
 
 ---
