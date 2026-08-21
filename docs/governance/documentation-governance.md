@@ -20,7 +20,9 @@ docs/
 │   ├── collaboration-governance.md
 │   ├── documentation-governance.md
 │   ├── software-architecture-governance.md
-│   └── current-task.md
+│   ├── current-task.md
+│   └── agents/
+│       └── cosmobox-physics-governance.md
 ├── model/
 │   └── c-hypothesis.md
 ├── decisions/
@@ -47,6 +49,12 @@ Les dossiers vides ne sont pas créés à l'avance. Cette arborescence est la ci
 ### `docs/governance/`
 
 Règles transverses du dépôt : architecture documentaire, collaboration, architecture logicielle, publication, statuts, contrôles, et état courant du contrat de continuité.
+
+### `docs/governance/agents/`
+
+Contrats normatifs des rôles spécialisés utilisés par les agents ou outils de collaboration. Ces documents définissent le comportement d'un rôle sans remplacer les gouvernances transverses.
+
+Les configurations locales d'agents ne sont pas des sources normatives et ne sont pas tenues d'être versionnées. Elles doivent référencer le contrat versionné correspondant au lieu d'en maintenir une copie divergente.
 
 ### `docs/model/`
 
@@ -77,6 +85,8 @@ Propositions temporaires non gelées. Après validation, leur contenu est migré
 ## 4. Hiérarchie des sources
 
 Les documents de gouvernance ont autorité sur les règles transverses relevant explicitement de leur domaine, notamment collaboration, architecture documentaire et architecture logicielle.
+
+Une gouvernance de rôle spécialisée sous `docs/governance/agents/` est subordonnée aux gouvernances transverses et fait autorité pour le comportement du rôle qu'elle définit. Une configuration locale ou un mandat courant peut restreindre davantage ce rôle mais ne peut pas affaiblir sa gouvernance ni une gouvernance transverse.
 
 À l'intérieur du contenu scientifique ou expérimental, en cas de divergence :
 
@@ -110,6 +120,8 @@ Un document ne peut être gelé si une contradiction de statut ou de valeur subs
 ## 6. Non-duplication
 
 Les documents secondaires utilisent un renvoi vers la source principale. Les résumés sont autorisés s'ils sont clairement identifiés comme tels et mis à jour dans le même paquet lorsqu'ils changent de sens.
+
+Une configuration locale d'agent contient uniquement les éléments techniques nécessaires à son chargement et les références vers sa gouvernance versionnée ; elle ne maintient pas une seconde définition normative du rôle.
 
 ## 7. Modification d'une norme gelée
 
@@ -156,14 +168,15 @@ Les sources canoniques sont :
 
 ```text
 README.md
-docs/governance/collaboration-governance.md          — gelé
-docs/governance/documentation-governance.md          — gelé
-docs/governance/software-architecture-governance.md  — gelé
-docs/governance/current-task.md                      — état courant
-docs/model/c-hypothesis.md                           — gelé conceptuellement
-docs/toy-models/toy0/specification.md                — gelé conceptuellement
-docs/toy-models/toy0/implementation-design.md        — gelé ; contrat 0A exécuté
-docs/toy-models/toy0/closure-report.md               — clos
+docs/governance/collaboration-governance.md                    — gelé
+docs/governance/documentation-governance.md                    — gelé
+docs/governance/software-architecture-governance.md            — gelé
+docs/governance/current-task.md                                — état courant
+docs/governance/agents/cosmobox-physics-governance.md          — validé pour gel
+docs/model/c-hypothesis.md                                     — gelé conceptuellement
+docs/toy-models/toy0/specification.md                          — gelé conceptuellement
+docs/toy-models/toy0/implementation-design.md                  — gelé ; contrat 0A exécuté
+docs/toy-models/toy0/closure-report.md                         — clos
 ```
 
 Le benchmark 0A est clos. Son architecture d'implémentation effective est régie par `software-architecture-governance.md` et enregistrée dans `docs/toy-models/toy0/closure-report.md` ainsi que dans `docs/governance/current-task.md`.
