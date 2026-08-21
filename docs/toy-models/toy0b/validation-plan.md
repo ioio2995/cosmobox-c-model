@@ -1,109 +1,84 @@
-# Toy Model 0B — plan de validation et pré-enregistrement
+# Toy Model 0B — plan de validation consolidé
 
-Statut : **revue en cours**  
+Statut : **revue de clôture pré-gel**  
 Spécification scientifique : `docs/toy-models/toy0b/specification.md`
 
-Ce document décrit comment les décisions scientifiques de 0B devront être testées. Il sépare les oracles analytiques déjà connus, les calculs pilotes `Λ=1`, les mesures prospectives `Λ=2`, les contrôles `Λ=3` et les paramètres de protocole encore ouverts.
+Ce document décrit le protocole de validation de 0B sous une forme compacte. Les preuves détaillées restent dans les supports analytiques du dossier `toy0b/`.
 
-Aucune exécution scientifique 0B n'est autorisée tant que les paramètres marqués `OPEN` ne sont pas fermés et que le lot d'implémentation n'est pas explicitement autorisé.
+Aucune exécution confirmatoire 0B ni implémentation n'est autorisée tant que les paramètres marqués `OPEN` ne sont pas fermés et que le lot n'est pas explicitement autorisé dans `docs/governance/current-task.md`.
 
 ---
 
-## 1. Régimes
+## 1. Régimes et catégories
 
 ```text
 REFERENCE_REGIME
-    N = 6
-    Λ = 2
+    N=6
+    Lambda=2
 
 TRUNCATION_CHECK
-    N = 6
-    Λ = 3
+    N=6
+    Lambda=3
 
 PILOT_REGRESSION
-    N = 6
-    Λ = 1
+    N=6
+    Lambda=1
 ```
 
-Le régime `Λ=1` ne fournit aucun résultat confirmatoire pour le régime scientifique de référence.
-
----
-
-## 2. Catégories de résultats
-
-Chaque sortie doit porter une catégorie explicite :
+Catégories de résultats :
 
 ```text
 STRUCTURAL_ANALYTIC
 PILOT_LAMBDA1
+QUALIFICATION_NONCONFIRMATORY
 PREREGISTERED_REFERENCE
 TRUNCATION_CONTROL
 EXTENDED_DIAGNOSTIC
 ```
 
-Les catégories sont définies dans la spécification et dans le brouillon de gouvernance méthodologique : `features/scientific-method-governance.md`.
+Aucun résultat pilote ou de qualification déjà vu ne peut devenir confirmatoire par changement d'étiquette.
 
 ---
 
-## 3. Oracles analytiques structurels
+## 2. Oracles structurels obligatoires
 
-Ces valeurs ne sont pas prospectives ; elles doivent être vérifiées par le code comme tests de non-régression.
+Le code futur devra vérifier comme non-régressions analytiques :
 
-### A01 — comptage du secteur physique
-
-Distribution attendue :
+### A01 — comptage physique
 
 ```text
-spread = 0 -> 1 configuration
-spread = 1 -> 16 configurations
-spread = 2 -> 3 configurations
+spread=0 -> 1 configuration
+spread=1 -> 16 configurations
+spread=2 -> 3 configurations
 ```
-
-Formule :
 
 ```math
-\dim\mathcal H_{\rm phys}(\Lambda)=40\Lambda-2.
+\dim\mathcal H_{phys}(\Lambda)=40\Lambda-2.
 ```
-
-Valeurs :
 
 ```text
-Λ=1 -> 38
-Λ=2 -> 78
-Λ=3 -> 118
+Lambda=1 -> 38
+Lambda=2 -> 78
+Lambda=3 -> 118
 ```
 
-### A02 — états strictement intérieurs
+### A02 — intérieur
 
 ```math
-\dim\mathcal H_{\rm interior}(\Lambda)
-=
-\dim\mathcal H_{\rm phys}(\Lambda-1).
+\dim\mathcal H_{interior}(\Lambda)
+=\dim\mathcal H_{phys}(\Lambda-1).
 ```
 
-Donc :
+### A03 — shifts cycliques
 
-```text
-Λ=2 -> 38 intérieurs
-Λ=3 -> 78 intérieurs
-```
-
-### A03 — rang des shifts cycliques
-
-Pour :
-
-```math
-j=2\Lambda-k,
-```
+Pour `j=2Lambda-k` :
 
 ```math
 r_\Lambda(L^k)
-=
-\sum_m
-\max(0,j+1-\operatorname{spread}(m)).
+=\sum_n\max(0,j+1-spread(n)).
 ```
 
-Table compacte :
+Table attendue :
 
 | `j` | 0 | 1 | 2 | 3 | 4 | 5 |
 |---:|---:|---:|---:|---:|---:|---:|
@@ -112,10 +87,8 @@ Table compacte :
 ### A04 — Gauss tangent
 
 ```math
-D_i^{(E)}-D_{i-1}^{(E)}=D_i^{(n)}.
+D_{n_i}=D_{E_i}-D_{E_{i-1}}.
 ```
-
-Conséquences structurelles :
 
 ```text
 S_n subset S_E
@@ -123,142 +96,169 @@ dim S_n <= 5
 dim S_E <= 6
 ```
 
-### A05 — zéro-mode cyclique
+### A05 — flux uniforme
 
 ```math
-\Phi=\frac16\sum_iE_i,
-```
-
-```math
+\Phi=(1/6)\sum_iE_i,
+\qquad
 [\Phi,L]=L.
 ```
 
-### A06 — orthogonalité collective au point `δ=0`
-
-Sous réserve que les deux générateurs passent Gate 0 :
+### A06 — orthogonalité cyclique sur `delta=0`
 
 ```math
-\langle D_{\rm stag},D_\Phi\rangle_{HS}=0
+D_\Phi\perp S_n
+```
+
+pour tout `(g,mu,0)` sous prescription canonique. Si `D_Phi` est actif :
+
+```math
+S_E=S_n\oplus_\perp span\{D_\Phi\}.
+```
+
+Aucun oracle `dim S_E=6` global n'est autorisé.
+
+### A07 — symétries et covariance
+
+Vérifier les actions déclarées de `T`, `C`, `S`, `R`, `Q`, `K` et notamment :
+
+```math
+R H(g,\mu,\delta)R^\dagger=H(g,\mu,-\delta),
+```
+
+```math
+[Q,H(g,\mu,\delta)]=0,
+```
+
+```math
+Qn_pQ^\dagger=1-n_{1-p}.
+```
+
+### A08 — parité temporelle et réciprocité
+
+```math
+\chi_{pq}(-t)=-\chi_{pq}(t),
+```
+
+```math
+\chi_{pq}(t)=\chi_{qp}(t).
+```
+
+L'ancien besoin d'une convention ordonnée source-récepteur est donc clos.
+
+### A09 — oracles `Delta`
+
+```math
+\Delta_1(g,\mu,0)=0,
+```
+
+```math
+\Delta_1(g,\mu,-\delta)=-\Delta_1(g,\mu,+\delta),
+```
+
+```math
+\Delta_2(g,\mu,\delta)=0.
+```
+
+### A10 — canal de multigrade nul
+
+Dans le secteur physique :
+
+```math
+n_i=b_i+E_i-E_{i-1}.
+```
+
+Donc :
+
+```math
+[n_p,\Pi_0(O)]=0
 ```
 
 et :
 
-```math
-\dim S_{\rm resp}^{\rm collective}=2.
+```text
+ZERO_GRADE_KUBO_CHANNEL      = INACTIVE_EXACT
+ZERO_GRADE_NON_TARGET_WEIGHT = ZERO_EXACT
 ```
 
-Ce résultat n'est pas applicable automatiquement pour `δ != 0`.
-
-### A07 — réflexion unitaire
-
-Vérifier exactement les règles d'action déclarées :
-
-```math
-R c_j^\dagger R^\dagger=c_{-j}^\dagger,
-```
-
-à phase globale près sur `N_f=3`, ainsi que :
-
-```math
-R E_iR^\dagger=-E_{-i-1},
-```
-
-```math
-R U_iR^\dagger=U_{-i-1}^\dagger.
-```
-
-### A08 — covariance de `R`
-
-```math
-R H(g,\mu,\delta)R^\dagger
-=H(g,\mu,-\delta).
-```
-
-### A09 — symétrie `Q`
-
-```math
-Q=SR,
-```
-
-```math
-[Q,H(g,\mu,\delta)]=0.
-```
-
-### A10 — action de `Q` sur les occupations
-
-```math
-Q n_pQ^\dagger=1-n_{1-p}.
-```
-
-Le commutateur de Kubo doit éliminer les constantes :
-
-```math
-[1-n_a,1-n_b(t)]=[n_a,n_b(t)].
-```
+Le code ne doit jamais compter deux fois le canal auto-conjugué `m=0`.
 
 ---
 
-## 4. Calculs pilotes `Λ=1`
+## 3. Régressions historiques `Lambda=1`
 
-Ces résultats sont déjà connus et servent uniquement de régression :
+Résultats déjà connus :
 
 ```text
-rank(F_D)          = 6
-rank(F_edge)       = 18
-rank(F_path)       = 36
-rank(F_loop^(1))   = 38
-rank(L)            = 18
+rank(F_D)        = 6
+rank(F_edge)     = 18
+rank(F_path)     = 36
+rank(F_loop^(1)) = 38
+rank(L)          = 18
 ```
 
-Toute reproduction de ces valeurs doit être marquée :
+Toute reproduction porte :
 
 ```text
 RESULT_CLASS = PILOT_LAMBDA1
 ```
 
-et non `PREREGISTERED_REFERENCE`.
-
 ---
 
-## 5. Mesures prospectives `Λ=2`
+## 4. Qualification déjà divulguée
 
-Les quantités suivantes n'ont pas encore été calculées dans le régime de référence et pourront devenir confirmatoires après gel du protocole :
+Les données déjà observées à `Lambda=2/3`, notamment énergie de fond, gaps, activité de `D_Phi`, poids de saturation au bord, structure SOFT-LOOP et pente vers `|mu|^-5`, sont classées :
 
 ```text
-rank(F_D)
-rank(F_edge)
-rank(F_path)
-rank(F_loop^(1))
-rank(F_loop^harm)
+QUALIFICATION_NONCONFIRMATORY
 ```
 
-Ces rangs globaux sont des diagnostics instrumentaux et ne constituent pas le critère scientifique primaire.
+Elles peuvent guider le design préenregistré, mais ne peuvent être revendiquées comme découvertes confirmatoires ultérieures.
 
-Le rapport doit également publier les spectres singuliers pertinents, noyaux et conditionnements lorsqu'ils sont utilisés par un verdict pré-enregistré.
+Le diagnostic :
+
+```math
+B_2=P(\max_i|E_i|=2)
+```
+
+mesure la pression au bord, pas l'erreur de troncature.
+
+Le résidu de Ritz de l'état `Lambda=2` plongé dans `Lambda=3` est privilégié comme diagnostic de design du couplage aux états omis lorsque nécessaire.
 
 ---
 
-## 6. Gate 0 — activité de la référence
+## 5. État fondamental et Gate 0
 
-Pour chaque générateur déclaré `A` :
+À chaque point de campagne publier :
 
-1. calculer `d_GS` ;
-2. construire `P_GS` ;
-3. calculer :
-
-```math
-[A,P_{GS}].
+```text
+d_GS
+gap_GS
 ```
 
-Si le commutateur est nul selon le critère numérique gelé :
+Aucun seuil `NEAR_CROSSING` ne rejette un point scientifique.
+
+Pour chaque générateur `A` :
+
+```math
+D_A=-i[A,\rho].
+```
+
+Si :
+
+```math
+[A,P_{GS}]=0,
+```
+
+alors :
 
 ```text
 GENERATOR_ACTIVITY = INACTIVE
 ```
 
-et aucune analyse d'identifiabilité n'est interprétée pour ce générateur.
+et non `PASS`.
 
-Le rapport publie :
+Publier au minimum :
 
 ```text
 generator
@@ -269,15 +269,9 @@ activity_status
 
 ---
 
-## 7. Test statique ciblé
+## 6. Identifiabilité statique et dynamique
 
-Pour les générateurs actifs, construire la base HS orthonormale de :
-
-```math
-S_{\rm resp}.
-```
-
-Pour chaque famille `F`, construire la matrice restreinte :
+Pour chaque sous-espace de réponse pré-déclaré `S_resp` et famille de mesure `F`, construire la restriction :
 
 ```math
 M_{F|S}.
@@ -294,7 +288,7 @@ restricted conditioning
 restricted kernel projector
 ```
 
-Verdict :
+Verdict statique :
 
 ```text
 STATIC = PASS
@@ -304,240 +298,370 @@ STATIC = FAIL
     sinon
 ```
 
-Le `PASS` statique autorise le `PASS` dynamique par implication mathématique ; le `FAIL` statique n'implique pas un échec dynamique.
+`STATIC PASS => DYNAMIC PASS` exactement.
 
----
-
-## 8. Test dynamique de Krylov
-
-Ce test n'est exécuté que si :
-
-```text
-STATIC = FAIL
-```
-
-pour le domaine considéré.
-
-Construire :
+En cas de `STATIC FAIL` seulement, construire :
 
 ```math
-W(F,H)=span{F,L_HF,L_H^2F,...}
+\mathcal L_H(O)=i[H,O],
 ```
-
-jusqu'à stabilisation du rang du span.
-
-Tester :
 
 ```math
-S_{\rm resp}\cap W(F,H)^\perp.
+W(F,H)=span\{F,\mathcal L_HF,\mathcal L_H^2F,\ldots\}
 ```
 
-Publier :
+jusqu'à stabilisation.
 
-```text
-krylov_span_dimension
-stabilization_order
-restricted_dynamic_kernel_dimension
-dynamic_status
-```
-
-Verdict :
+Verdict dynamique :
 
 ```text
 DYNAMIC = PASS
-    si l'intersection est nulle
+    si S_resp intersect W(F,H)^perp = {0}
 
 DYNAMIC = FAIL
     sinon
 ```
 
-`DYNAMIC = PASS` n'autorise que le protocole de réponse temporelle ; il ne vaut pas validation des temps caractéristiques ni de `C_eff`.
+Un `DYNAMIC PASS` autorise l'étude temporelle ; il ne valide pas les temps caractéristiques ni `C_eff`.
+
+Les rangs doivent être recalculés à chaque point où ils interviennent ; aucun `rank S_n=5` ou `dim S_E=6` n'est transporté depuis la référence.
 
 ---
 
-## 9. Réponse de Kubo
+## 7. Représentation de Kubo et contrôle spectral
 
-Pour chaque fond `theta=(g,mu,delta,...)` :
-
-```math
-\chi_{pq}^{(\theta)}(t)
-=
-i Tr[\rho_\theta [n_p,n_q^{(\theta)}(t)]].
-```
-
-La fonctionnelle utilisée est :
+Pour chaque fond :
 
 ```math
-F_{pq}^{(\theta)}(t)
-=\chi_{pq}^{(\theta)}(t)^2/4.
+\chi_{pq}(t)
+=iTr[\rho[n_p,n_q(t)]].
 ```
 
-Oracles immédiats :
+```math
+F_{pq}(t)=\chi_{pq}(t)^2/4.
+```
+
+Oracles :
 
 ```text
-F_pq(0) = 0 pour p != q
+F_pq(0)=0 pour p!=q
 0 <= F_pq(t) <= 1
 ```
 
-Le protocole de validation doit vérifier que la source de Kubo `epsilon` n'est jamais confondue avec les paramètres du fond `theta`.
+Dans la base `K`-réelle :
+
+```math
+\chi_{pq}(t)=\sum_{\omega>0}C_{pq}(\omega)\sin(\omega t).
+```
+
+Les poids sont groupés par projecteur spectral, jamais par simple décompte des vecteurs propres individuels dans un multiplet dégénéré.
+
+Le code futur doit comparer, sur des points-oracles, deux chemins indépendants pour les premiers moments :
+
+```text
+MOMENT_OPERATOR_PATH
+MOMENT_SPECTRAL_PATH
+```
+
+avec la convention de signe normative.
+
+Interdits comme estimateurs nominaux :
+
+```text
+finite-difference time derivatives
+interpolation-based final event times
+numerical quadrature of P_alpha
+```
 
 ---
 
-## 10. Développement de court temps
+## 8. Court temps
 
-Pour chaque relation testée :
-
-1. calculer le premier nested commutator opératoriel non nul ;
-2. vérifier la borne structurelle issue de la localité ;
-3. calculer les coefficients d'état `a_r` ;
-4. déterminer `nu_state` comme premier coefficient d'état non nul.
-
-Une valeur :
-
-```text
-nu_state > distance_graph
-```
-
-est autorisée et ne constitue pas automatiquement une erreur.
-
-Pour les paires opposées `d=3`, le protocole doit conserver la possibilité préenregistrée d'une annulation par interférence des deux arcs minimaux.
-
----
-
-## 11. Oracle `C_short`
-
-Si :
-
-```text
-nu_ref = nu_state = nu
-```
-
-calculer algébriquement :
+Convention :
 
 ```math
-C_short
-=|a_state/a_ref|^(1/nu).
+ad_H(O)=[H,O],
+\qquad
+\mathcal L_H(O)=i[H,O].
 ```
 
-Puis vérifier que :
+Moments purs :
 
 ```math
-C_eff^thr(eta) -> C_short
+M_r^{pq}
+=-2\langle\Omega|n_p(H-E_0)^rn_q|\Omega\rangle.
 ```
 
-lorsque `eta` entre dans le régime asymptotique défini par le protocole final.
+La version canonique utilise `P_GS/d_GS` et traite explicitement le shell `omega=0`.
 
-Le critère numérique de convergence reste :
+Détermination de `nu` :
 
 ```text
-OPEN
+M1 != 0                  -> nu=1
+M1 = 0                   -> nu>=3
+M1=0 and M3 != 0         -> nu=3
+M1=M3=0 and M5 != 0      -> nu=5
+...
 ```
 
-jusqu'au gel des tolérances et de la grille `eta`.
+Les zéros exacts doivent être rattachés aux règles structurelles déjà démontrées : localité, `K_SECTOR_ODDNESS`, parité bipartite et règles pair/impair de distance. Un zéro seulement flottant reste soumis au contrôle numérique préenregistré.
 
-Si les exposants diffèrent :
+Pour une arête `{p,q}={i,i+1}` :
+
+```math
+M_1^{pq}=J\langle X_i\rangle.
+```
+
+Pour `d>=2` :
+
+```math
+M_1^{pq}=0.
+```
+
+Si référence et état ont le même `nu` :
+
+```math
+C_{short}=|a_{state}/a_{ref}|^{1/\nu}.
+```
+
+Sinon :
 
 ```text
 SHORT_TIME_COMPARISON = NOT_APPLICABLE
 D_thr                 = NOT_DEFINED
 ```
 
----
-
-## 12. Temps de croissance
-
-Sur la première montée :
+Pour une arête régulière, vérifier aussi :
 
 ```math
-T_peak
-```
-
-est le premier maximum de `F`.
-
-Puis :
-
-```math
-T_grow
-=
-inf argmax_{0<t<T_peak} dF/dt.
-```
-
-Le protocole numérique de localisation d'un argmax et le traitement des égalités / plateaux restent :
-
-```text
-OPEN
-```
-
-jusqu'au gel de l'échantillonnage temporel.
-
-`T_grow` est l'estimateur temporel primaire.
-
----
-
-## 13. Temps de seuil
-
-Pour chaque `eta` de la grille pré-enregistrée :
-
-```math
-T_thr(eta)
-```
-
-est le premier franchissement montant avant `T_peak`.
-
-La courbe complète :
-
-```math
-C_eff^thr(eta)
-```
-
-doit être conservée ; aucune valeur de `eta` ne peut être choisie a posteriori comme résultat privilégié.
-
-La grille `eta` et son domaine admissible restent :
-
-```text
-OPEN
+\Delta_1^{short}
+=\log|\langle X\rangle_A/\langle X\rangle_B|.
 ```
 
 ---
 
-## 14. Diagnostic de récurrence et fenêtre temporelle
+## 9. Événements temporels
 
-La référence étant stationnaire, la fidélité de l'état de référence n'est pas un diagnostic de récurrence utile.
+Les définitions scientifiques restent celles de `F=chi^2/4`, mais les fonctions numériques résolues sont réduites analytiquement.
 
-On utilise une autocorrélation locale connectée :
+### `T_peak`
 
-```math
-\delta n_q
-=n_q-Tr(\rho_ref n_q)I,
-```
+Chercher la première racine qualifiante :
 
 ```math
-C_q(t)
-=
-Re Tr[\rho_ref \delta n_q(t)\delta n_q]
-/
-Tr[\rho_ref(\delta n_q)^2].
+\chi'(t)=0.
 ```
 
-Une famille de niveaux :
+Elle doit correspondre au premier maximum de `F`. Pour un candidat non dégénéré :
+
+```math
+\chi\chi''<0.
+```
+
+Une racine dégénérée est traitée par la définition de changement de caractère, pas rejetée arbitrairement.
+
+### `T_thr(eta)` et `T_down(eta)`
+
+Sur le premier lobe, avec signe `s` de `chi`, résoudre :
+
+```math
+\chi(t)-s\,2\sqrt\eta=0.
+```
+
+`T_thr` est le premier croisement montant avant `T_peak`; `T_down` le premier croisement descendant suivant dans le même lobe.
+
+### `T_grow`
+
+```math
+T_{grow}
+=\inf\operatorname*{argmax}_{0<t<T_{peak}}F'(t).
+```
+
+Candidats intérieurs :
+
+```math
+H_{grow}=\chi'^2+\chi\chi''=0.
+```
+
+Tous les candidats pertinents dans `(0,T_peak)` sont comparés ; le premier maximiseur global est retenu.
+
+### Famille de bracketing
+
+Une seule famille :
+
+```math
+B=\{\beta_1>\cdots>\beta_K>0\}.
+```
+
+```math
+\Delta t_k^{event}
+=\beta_k\frac{\pi}{s_{event}\Omega_{scale}},
+```
 
 ```text
-Gamma = OPEN
+s_peak = 1
+s_thr  = 1
+s_down = 1
+s_grow = 2
 ```
 
-sera pré-enregistrée.
+Par défaut :
 
-Pour chaque niveau `gamma`, le diagnostic identifiera un franchissement descendant puis le premier franchissement montant suivant.
+```math
+\Omega_{scale}=E_{max}-E_0.
+```
 
-La règle finale construisant `T_window^(pq)` à partir de ces niveaux reste :
+Le coût de `T_grow` est plus élevé : `H_grow` a la bande `2 Omega` et ses bornes de dérivées sont des produits de sommes spectrales.
+
+La certification de cellules peut utiliser des bornes de Lipschitz / dérivées. Une densité moyenne de zéros ne constitue jamais un certificat de complétude.
+
+Valeurs `beta_k` : `OPEN`.
+
+---
+
+## 10. Conditionnement et budget numérique dynamique
+
+Le conditionnement d'une racine simple est invariant sous multiplication régulière de la fonction de racine. Le choix de `chi` plutôt que `F` sert principalement à obtenir des bornes de dérivées plus directes, un modèle d'erreur spectral plus simple et moins de racines parasites.
+
+Diagnostics attachés aux fonctions résolues :
 
 ```text
-OPEN
+T_thr / T_down -> |chi'|
+T_peak         -> |chi''|
+T_grow         -> |H_grow'|
 ```
 
-mais elle devra être fixée avant inspection des courbes scientifiques.
+avec :
 
-Le premier lobe de réponse doit être contenu avant la fenêtre de récurrence. Si le protocole final ne peut pas établir cette séparation :
+```math
+H_{grow}'=3\chi'\chi''+\chi\chi'''=2F'''.
+```
+
+Le budget dynamique doit contrôler au minimum :
+
+```text
+residuals of eigensystem / projectors
+orthogonality defects
+stability of Bohr frequencies and spectral weights
+phase accumulation delta_omega * t
+cancellations in spectral sums
+root / argmax conditioning
+```
+
+Les tolérances et la règle uniforme de stabilité sous précision sont `OPEN`.
+
+Le budget propagé vers `Delta1` est `OPEN` et doit être fermé avant `A_DELTA_VALUES`.
+
+---
+
+## 11. Décomposition sectorielle et pureté de chemin
+
+Pour la multigraduation conjointe des `E_i`, utiliser les projecteurs d'espace d'opérateurs `Pi_m`.
+
+Une transition physique satisfait :
+
+```math
+m_i-m_{i-1}=\Delta n_i.
+```
+
+Pour `d<N/2` :
+
+```text
+TARGET_DIRECT
+TARGET_WINDING
+NON_TARGET_TRANSITION
+```
+
+sont définis comme dans la spécification.
+
+Pour les moments sectoriels :
+
+```math
+B_{m,r}^{pq}
+=Tr(\rho[n_p,\Pi_m ad_H^r(n_q)]).
+```
+
+Pour `m!=0` :
+
+```math
+B_{-m,r}=(-1)^{r+1}\overline{B_{m,r}}.
+```
+
+Les ordres pairs s'annulent canal par canal ; les ordres impairs sont appariés avec le facteur correct.
+
+Le canal `m=0` est testé comme oracle nul exact.
+
+Poids :
+
+```math
+P_\alpha(\tau)=\int_0^\tau\chi_\alpha(t)^2dt
+```
+
+évalués analytiquement à partir de la représentation en sinus.
+
+```math
+P_{sector}=P_{direct}+P_{winding}+P_{non-target},
+```
+
+```math
+Purity_{direct}=P_{direct}/P_{sector}.
+```
+
+Si `P_sector=0` :
+
+```text
+PATH_DIAGNOSTIC = INACTIVE
+```
+
+Impureté monotone :
+
+```math
+I_{max}(\tau)=\sup_{0<s\le\tau}(1-Purity_{direct}(s)).
+```
+
+La famille `epsilon_path` est `OPEN` numériquement et doit être commune aux cutoffs comparés.
+
+Pour `d=3` :
+
+```text
+ARRIVAL_INTERPRETATION = EXCLUDED
+```
+
+même si les deux arcs sont séparables algébriquement.
+
+---
+
+## 12. Récurrence event-local
+
+Autocorrélation connectée :
+
+```math
+C_j(t)
+=\frac{Re\,Tr[\rho\,\delta n_j(t)\delta n_j]}
+{Tr[\rho(\delta n_j)^2]}.
+```
+
+Sites normatifs :
+
+```text
+source p
+receiver q
+```
+
+Les sites intermédiaires sont diagnostics uniquement.
+
+La famille `Gamma` utilise une hystérésis préenregistrée ; ses bornes numériques restent `OPEN`.
+
+Un événement candidat est temporellement interprétable seulement si :
+
+```text
+PATH_CONTROL_ACCEPTABLE
+AND RECURRENCE_CONTROL_ACCEPTABLE
+```
+
+sur toute la famille de contrôle déclarée.
+
+Si la séparation ne peut être établie :
 
 ```text
 TIME_WINDOW_STATUS = INCONCLUSIVE
@@ -545,254 +669,247 @@ TIME_WINDOW_STATUS = INCONCLUSIVE
 
 ---
 
-## 15. Cohérence des deux estimateurs
+## 13. Signaux et oracles dynamiques
 
-`C_eff^grow` et `C_eff^thr(eta)` ne sont pas requis égaux numériquement.
+```math
+C_{eff}^{grow}
+=T_{grow}^{ref}/T_{grow}^{state},
+```
 
-Le protocole final doit définir avant calcul un critère de cohérence portant au minimum sur :
+```math
+C_{eff}^{thr}(\eta)
+=T_{thr}^{ref}(\eta)/T_{thr}^{state}(\eta).
+```
 
-- le signe du contraste inter-orbites ;
-- le classement des fonds lors d'un balayage paramétrique ;
-- l'absence de contradiction systématique entre la montée finie et la famille de seuils admissibles.
+`T_grow` est primaire ; la famille `T_thr(eta)` est secondaire et doit être publiée sur tout son domaine admissible.
 
-Le critère formel final reste :
+Oracle de rééchelonnement hors famille scientifique :
+
+```math
+H_s=sH_{ref}
+\Rightarrow
+F_s(t)=F_{ref}(st)
+```
+
+et :
+
+```math
+C_{eff}^{grow}=C_{eff}^{thr}(\eta)=s.
+```
+
+Signal principal :
+
+```math
+\Delta_1=\log(C_{O1A}/C_{O1B}).
+```
+
+Tester :
+
+```math
+\Delta_1(g,\mu,0)=0,
+```
+
+et sur le sous-ensemble miroir préenregistré :
+
+```math
+\Delta_1(-\delta)=-\Delta_1(+\delta).
+```
+
+Oracle nul :
+
+```math
+\Delta_2=0
+```
+
+séparément pour `grow` et pour chaque `eta` admissible.
+
+Une violation de `Delta2` au-delà de la tolérance est un défaut pipeline/symétrie, jamais un signal.
+
+La règle finale de cohérence entre `grow` et `thr` reste `OPEN`.
+
+---
+
+## 14. Campagne MAIN
+
+Grille nominale :
 
 ```text
-OPEN
+g     = {0.25, 0.5, 1, 2}
+mu    = {-1, -0.75, -0.5, 0, +0.5, +1}
+delta = {0, 0.1, 0.2, 0.4, 0.6, 0.8}
+```
+
+La grille MAIN sonde `Delta1` à brisure finie. Elle n'est pas une grille de dérivée `Xi1`.
+
+Contrôles séparés :
+
+```text
+g=0, mu=0 -> pure-hopping oracle
+g=0.10    -> weak-g stress outside nominal domain
+delta=0.9 -> disclosed qualification/stress outside nominal domain
+```
+
+À figer avant campagne :
+
+```text
+NEGATIVE_DELTA_ORACLE_SUBSET = OPEN
 ```
 
 ---
 
-## 16. Contrôle nul de rééchelonnement
+## 15. Sous-campagne SOFT-LOOP
 
-Pour :
-
-```math
-H_s=sH_ref,
+```text
+g  = 1
+mu = {-1.25, -1.5, -2}
 ```
 
-on attend exactement :
+À chaque fond :
+
+1. diagonaliser à `delta=0` et publier `d_GS`, `gap_0` ;
+2. générer un petit ensemble préenregistré de coordonnées `x` ;
+3. tester statiquement :
 
 ```math
-F_s(t)=F_ref(st),
+gap(\delta)/gap_0\simeq\sqrt{1+x^2},
 ```
-
-et donc :
 
 ```math
-C_eff^grow=s,
+2\langle\Phi\rangle\simeq-x/\sqrt{1+x^2},
 ```
 
-ainsi que :
+avec :
 
 ```math
-C_eff^thr(eta)=s
+x=6g\delta/gap_0;
 ```
 
-pour tout `eta` admissible.
+4. seulement si la réduction est suffisamment supportée selon le critère préenregistré, utiliser :
 
-Tous les contrastes logarithmiques inter-orbites doivent être nuls.
+```math
+\delta_c=gap_0/(6g)
+```
 
-Ce contrôle est hors famille scientifique de fonds.
+pour la famille dynamique :
+
+```math
+h_k=\alpha_k\delta_c.
+```
+
+Pour le contrôle `Lambda=2 -> 3`, les `h_k` sont générés une fois depuis `gap_0^(Lambda=2)` puis repris identiquement à `Lambda=3`.
+
+Pour une `Delta1` lisse et impaire :
+
+```math
+\widehat\Xi_1(\alpha)
+=\Xi_1+C_2\alpha^2+O(\alpha^4).
+```
+
+Diagnostic quadratique pour `alpha,alpha/2,alpha/4` :
+
+```math
+R_2
+=\frac{\widehat\Xi(\alpha)-\widehat\Xi(\alpha/2)}
+{\widehat\Xi(\alpha/2)-\widehat\Xi(\alpha/4)}
+\to4
+```
+
+si le terme quadratique domine et si les différences restent au-dessus du plancher numérique.
+
+Richardson n'est autorisé que selon une règle préenregistrée et ne remplace jamais les valeurs brutes.
+
+`Delta1` n'a pas d'oracle de collapse universel en `x` ; un collapse dynamique éventuel est secondaire.
+
+Valeurs encore `OPEN` :
+
+```text
+STATIC_X_CONTROL_VALUES
+STATIC_COLLAPSE_NUMERICAL_CRITERION
+A_DELTA_VALUES
+DERIVATIVE_STABILITY_CRITERION
+RICHARDSON_USAGE_RULE
+```
 
 ---
 
-## 17. Oracle `Delta2`
+## 16. Contrôle de troncature
 
-Pour toute la campagne :
+Contrôle principal : mêmes paramètres physiques et mêmes observables à `Lambda=2` puis `Lambda=3`.
 
-```math
-Delta_2(g,mu,delta)=0.
-```
-
-Ce résultat est protégé par `Q = S R`.
-
-Le test doit être appliqué séparément à :
+Pour les harmoniques :
 
 ```text
-Delta2_grow
-Delta2_thr(eta) pour tout eta de la grille admissible
+same k = primary convergence pairing
+same j=2Lambda-k = edge-relative diagnostic
 ```
 
-Une violation au-delà de la tolérance gelée est :
+Les harmonique `k=5,6` propres à `Lambda=3` sont `EXTENDED_DIAGNOSTIC`.
+
+Le sous-ensemble `Lambda=3` doit concentrer les points de stress préenregistrés, notamment dans la région faible `g`, `mu<0`, grand `|delta|`, sans modifier le sous-ensemble après inspection.
+
+À figer :
 
 ```text
-PIPELINE_OR_SYMMETRY_FAILURE
+TRUNCATION_STRESS_POINT_SUBSET = OPEN
+TRUNCATION_COMPARISON_TOLERANCES = OPEN
 ```
-
-et non un résultat scientifique.
 
 ---
 
-## 18. Signal primaire `Delta1`
+## 17. Paramètres numériques réellement OPEN
 
-Le signal scientifique primaire est :
-
-```math
-Delta_1(delta)
-=
-log(C_O1A(delta)/C_O1B(delta)).
-```
-
-Oracles exacts :
-
-```math
-Delta_1(0)=0,
-```
-
-```math
-Delta_1(-delta)=-Delta_1(delta).
-```
-
-Ces identités doivent être testées pour :
+Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
-Delta1_grow
-Delta1_thr(eta) pour chaque eta admissible
+# temporal / numerical
+BETA_REFINEMENT_VALUES
+ROOT_SOLVER_TOLERANCES
+ARGMAX_TOLERANCES
+SPECTRAL_PRECISION_CONTROL
+DELTA1_PROPAGATED_ERROR_BUDGET
+
+# soft-loop
+STATIC_X_CONTROL_VALUES
+STATIC_COLLAPSE_NUMERICAL_CRITERION
+A_DELTA_VALUES
+DERIVATIVE_STABILITY_CRITERION
+RICHARDSON_USAGE_RULE
+
+# threshold / interpretation
+ETA_GRID_AND_ADMISSIBLE_DOMAIN
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
+EPS_PATH_CONTROL_DOMAIN_AND_GRID
+GAMMA_CONTROL_DOMAIN_AND_GRID
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
+
+# campaign / cutoff
+NEGATIVE_DELTA_ORACLE_SUBSET
+TRUNCATION_STRESS_POINT_SUBSET
+TRUNCATION_COMPARISON_TOLERANCES
+
+# verdicts
+ESTIMATOR_COHERENCE_CRITERION
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
-La campagne primaire doit être symétrique en `delta`.
-
-La grille de valeurs :
-
-```text
-delta_grid = OPEN
-```
-
-reste à pré-enregistrer.
-
-La susceptibilité :
-
-```math
-Xi_1=d Delta_1/d delta |_{delta=0}
-```
-
-est un diagnostic local seulement ; `Xi1=0` ne vaut pas `FAIL`.
-
----
-
-## 19. Convention ordonnée source-récepteur
-
-Les classes d'arêtes actuellement stabilisées sont des classes **non orientées** issues de l'analyse spatiale :
-
-```text
-{(0,1),(2,3),(4,5)}
-{(0,5),(1,2),(3,4)}
-```
-
-La réponse de Kubo distingue une source `p` et un récepteur `q`.
-
-Avant gel complet, il faut donc fixer explicitement :
-
-```text
-ORDERED_RELATION_CONVENTION = OPEN
-```
-
-Le protocole devra préciser :
-
-- si une relation non orientée est représentée par un ordre canonique ;
-- ou si les deux orientations sont calculées et combinées ;
-- ou si une réciprocité exacte est démontrée et utilisée.
-
-Aucune moyenne implicite ne sera autorisée.
-
----
-
-## 20. Contrôle de troncature `Λ=2 -> 3`
-
-Le contrôle principal utilise l'appariement opératoriel par `k`.
-
-Pour les harmoniques présentes à `Λ=2` :
-
-```text
-k = 1,2,3,4
-```
-
-répéter à `Λ=3` les mêmes sondes et les mêmes fonds.
-
-Publier harmonie par harmonie :
-
-```text
-support / rang
-contribution au sous-espace ciblé
-contribution au signal dynamique lorsqu'applicable
-statut de convergence
-```
-
-L'appariement par :
-
-```math
-j=2Lambda-k
-```
-
-est calculé séparément comme diagnostic relatif au bord.
-
-Les nouvelles harmoniques :
-
-```text
-k = 5,6 à Λ=3
-```
-
-sont classées :
-
-```text
-EXTENDED_DIAGNOSTIC
-```
-
-et ne contribuent pas au verdict principal de convergence du protocole `Λ=2`.
-
----
-
-## 21. Groupe discret déclaré
-
-Le plan de validation doit énumérer explicitement les transformations implémentées / vérifiées :
-
-```text
-T^2
-C
-S = T C
-R
-Q = S R
-```
-
-et les transformations composées nécessaires à l'action de stabilisateur.
-
-Le rapport ne doit pas affirmer que ce groupe est mathématiquement exhaustif au-delà de ce qui a été démontré.
-
-Tout verdict de contraste doit citer le groupe déclaré applicable.
-
----
-
-## 22. Paramètres encore ouverts
-
-Avant gel global du protocole dynamique, les éléments suivants doivent recevoir une valeur / règle exacte :
+Ne sont plus `OPEN` :
 
 ```text
 ORDERED_RELATION_CONVENTION
-Gamma
-eta_grid
-short_time_oracle_convergence_rule
-time_window_rule
-time_sampling_strategy
-interpolation_or_root_finding_strategy
-argmax_localization_rule
-matrix_equalities_tolerance
-rank_tolerance
-singular_value_tolerance
-symmetry_oracle_tolerance
-Kubo_response_tolerance
-truncation_comparison_tolerance
-g_grid
-mu_grid
-delta_grid
-estimator_consistency_rule
+PARAMETER_CAMPAIGN_MAIN_GRID
+TIME_INTERPOLATION_AS_FINAL_ESTIMATOR
+TIME_FINITE_DIFFERENCE_DERIVATIVES
+GLOBAL_FACTOR_TWO_FOR_ALL_EVENTS
+NEAR_CROSSING_GAP_THRESHOLD
+ZERO_GRADE_PATH_PURITY_CORRECTION
+RAW_EIGENVECTOR_NONZERO_COUNT_ORACLE
 ```
-
-Aucun de ces paramètres ne doit être fixé après inspection des résultats scientifiques du régime `Λ=2`.
 
 ---
 
-## 23. Verdicts autorisés
+## 18. Verdicts autorisés
+
+Verdicts scientifiques généraux :
 
 ```text
 PASS
@@ -802,24 +919,62 @@ INACTIVE
 NOT_APPLICABLE
 ```
 
-Chaque verdict est accompagné de son domaine complet.
+Verdicts de contrôles :
 
-Aucun `PASS` global du modèle n'est autorisé lorsque seule une sous-question a été validée.
+```text
+CONTROL_SENSITIVE
+TIME_EVENT_CONTROL_SENSITIVE
+DERIVATIVE_CONTROL_SENSITIVE
+SOFT_LOOP_STATIC_SUPPORTED
+SOFT_LOOP_STATIC_DEVIATES
+SOFT_LOOP_STATIC_NUMERICALLY_INCONCLUSIVE
+```
+
+Tout verdict doit publier son domaine complet et les contrôles ayant conduit à ce statut.
 
 ---
 
-## 24. Critère d'ouverture de l'implémentation
+## 19. Audit critique de clôture
 
-L'implémentation 0B reste :
+Avant gel, Claude Code reçoit un mandat **read-only**.
+
+Il peut challenger librement, mais chaque remarque doit être classée :
 
 ```text
-NOT_AUTHORIZED
+BLOCKING
+    contradiction démontrée
+    erreur affectant la validité
+    définition inexécutable
+    défaut pouvant modifier un verdict
+
+NON_BLOCKING_BACKLOG
+    amélioration, généralisation ou extension non nécessaire à la validité de 0B
+
+REJECTED
+    objection fausse, non démontrée ou hors périmètre
 ```
 
-jusqu'à ce que :
+Principe :
 
-1. la spécification scientifique soit gelée ;
-2. tous les paramètres du §22 affectant les résultats soient pré-enregistrés ;
-3. ce plan de validation soit validé pour gel ;
-4. Lionel ORCIL autorise explicitement le lot d'audit / implémentation ;
-5. Claude Code reçoive un mandat conforme à la gouvernance de collaboration.
+```text
+CHALLENGE_PERMANENT
+EXPLORATION_BOUNDED
+NO_NEW_CONCEPTUAL_BRANCHING_WITHOUT_BLOCKING_DEFECT
+```
+
+Aucune modification scientifique ne peut être faite silencieusement pendant l'audit ou l'implémentation.
+
+---
+
+## 20. Critère d'ouverture de l'implémentation
+
+`IMPLEMENTATION_0B = NOT_AUTHORIZED` tant que :
+
+1. l'audit critique de clôture n'est pas arbitré ;
+2. tous les paramètres du §17 affectant les résultats ne sont pas préenregistrés ;
+3. `specification.md` et le présent plan ne sont pas cohérents et validés pour gel global ;
+4. la revue finale de cohérence / syntaxe n'est pas faite ;
+5. Lionel ORCIL n'a pas explicitement gelé le paquet ;
+6. `docs/governance/current-task.md` n'autorise pas explicitement le lot d'implémentation.
+
+Après autorisation, Claude Code conserve son rôle critique : un défaut `BLOCKING` stoppe le lot et retourne à l'arbitrage ; un `NON_BLOCKING_BACKLOG` ne modifie pas le périmètre en cours.
