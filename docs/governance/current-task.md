@@ -7,9 +7,11 @@ Ce document suit `docs/governance/collaboration-governance.md` §11 et porte le 
 ```text
 ACTIVE_BRANCH = documentation/model0b-foundation
 BASE_COMMIT   = 08d5ca506ff05e15dd9bc084ea121c3d0a19b662
+ERRATA_COMMIT = d00d146
+GOVERNANCE_EXECUTION_PREFLIGHT = dec669d90fc01bc998e53ef8cec2bac7a93f5679
 ```
 
-La base est le merge canonique de clôture du Toy Model 0A. Aucun code 0B n'est autorisé dans le lot courant.
+Aucun code 0B n'est autorisé dans le lot courant.
 
 ---
 
@@ -19,37 +21,36 @@ La base est le merge canonique de clôture du Toy Model 0A. Aucun code 0B n'est 
 TOY_MODEL_0A                    = CLOSED
 TESTS_0A                        = 89 PASS
 
-MODEL0B_SPECIFICATION           = CONSOLIDATED / ERRATA PENDING INTEGRATION
-MODEL0B_VALIDATION_PLAN         = CONSOLIDATED / ERRATA PENDING INTEGRATION
-MODEL0B_CLOSURE_AUDIT           = BLOCKED (5 consolidation defects)
-MODEL0B_CLOSURE_ERRATA          = DEFINED 5/5
-MODEL0B_NUMERICAL_CONTROLS      = OPEN
+MODEL0B_SPECIFICATION           = CONSOLIDATED / ERRATA INTEGRATED
+MODEL0B_VALIDATION_PLAN         = CONSOLIDATED / ERRATA INTEGRATED
+MODEL0B_CLOSURE_AUDIT_ORIGINAL  = BLOCKED (5 consolidation defects)
+MODEL0B_CLOSURE_ERRATA          = INTEGRATED 5/5 @ d00d146
+MODEL0B_ERRATA_DIFF_REVIEW      = PASS 5/5
+MODEL0B_NUMERICAL_CONTROLS      = CLOSURE_IN_PROGRESS
 MODEL0B_FINAL_ACCEPTANCE_RULES  = OPEN
 IMPLEMENTATION_0B               = NOT_AUTHORIZED
 
 SCIENTIFIC_METHOD_GOVERNANCE    = DRAFT_IN_FEATURES
 ```
 
-Sources scientifiques consolidées :
+Les cinq défauts B1-B5 de l'audit de clôture ont été intégrés dans les sources principales et les supports concernés, puis revus indépendamment en lecture seule avec verdict `PASS` pour E1-E5. Le verdict historique de l'audit reste conservé comme trace ; les cinq blocages qu'il avait établis sont considérés corrigés.
+
+Sources principales :
 
 ```text
 docs/toy-models/toy0b/specification.md
 docs/toy-models/toy0b/validation-plan.md
 ```
 
-Correctif normatif temporaire issu de l'audit de clôture :
+Trace d'audit :
 
 ```text
 docs/toy-models/toy0b/closure-audit-errata.md
 ```
 
-Jusqu'à intégration mécanique des cinq corrections dans les deux sources consolidées, `closure-audit-errata.md` supersède explicitement toute formulation contradictoire sur ces cinq points seulement.
-
-Les autres supports spécialisés de `docs/toy-models/toy0b/` conservent les preuves et qualifications détaillées ; ils ne sont pas un contexte obligatoire lorsque les sources consolidées et l'errata suffisent.
-
 ---
 
-## Blocs scientifiques ayant résisté à l'audit indépendant
+## Blocs scientifiques stabilisés
 
 ```text
 SYSTEM_AND_GAUSS           = VALIDATED_FOR_FREEZE
@@ -61,6 +62,7 @@ NULL_ORACLES               = VALIDATED_FOR_FREEZE
 KUBO_PROBE                 = VALIDATED_FOR_FREEZE
 PRIMARY_SIGNAL_DELTA1      = VALIDATED_FOR_FREEZE
 PATH_GRADING               = VALIDATED_FOR_FREEZE
+PATH_PURITY_STRUCTURE      = VALIDATED_FOR_FREEZE
 RECURRENCE_STRUCTURE       = VALIDATED_FOR_FREEZE
 SHORT_TIME_STRUCTURE       = VALIDATED_FOR_FREEZE
 SPECTRAL_TIME_STRUCTURE    = VALIDATED_FOR_FREEZE_IN_PRINCIPLE
@@ -68,41 +70,7 @@ SOFT_LOOP_STRUCTURE        = VALIDATED_FOR_FREEZE
 PARAMETER_CAMPAIGN_SHAPE   = VALIDATED_FOR_FREEZE
 ```
 
-L'audit n'a pas établi de défaut physique bloquant dans ces blocs. `VALIDATED_FOR_FREEZE` ne vaut pas `FROZEN`.
-
----
-
-## Les cinq défauts de consolidation et leur correction
-
-```text
-B1 MEASUREMENT_FAMILIES
-    F_edge / F_path / M_F et convention modulo identité incomplets
-    -> correction définie dans closure-audit-errata.md §E1
-
-B2 PATH_PURITY_GUARD
-    I_max absolu avait remplacé à tort R_path normalisé
-    -> correction définie §E2
-
-B3 RECURRENCE_GUARD
-    horizon / états / deux bornes perdus ; ancien rectangle Gamma conflictuel
-    -> correction définie §E3 ; domaine ordonné retenu
-
-B4 INTERIOR_DIMENSION_DOMAIN
-    forme fermée utilisée hors domaine à Lambda=1
-    -> correction définie §E4
-
-B5 STATUS_VOCABULARY
-    liste de verdicts présentée à tort comme exhaustive
-    -> correction définie §E5
-```
-
-Le verdict original reste :
-
-```text
-CLOSURE_AUDIT = BLOCKED
-```
-
-jusqu'à une future vérification indépendante. Aucun nouvel audit Claude n'est demandé dans le lot courant.
+`VALIDATED_FOR_FREEZE` ne vaut pas `FROZEN`.
 
 ---
 
@@ -140,9 +108,9 @@ delta = {0, 0.1, 0.2, 0.4, 0.6, 0.8}
 Contrôles séparés :
 
 ```text
-g=0,mu=0  = pure-hopping oracle
-g=0.10    = weak-g stress outside nominal domain
-delta=0.9 = disclosed qualification/stress outside nominal domain
+g=0,mu=0   = pure-hopping oracle
+g=0.10     = weak-g stress outside nominal domain
+delta=0.9  = disclosed qualification/stress outside nominal domain
 ```
 
 SOFT-LOOP :
@@ -170,7 +138,7 @@ T_thr/down  -> chi-s*2*sqrt(eta)=0 sur le premier lobe
 T_grow      -> candidats H_grow=chi'^2+chi*chi''=0
 ```
 
-Une seule famille de raffinement `B={beta_k}` est conservée, avec :
+Facteurs de bande :
 
 ```text
 s_peak = 1
@@ -179,15 +147,21 @@ s_down = 1
 s_grow = 2
 ```
 
-Les valeurs numériques restent ouvertes.
+Décision scientifique courante en cours d'intégration documentaire :
+
+```text
+BETA_REFINEMENT_VALUES = VALIDATED_FOR_FREEZE
+BETA_VALUES = {1, 1/2, 1/4, 1/8}
+```
+
+`beta` contrôle le bracketing initial, pas la précision finale du temps continu.
 
 ---
 
-## Paramètres réellement OPEN avant gel
+## Paramètres encore OPEN avant gel
 
 ```text
 # temporal / precision
-BETA_REFINEMENT_VALUES
 ROOT_SOLVER_TOLERANCES
 ARGMAX_TOLERANCES
 SPECTRAL_PRECISION_CONTROL
@@ -217,65 +191,61 @@ ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
-Ne doivent plus réapparaître comme `OPEN` :
-
-```text
-ORDERED_RELATION_CONVENTION
-PARAMETER_CAMPAIGN_MAIN_GRID
-TIME_INTERPOLATION_AS_FINAL_ESTIMATOR
-TIME_FINITE_DIFFERENCE_DERIVATIVES
-GLOBAL_FACTOR_TWO_FOR_ALL_EVENTS
-NEAR_CROSSING_GAP_THRESHOLD
-ZERO_GRADE_PATH_PURITY_CORRECTION
-RAW_EIGENVECTOR_NONZERO_COUNT_ORACLE
-```
-
 ---
 
-## Règle de challenge
+## Workflow Claude Code courant
+
+La gouvernance de collaboration impose désormais un préflight explicite pour chaque mandat.
+
+Profil par défaut pour les opérations documentaires, Git, revue de diff et future implémentation :
 
 ```text
-CHALLENGE_PERMANENT
-EXPLORATION_BOUNDED
-NO_NEW_CONCEPTUAL_BRANCHING_WITHOUT_BLOCKING_DEFECT
+CLIENT = CLAUDE_CODE_LOCAL
+MODEL = CLAUDE_SONNET_5
+EFFORT = AUTO
+SESSION_CONTEXT = CLEAR_REQUIRED
 ```
 
-Classification :
+`Opus` est une escalade ponctuelle pour une question scientifique difficile et bornée ; il n'est pas le modèle par défaut des opérations mécaniques.
+
+Chaque mandat déclare aussi :
+
+```text
+REPOSITORY
+REMOTE
+BRANCH
+EXPECTED_HEAD
+EXPECTED_WORKTREE
+```
+
+Principe :
+
+```text
+ONE_TASK = ONE_BOUNDED_SCOPE
+CHALLENGE_PERMANENT
+EXPLORATION_BOUNDED
+NO_GLOBAL_AUDIT_BY_DEFAULT
+```
+
+Une objection est classée :
 
 ```text
 BLOCKING
-    contradiction démontrée, erreur affectant la validité,
-    définition inexécutable ou défaut pouvant modifier un verdict
-
 NON_BLOCKING_BACKLOG
-    amélioration / généralisation non nécessaire à la validité de 0B
-
 REJECTED
-    objection fausse, non démontrée ou hors périmètre
 ```
 
-Les éléments `NON_BLOCKING_BACKLOG` de l'audit de clôture ne sont pas développés dans le lot courant.
+Une objection `BLOCKING` peut arrêter le lot. Un élément `NON_BLOCKING_BACKLOG` ne rouvre pas le périmètre courant.
 
 ---
 
-## Pause méthodologique
-
-La consommation de contexte / quota observée lors de l'audit de clôture rend le workflow actuel non soutenable.
-
-En conséquence :
+## Lot courant
 
 ```text
-CURRENT_LOT = workflow methodology redesign
-PHASE       = PAUSE_0B_SCIENTIFIC_WORK
-NEXT_STEP   = define a lower-context ChatGPT / Claude / GitHub workflow
+CURRENT_LOT = Toy Model 0B numerical preregistration closure
+PHASE       = CLOSE_ONE_NUMERICAL_CONTROL_AT_A_TIME
+CURRENT_PARAMETER = BETA_REFINEMENT_VALUES
+IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-Pendant cette pause :
-
-```text
-NO_NEW_CLAUDE_AUDIT       = TRUE
-NO_0B_IMPLEMENTATION       = TRUE
-NO_NEW_0B_PHYSICS_BRANCH   = TRUE
-```
-
-La prochaine reprise de 0B devra partir du dépôt comme mémoire durable et d'un mandat minimal ciblé, pas d'un prompt reconstruisant tout l'historique de conversation.
+Prochaine action : terminer l'intégration documentaire de `BETA_VALUES={1,1/2,1/4,1/8}`, examiner le diff produit, puis passer au paramètre numérique suivant. Aucun audit global n'est requis.
