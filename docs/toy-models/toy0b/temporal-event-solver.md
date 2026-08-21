@@ -363,8 +363,6 @@ ARGMAX_TOLERANCES                      = OPEN
 SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
 DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
 SAME_NUMERICAL_RULES_ACROSS_CUTOFFS    = MANDATORY
-ROOT_SOLVER_TOLERANCES                = VALIDATED_FOR_FREEZE
-SPECTRAL_PRECISION_CONTROL            = VALIDATED_FOR_FREEZE
 SIMPLE_ROOT_CONTROL                   = VALIDATED_FOR_FREEZE
 ```
 
@@ -483,8 +481,13 @@ P1 >= 106 bits
 P2 >= 212 bits
 ```
 
+À chaque précision `p` :
+
 ```math
-H^{(p)}``` doit être réassemblé directement à précision `p`.
+H^{(p)}
+```
+
+doit être réassemblé directement à cette précision.
 
 Règles de stabilité :
 
@@ -555,7 +558,7 @@ epsilon_u_spec / max(1, |u_*|) <= 1e-10
 et :
 
 ```text
-|u_e^{(2p)} - u_e^{(p)}| / max(1, |u_e^{(2p)|}) <= 1e-10
+|u_e^{(2p)} - u_e^{(p)}| / max(1, |u_e^{(2p)}|) <= 1e-10
 ```
 
 Budget final :
