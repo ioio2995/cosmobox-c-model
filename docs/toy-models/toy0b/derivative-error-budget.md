@@ -116,7 +116,7 @@ Comme `delta_c` s'effondre dans le régime cyclique mou, la demande de précisio
 Pour un estimateur temporel :
 
 ```math
-C_O = \frac{T_O^{state}}{T_O^{ref}}.
+C_O = \frac{T_O^{ref}}{T_O^{state}}.
 ```
 
 Dans :
@@ -145,7 +145,7 @@ e_u = \epsilon_{u,solver} + \max(\epsilon_{u,spec}, |u_e^{(2p)} - u_e^{(p)}|).
 Définir :
 
 ```math
-r_T = \frac{u_e}{e_u},
+r_T = \frac{e_u}{u_e},
 ```
 
 avec la garde obligatoire :
@@ -254,7 +254,7 @@ Richardson est strictement une extrapolation secondaire.
 L'estimateur primaire publié reste :
 
 ```math
-X_3 = \Xi_1(1/16).
+X_3 = \widehat\Xi_1(1/16).
 ```
 
 Richardson est autorisé si et seulement si :

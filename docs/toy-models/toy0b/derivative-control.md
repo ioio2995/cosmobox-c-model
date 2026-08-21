@@ -194,7 +194,7 @@ Le gap `Lambda=3` est publié comme contrôle de convergence et peut servir à c
 Pour :
 
 ```math
-X_k = \Xi_1(\alpha_k),
+X_k = \widehat\Xi_1(\alpha_k),
 ```
 
 le budget numérique associé est :
@@ -208,7 +208,7 @@ défini dans `derivative-error-budget.md`.
 L'estimateur primaire publié est :
 
 ```math
-X_3 = \Xi_1(1/16).
+X_3 = \widehat\Xi_1(1/16).
 ```
 
 `X_0` est `DIAGNOSTIC_ONLY` pour le critère final de convergence.
@@ -217,9 +217,9 @@ Pour `k=1,2`, définir :
 
 ```math
 D_k = X_k - X_{k+1}, \quad
-\widetilde{e}_{D_k} = e_k + e_{k+1}, \quad
-m_k = |D_k| - \widetilde{e}_{D_k}, \quad
-M_k = |D_k| + \widetilde{e}_{D_k}.
+e_{D_k} = e_k + e_{k+1}, \quad
+m_k = |D_k| - e_{D_k}, \quad
+M_k = |D_k| + e_{D_k}.
 ```
 
 Une différence est résolue numériquement si :
@@ -231,8 +231,8 @@ m_k > 0.
 Lorsque `m_1>0` et `m_2>0`, définir :
 
 ```math
-Q_{\min} = \frac{M_2}{m_1}, \quad
-Q_{\max} = \frac{m_2}{M_1}.
+Q_{\min} = \frac{m_1}{M_2}, \quad
+Q_{\max} = \frac{M_1}{m_2}.
 ```
 
 La voie de convergence compatible avec le régime quadratique exige simultanément :
@@ -257,7 +257,7 @@ La bande `[2,8]` est une bande opérationnelle compatible avec le régime quadra
 Si :
 
 ```math
-|D_2| \le \widetilde{e}_{D_2},
+|D_2| \le e_{D_2},
 ```
 
 alors :
