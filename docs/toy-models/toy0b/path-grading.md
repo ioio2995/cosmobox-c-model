@@ -4,7 +4,7 @@ Statut : **validé pour gel — support analytique**
 Source scientifique principale : `docs/toy-models/toy0b/specification.md`  
 Plan de validation : `docs/toy-models/toy0b/validation-plan.md`
 
-Ce document consigne la séparation intrinsèque des composantes de transport par graduation des champs électriques. Il corrige une formulation antérieure trop forte : la graduation scalaire par `Phi` mémorise seulement le changement total de flux uniforme et ne suffit pas, à elle seule, à identifier un chemin topologique dans la réponse de Kubo complète.
+Ce document consigne la séparation intrinsèque des composantes de transport par graduation des champs électriques. La graduation scalaire par `Phi` mémorise seulement le changement total de flux uniforme et ne suffit pas, à elle seule, à identifier un chemin topologique dans la réponse de Kubo complète.
 
 Il devra être consolidé dans la spécification et le plan de validation lors de la revue documentaire générale.
 
@@ -19,7 +19,7 @@ Phi = (1/6) sum_i E_i.
 Pour le hopping orienté :
 
 ```math
-h_i = c_i^dagger U_i c_{i+1},
+h_i = c_i^\dagger U_i c_{i+1},
 ```
 
 les relations tronquées restent exactes :
@@ -36,14 +36,14 @@ Donc :
 [Phi,h_i^dagger] = -(1/6) h_i^dagger.
 ```
 
-Les termes électriques et les termes diagonaux de matière ont graduation nulle.
+Les termes électriques et diagonaux de matière ont graduation nulle.
 
 ## 2. Multigraduation conjointe par les E_i
 
 Les `E_i` commutent entre eux. Les superopérateurs :
 
 ```math
-L_i(O) = [E_i,O]
+L_i(O)=[E_i,O]
 ```
 
 commutent donc également et admettent une décomposition spectrale conjointe dans l'espace d'opérateurs fini.
@@ -57,158 +57,194 @@ Pi_m,
 avec :
 
 ```math
-m = (m_0,...,m_5),
+m=(m_0,...,m_5),
 ```
 
 le projecteur conjoint défini par :
 
 ```math
-[E_i,O_m] = m_i O_m
+[E_i,O_m]=m_i O_m.
 ```
-
-pour tout `i`.
 
 Pour l'observable évoluée :
 
 ```math
-n_q(t) = sum_m n_{q,m}(t),
+n_q(t)=sum_m n_{q,m}(t),
 
-n_{q,m}(t) = Pi_m n_q(t).
+n_{q,m}(t)=Pi_m n_q(t).
 ```
 
 Cette décomposition est exacte et ne nécessite aucune énumération des mots de `ad_H^r`.
 
-La graduation scalaire précédente n'est que la projection :
+La graduation scalaire précédente n'est que :
 
 ```math
-lambda(m) = (1/6) sum_i m_i.
+lambda(m)=(1/6)sum_i m_i.
 ```
 
-Ainsi `ad_Phi` est un coarse-graining de la multigraduation par les liens.
+Ainsi `ad_Phi` est un coarse-graining de la multigraduation par liens.
 
 ## 3. Signification de la multigraduation
 
 Le vecteur `m` enregistre le changement net de flux lien par lien.
 
-Un aller-retour sur un même lien ajoute `+1` puis `-1` sur ce lien et ne modifie donc pas `m`. Les insertions de termes diagonaux ne modifient pas non plus `m`.
+Un aller-retour sur un même lien ajoute `+1` puis `-1` et ne modifie donc pas `m`. Les insertions de termes diagonaux ne modifient pas non plus `m`.
 
 Pour un transport ouvert déclaré entre deux extrémités fixées sur un cycle, deux chemins appartenant à des classes d'enroulement différentes diffèrent de :
 
 ```math
-w * 1,
+w*1,
 ```
 
-où :
+avec :
 
 ```math
-1 = (1,1,1,1,1,1),
-
-w in Z.
+1=(1,1,1,1,1,1),
+\qquad w\in Z.
 ```
 
-Si `m_D` est le vecteur de graduation du chemin direct canonique, les classes d'enroulement de cette famille sont donc :
+Si `m_D` est le vecteur du chemin direct canonique :
 
 ```math
-m_w = m_D + w * 1.
+m_w=m_D+w*1.
 ```
 
 L'arc complémentaire minimal correspond, avec la convention utilisée ici, à :
 
 ```math
-m_W = m_D - 1.
+m_W=m_D-1.
 ```
 
-La projection scalaire donne alors :
+La projection scalaire donne :
 
 ```math
-lambda(m_w) = d/6 + w.
+lambda(m_w)=d/6+w.
 ```
 
-Cette relation explique la formule scalaire antérieure, mais la réciproque est fausse : connaître seulement `lambda` ne détermine pas le vecteur `m`.
+La réciproque est fausse : connaître seulement `lambda` ne détermine pas `m`.
 
-## 4. Limite importante : la réponse de Kubo complète
+## 4. Limite importante : réponse de Kubo complète
 
 La multigraduation classe exactement les secteurs de changement net de flux de `n_q(t)`.
 
-Elle ne doit toutefois pas être interprétée sans preuve supplémentaire comme affirmant que toute composante de la réponse de Kubo appartient nécessairement à la seule famille :
+Elle ne doit pas être interprétée sans preuve supplémentaire comme affirmant que toute composante appartient nécessairement à la seule famille :
 
 ```math
-{m_D + w*1 | w in Z}.
+{m_D+w*1 | w in Z}.
 ```
 
-Dans la réponse de densité complète, des composantes de multigraduation différentes peuvent apparaître à temps fini. Elles doivent être conservées et rapportées comme secteurs `OTHER` tant qu'une règle structurelle ne les a pas exclues.
+Des composantes différentes peuvent apparaître à temps fini et doivent être conservées comme secteurs non ciblés tant qu'une règle structurelle ne les exclut pas.
 
-Il est donc interdit de confondre :
-
-```text
-multigraduation de flux exacte
-```
-
-avec :
-
-```text
-décomposition exhaustive en deux chemins géométriques.
-```
-
-Cette distinction est particulièrement importante pour l'interprétation d'un temps d'arrivée fini.
-
-## 5. Hermiticité et canaux physiques
+## 5. Hermiticité, canaux physiques et cas auto-conjugué
 
 Si :
 
 ```math
-[E_i,O_m] = m_i O_m,
+[E_i,O_m]=m_i O_m,
 ```
 
 alors :
 
 ```math
-O_m^dagger = O_{-m}.
+O_m^dagger=O_{-m}.
 ```
 
 On définit :
 
 ```math
 A_m^(pq)(t)
-=
-Tr(rho [n_p, Pi_m n_q(t)]).
+=Tr(rho [n_p, Pi_m n_q(t)]).
 ```
 
-L'hermiticité donne exactement :
+L'hermiticité donne :
 
 ```math
-A_{-m} = -conj(A_m).
+A_{-m}=-conj(A_m).
 ```
 
-La contribution réelle du couple adjoint `{m,-m}` à la réponse de Kubo est donc :
+### 5.1 Canaux m != 0
+
+Pour :
+
+```math
+m\neq0,
+```
+
+le canal physique est l'orbite à deux éléments :
+
+```text
+[m]={m,-m}.
+```
+
+Sa contribution réelle à la réponse est :
 
 ```math
 chi_[m](t)
-=
-i(A_m + A_{-m})
-=
--2 Im A_m.
+=i(A_m+A_{-m})
+=-2 Im A_m.
 ```
 
-La quantité physique élémentaire du diagnostic est donc la paire adjointe :
+Une grande valeur de `|A_m|` avec `Im A_m=0` ne contribue pas à `chi`; une contamination basée directement sur `|A_m|^2` est donc rejetée.
 
-```text
-[m] = {m,-m},
+### 5.2 Canal auto-conjugué m=0
+
+Le seul multigrade entier vérifiant :
+
+```math
+m=-m
 ```
 
-et non une composante signée isolée.
+est :
 
-Une grande valeur de `|A_m|` avec `Im A_m = 0` ne contribue pas à `chi`. Une norme de contamination basée directement sur `|A_m|^2` est donc rejetée pour le diagnostic physique de `WRAP_CLEAN`.
+```math
+m=0.
+```
+
+Dans une graduation générique, ce canal devrait être compté une seule fois, et non avec le facteur deux de la paire précédente.
+
+Dans le secteur physique 0B, Gauss donne :
+
+```math
+n_i=b_i+E_i-E_{i-1}.
+```
+
+Le sextuplet `E` détermine donc entièrement `n`; les sous-espaces propres conjoints des six `E_i` sont unidimensionnels. Par conséquent :
+
+```math
+Pi_0(O)
+```
+
+est diagonal dans la base physique, et :
+
+```math
+[n_p,Pi_0(O)]=0.
+```
+
+Ainsi :
+
+```math
+\boxed{A_0^{pq}(t)=0}
+```
+
+et :
+
+```math
+\boxed{chi_[0]^{pq}(t)=0}
+```
+
+exactement.
+
+Le canal auto-conjugué ne contribue donc pas à la réponse Kubo densité-densité de 0B et ne doit jamais être double-compté dans les poids sectoriels.
 
 ## 6. Cas d=1 et d=2
 
-Pour une orientation canonique, le chemin direct et l'arc complémentaire ont des vecteurs de graduation distincts :
+Pour une orientation canonique, le chemin direct et l'arc complémentaire ont des vecteurs distincts :
 
 ```math
-m_W = m_D - 1.
+m_W=m_D-1.
 ```
 
-Ils ne sont pas adjoints l'un de l'autre pour `d < N/2`.
+Ils ne sont pas adjoints l'un de l'autre pour `d<N/2`.
 
 Les deux canaux physiques :
 
@@ -227,44 +263,32 @@ d=1 : +1/6 versus -5/6
 d=2 : +1/3 versus -2/3
 ```
 
-mais la séparation topologique exacte repose sur les vecteurs `m`, pas sur ces seuls nombres scalaires.
+mais la séparation exacte repose sur les vecteurs `m`.
 
 ## 7. Cas opposé d=N/2
 
-La coïncidence scalaire :
+Pour `N=6,d=3`, avec un chemin direct supporté sur trois liens et l'arc complémentaire sur les trois autres :
 
 ```math
-lambda_D = +1/2,
-
-lambda_W = -1/2
-```
-
-est générale pour une paire opposée sur un cycle pair.
-
-Cependant elle ne signifie pas que les deux arcs sont adjoints au niveau de la multigraduation de liens.
-
-Pour `N=6, d=3`, avec un chemin direct supporté sur trois liens et l'arc complémentaire sur les trois autres :
-
-```math
-m_W = m_D - 1,
+m_W=m_D-1,
 ```
 
 et en général :
 
 ```math
-m_W != -m_D.
+m_W!= -m_D.
 ```
 
 Les adjoints sont séparément :
 
 ```text
-[m_D] = {m_D,-m_D}
-[m_W] = {m_W,-m_W}.
+[m_D]={m_D,-m_D}
+[m_W]={m_W,-m_W}.
 ```
 
-La projection par `Phi` replie ces informations : le secteur scalaire `+1/2` peut contenir à la fois le chemin direct et l'adjoint du chemin complémentaire. La phase d'une amplitude scalaire `A_{+1/2}` ne peut donc pas être interprétée, à elle seule, comme une phase relative entre les deux arcs.
+La projection par `Phi` replie ces informations : le secteur scalaire `+1/2` peut contenir à la fois le chemin direct et l'adjoint du chemin complémentaire. La phase d'une amplitude scalaire `A_(+1/2)` ne peut donc pas être interprétée, à elle seule, comme une phase relative entre les deux arcs.
 
-Le diagnostic `d=3` doit utiliser la multigraduation par liens pour tester séparément les deux canaux physiques `[m_D]` et `[m_W]`.
+Le diagnostic `d=3` doit utiliser la multigraduation par liens pour tester séparément `[m_D]` et `[m_W]`.
 
 Si leurs contributions d'ordre trois sont individuellement non nulles mais que leur somme s'annule, alors :
 
@@ -272,75 +296,62 @@ Si leurs contributions d'ordre trois sont individuellement non nulles mais que l
 D3_INTERFERENCE_MECHANISM = ESTABLISHED_AT_ORDER_3
 ```
 
-sous réserve qu'aucun secteur `OTHER` ne contribue au même ordre.
+sous réserve qu'aucun secteur non ciblé ne contribue au même ordre.
 
-Si l'annulation du coefficient total est observée uniquement après projection scalaire par `Phi`, le mécanisme reste :
-
-```text
-D3_INTERFERENCE_MECHANISM = NOT_ESTABLISHED
-```
-
-Toute interprétation ultérieure de type Aharonov-Bohm reste conditionnée à une dépendance démontrée au degré cyclique et à la robustesse `Lambda=2 -> Lambda=3`.
+L'interprétation d'arrivée reste exclue pour `d=3`.
 
 ## 8. Diagnostic intégré de composition
 
-Pour chaque canal physique `[m]`, on utilise la contribution réellement présente dans `chi` :
+Pour chaque canal physique distinct `alpha`, on utilise sa contribution réellement présente dans `chi` :
 
 ```math
-chi_[m](t) = -2 Im A_m(t).
+P_alpha(tau)=integral_0^tau chi_alpha(t)^2 dt.
 ```
 
-Une mesure intégrée évite les singularités dues aux zéros instantanés :
+Les canaux `m != 0` sont indexés une seule fois par orbite `{m,-m}`. Le canal `m=0` est auto-conjugué mais possède exactement :
 
 ```math
-P_[m](tau) = integral_0^tau chi_[m](t)^2 dt.
+P_[0](tau)=0.
 ```
 
-On distingue conceptuellement :
+On distingue :
 
 ```text
 DIRECT
     canal [m_D]
 
 WINDING
-    canaux [m_D + w*1], w != 0
+    canaux [m_D+w*1], w != 0
 
-OTHER
-    toutes les autres paires de multigraduation présentes
+OTHER / NON_TARGET
+    toutes les autres contributions physiques actives
 ```
 
-La contamination d'enroulement peut être rapportée par :
+On pose :
 
 ```math
-W_pq(tau)
-=
-P_WINDING(tau) / P_ALL(tau),
+P_ALL=P_DIRECT+P_WINDING+P_OTHER.
 ```
 
-avec :
+Puis :
 
 ```math
-P_ALL = P_DIRECT + P_WINDING + P_OTHER.
+PURITY_DIRECT=P_DIRECT/P_ALL,
 ```
 
-La pureté du canal direct peut également être rapportée :
+et :
 
 ```math
-PURITY_DIRECT(tau)
-=
-P_DIRECT(tau) / P_ALL(tau).
+W=P_WINDING/P_ALL.
 ```
 
-Ces ratios sont des diagnostics de composition sectorielle. Ils ne sont pas égaux à une décomposition additive de `chi(t)^2`, car les contributions de canaux différents peuvent interférer dans la réponse totale.
+Ces ratios sont des diagnostics de composition sectorielle. En général :
 
-Les seuils d'acceptation restent ouverts :
-
-```text
-WRAP_TOLERANCE          = OPEN
-OTHER_SECTOR_TOLERANCE  = OPEN
+```math
+P_ALL != integral chi(t)^2 dt
 ```
 
-Si `P_ALL = 0`, le canal est `INACTIVE` pour ce diagnostic.
+car les canaux distincts peuvent interférer dans la réponse totale.
 
 ## 9. Garde pour l'interprétation d'arrivée
 
@@ -352,32 +363,17 @@ Le principe est :
 PATH_COMPOSITION_GUARD = REQUIRED
 ```
 
-avec au minimum :
+avec la famille de contrôle `epsilon_path` définie dans les supports dédiés.
 
-```text
-WINDING contamination sous tolérance
-OTHER contamination sous tolérance
-```
-
-Les normes intégrées sont fixées dans leur principe ; les tolérances restent à pré-enregistrer.
-
-Pour `d=3`, aucun temps d'arrivée mono-arc n'est autorisé, indépendamment de la séparabilité algébrique des deux arcs, car les deux chemins minimaux apparaissent au même ordre temporel.
+Pour `d=3`, aucun temps d'arrivée mono-arc n'est autorisé, indépendamment de la séparabilité algébrique des deux arcs.
 
 ## 10. Troncature
 
-Les relations :
-
-```math
-[E_j,U_i] = delta_{ij} U_i
-```
-
-et la multigraduation restent exactes à cutoff fini pour les ladders tronqués déclarés.
+Les relations de multigraduation restent exactes à cutoff fini pour les ladders tronqués déclarés.
 
 En revanche la dynamique des secteurs, l'état de fond et leurs interférences dépendent du cutoff.
 
-Aucune monotonie de `W_pq`, de `PURITY_DIRECT` ou des composantes `d=3` n'est supposée.
-
-Le verdict de robustesse exige le contrôle apparié :
+Aucune monotonie des poids sectoriels n'est supposée. Le verdict de robustesse exige le contrôle apparié :
 
 ```text
 Lambda=2 -> Lambda=3.
@@ -386,15 +382,17 @@ Lambda=2 -> Lambda=3.
 ## 11. Statut
 
 ```text
-JOINT_E_GRADING                = VALIDATED_FOR_FREEZE
-PHI_SCALAR_GRADING             = VALIDATED_AS_COARSE_GRAINING
-WORD_ENUMERATION               = NOT_REQUIRED
-D1_D2_LINK_SECTOR_SEPARATION   = VALIDATED_FOR_FREEZE
-D3_LINK_SECTOR_SEPARATION      = VALIDATED_FOR_FREEZE
-D3_PHI_PHASE_INTERPRETATION    = REJECTED
-D3_ARRIVAL_INTERPRETATION      = EXCLUDED
-PATH_COMPOSITION_GUARD         = VALIDATED_IN_PRINCIPLE
-WRAP_TOLERANCE                 = OPEN
-OTHER_SECTOR_TOLERANCE         = OPEN
-TRUNCATION_CONTROL             = MANDATORY
+JOINT_E_GRADING                 = VALIDATED_FOR_FREEZE
+PHI_SCALAR_GRADING              = VALIDATED_AS_COARSE_GRAINING
+WORD_ENUMERATION                = NOT_REQUIRED
+ADJOINT_PAIR_CHANNEL_M_NE_0     = VALIDATED_FOR_FREEZE
+SELF_ADJOINT_CHANNEL_M_0        = IDENTIFIED
+ZERO_GRADE_KUBO_CHANNEL         = INACTIVE_EXACT
+ZERO_GRADE_DOUBLE_COUNTING      = REJECTED
+D1_D2_LINK_SECTOR_SEPARATION    = VALIDATED_FOR_FREEZE
+D3_LINK_SECTOR_SEPARATION       = VALIDATED_FOR_FREEZE
+D3_PHI_PHASE_INTERPRETATION     = REJECTED
+D3_ARRIVAL_INTERPRETATION       = EXCLUDED
+PATH_COMPOSITION_GUARD          = VALIDATED_IN_PRINCIPLE
+TRUNCATION_CONTROL              = MANDATORY
 ```
