@@ -2,9 +2,9 @@
 
 Statut : **validé pour gel — support analytique**  
 Source scientifique principale : `docs/toy-models/toy0b/specification.md`  
-Complément : `docs/toy-models/toy0b/path-grading.md`
+Compléments : `docs/toy-models/toy0b/path-grading.md`, `docs/toy-models/toy0b/zero-grade-self-adjoint-sector.md`
 
-Ce document précise la structure imposée par Gauss sur les multigrades des opérateurs, puis définit la garde hiérarchique `transition ciblée -> enroulement` utilisée pour l'interprétation d'un temps d'arrivée. Il ne remplace pas la spécification principale et devra être consolidé lors de la revue documentaire générale.
+Ce document précise la structure imposée par Gauss sur les multigrades des opérateurs, puis définit la garde hiérarchique `transition ciblée -> enroulement` utilisée pour l'interprétation d'un temps d'arrivée.
 
 ## 1. Fibre affine imposée par Gauss
 
@@ -16,7 +16,7 @@ Pour deux états physiques de matière `n` et `n'`, on pose :
 m_i=E'_i-E_i.
 ```
 
-En soustrayant les deux contraintes de Gauss :
+En soustrayant Gauss :
 
 ```math
 E_i-E_{i-1}=n_i-b_i,
@@ -28,12 +28,11 @@ on obtient :
 m_i-m_{i-1}=\Delta n_i.
 ```
 
-Le noyau de la différence discrète sur un cycle est la direction uniforme. Ainsi, pour une transition de matière fixée, l'ensemble de tous les multigrades compatibles est une fibre affine :
+Le noyau de la différence discrète sur un cycle est la direction uniforme. Ainsi, pour une transition de matière fixée :
 
 ```math
 \mathbf m
-=
-\mathbf m^{(0)}(\Delta n)+w\,\mathbf 1,
+=\mathbf m^{(0)}(\Delta n)+w\mathbf1,
 \qquad
 w\in\mathbb Z,
 ```
@@ -44,74 +43,57 @@ avec :
 \mathbf1=(1,1,1,1,1,1).
 ```
 
-À cutoff fini, seule une sous-partie de cette fibre peut être réalisée ; la structure affine reste néanmoins exacte.
+À cutoff fini, seule une sous-partie de cette fibre peut être réalisée ; la structure affine reste exacte.
 
-## 2. Le coordinateur `e` n'est pas un label intrinsèque
+## 2. Le coordinateur e n'est pas un label intrinsèque
 
-L'écriture d'un état physique sous la forme :
+L'écriture :
 
 ```math
 E_i=e+s_i(n)
 ```
 
-utilise un choix de solution particulière de Gauss.
-
-Si :
+utilise un choix de solution particulière de Gauss. Sous :
 
 ```math
 s_i(n)\to s_i(n)+k(n),
 ```
 
-alors :
+on a :
 
 ```math
 e\to e-k(n).
 ```
 
-Par conséquent, pour une transition `n -> n'`, la quantité brute :
+Donc `Delta e` n'est pas un label d'enroulement intrinsèque. Le label doit être défini directement par :
 
 ```math
-\Delta e=e'-e
+\mathbf m=\mathbf m_D+w\mathbf1.
 ```
-
-change sous ce changement de convention.
-
-Il est donc interdit d'identifier `Delta e` à une classe d'enroulement intrinsèque.
-
-Le label d'enroulement doit être défini directement dans l'espace invariant des multigrades :
-
-```math
-\mathbf m=\mathbf m_D+w\mathbf1,
-```
-
-relativement à un représentant `m_D` déclaré.
 
 ## 3. Transition de matière ciblée
 
-La réponse de Kubo primaire est une susceptibilité densité-densité. Elle ne doit pas être assimilée automatiquement à un transport littéral de particule.
+La réponse de Kubo densité-densité ne doit pas être assimilée automatiquement à un transport littéral de particule.
 
-Pour autoriser une interprétation plus restrictive de type `arrivée source-récepteur`, on déclare une classe de transition de matière ciblée :
+Pour une interprétation plus restrictive d'arrivée source-récepteur, on déclare :
 
 ```math
-\Delta n
-=\pm(\mathbf e_q-\mathbf e_p).
+\Delta n=\pm(\mathbf e_q-\mathbf e_p).
 ```
 
-Le signe opposé appartient à la même paire adjointe et ne définit pas un canal physique indépendant.
+Le signe opposé appartient au même canal adjoint et ne définit pas un canal physique indépendant.
 
-Une composante de la réponse dont la transition de matière ne satisfait pas cette condition reste une contribution physique légitime à la réponse de Kubo, mais elle appartient à :
+Une composante portant une autre transition appartient à :
 
 ```text
-NON_TARGET_TRANSITION
+NON_TARGET_TRANSITION.
 ```
 
-Elle ne doit pas être interprétée comme transfert élémentaire `p <-> q`.
+## 4. Représentant direct et enroulement
 
-## 4. Représentant direct et classe d'enroulement
+Pour `d(p,q)<N/2`, l'arc minimal est unique et fournit `m_D`.
 
-Pour `d(p,q) < N/2`, l'arc minimal est unique. Il fournit un représentant canonique `m_D` du multigrade de la transition ciblée.
-
-Toute autre composante de la même transition de matière s'écrit alors de manière unique :
+Toute autre composante de la même transition de matière s'écrit :
 
 ```math
 \mathbf m=\mathbf m_D+w\mathbf1.
@@ -121,90 +103,107 @@ On définit :
 
 ```text
 TARGET_DIRECT
-    transition de matière ciblée
-    w = 0
+    transition ciblée, w=0
 
 TARGET_WINDING
-    transition de matière ciblée
-    w != 0
+    transition ciblée, w!=0
 
 NON_TARGET_TRANSITION
-    transition de matière différente de la transition ciblée
+    transition de matière différente
 ```
 
-La discussion d'un arc direct / d'un enroulement n'est donc menée qu'après identification de la transition de matière.
+## 5. Cas opposé d=N/2
 
-## 5. Cas opposé `d=N/2`
+Pour une paire opposée sur un cycle pair, les deux arcs minimaux ont la même longueur. Aucun représentant direct n'est privilégié par minimalité seule.
 
-Pour un cycle pair et une paire opposée, les deux arcs minimaux ont la même longueur.
-
-Il n'existe donc aucun représentant direct privilégié par minimalité seule. Les deux représentants minimaux diffèrent d'une unité uniforme et doivent être traités symétriquement dans le protocole secondaire d'interférence cyclique.
-
-Conséquence :
+Donc :
 
 ```text
 D3_ARRIVAL_INTERPRETATION = EXCLUDED
 ```
 
-et aucune `PATH_PURITY_DIRECT` n'est utilisée pour fabriquer artificiellement un arc privilégié dans ce cas.
+et aucune `PATH_PURITY_DIRECT` n'est utilisée pour fabriquer artificiellement un arc privilégié.
 
-## 6. Décomposition sectorielle fine
+## 6. Décomposition sectorielle fine et canal auto-conjugué
 
-Le découpage le plus fin utilisé pour le diagnostic est défini par :
+Le découpage le plus fin utilise :
 
 - le couple de configurations de matière `(n,n')` ;
 - le multigrade invariant `m` ;
-- la paire adjointe obtenue par `(n,n',m) <-> (n',n,-m)`.
+- l'orbite adjointe `(n,n',m) <-> (n',n,-m)`.
 
-Pour chaque paire adjointe `alpha`, on définit sa contribution physique à la réponse :
+Pour `m!=0`, cette orbite contient deux composantes adjointes qui sont recombinées en une seule contribution physique `chi_alpha(t)`.
+
+Le cas :
 
 ```math
-\chi_\alpha(t),
+m=0
 ```
 
-obtenue après recombinaison des deux composantes adjointes.
+est auto-conjugué et doit être traité une seule fois en général.
 
-On définit ensuite son poids diagnostique intégré :
+Dans le secteur physique 0B, il est toutefois exactement inactif. En effet :
+
+```math
+m=0
+\quad\Longrightarrow\quad
+\Delta n_i=m_i-m_{i-1}=0.
+```
+
+Plus fortement, les six flux `E_i` déterminent entièrement `n` par Gauss, donc `Pi_0(O)` est diagonal dans la base physique et commute avec toute densité `n_p`.
+
+Ainsi :
+
+```math
+\boxed{\chi_{m=0}(t)=0}
+```
+
+et :
+
+```math
+\boxed{P_{m=0}(\tau)=0.}
+```
+
+Le canal `m=0` ne peut pas être `TARGET_DIRECT` ni `TARGET_WINDING` pour `p!=q`. Il relèverait formellement de `NON_TARGET_TRANSITION`, mais avec poids exactement nul.
+
+Pour chaque canal physique actif distinct `alpha`, on définit :
 
 ```math
 P_\alpha(\tau)
-=
-\int_0^\tau \chi_\alpha(t)^2\,dt.
+=\int_0^\tau \chi_\alpha(t)^2dt.
 ```
 
-Ces poids servent uniquement à caractériser la composition sectorielle de la réponse.
+Chaque orbite adjointe non nulle est sommée une seule fois.
 
 ## 7. Agrégats diagnostiques
 
-Pour une relation primaire `d<N/2`, on pose :
+Pour une relation primaire `d<N/2` :
 
 ```math
 P_{direct}
-=
-\sum_{\alpha\in TARGET\_DIRECT}P_\alpha,
+=\sum_{\alpha\in TARGET\_DIRECT}P_\alpha,
 ```
 
 ```math
 P_{winding}
-=
-\sum_{\alpha\in TARGET\_WINDING}P_\alpha,
+=\sum_{\alpha\in TARGET\_WINDING}P_\alpha,
 ```
 
 ```math
 P_{non-target}
-=
-\sum_{\alpha\in NON\_TARGET\_TRANSITION}P_\alpha.
+=\sum_{\alpha\in NON\_TARGET\_TRANSITION}P_\alpha.
 ```
+
+Le canal nul peut être inclus formellement dans la dernière somme puisqu'il apporte exactement zéro ; l'implémentation future doit néanmoins l'identifier explicitement pour empêcher tout double comptage.
 
 Puis :
 
 ```math
 P_{sector}
-=
-P_{direct}+P_{winding}+P_{non-target}.
+=P_{direct}+P_{winding}+P_{non-target}.
 ```
 
-Si `P_sector = 0`, le canal est `INACTIVE` pour ce diagnostic.
+Si `P_sector=0`, le diagnostic est `INACTIVE`.
 
 ## 8. Pureté directe diagnostique
 
@@ -212,65 +211,41 @@ On définit :
 
 ```math
 Purity_{direct}(\tau)
-=
-\frac{P_{direct}(\tau)}{P_{sector}(\tau)}.
+=\frac{P_{direct}(\tau)}{P_{sector}(\tau)}.
 ```
 
-et donc :
+et :
 
 ```math
 1-Purity_{direct}
-=
-\frac{P_{winding}+P_{non-target}}{P_{sector}}.
+=\frac{P_{winding}+P_{non-target}}{P_{sector}}.
 ```
 
-Cette quantité est un **indice de composition sectorielle**, pas une probabilité quantique ni une fraction exacte de `chi(t)^2`.
+Le théorème d'inactivité du multigrade nul implique qu'aucune correction numérique de cette définition n'est nécessaire : le défaut potentiel était un risque de comptage, pas une contribution physique manquante.
 
-En particulier :
+Cette pureté reste un indice de composition sectorielle, pas une probabilité quantique ni une fraction exacte de `chi(t)^2`.
+
+En général :
 
 ```math
-P_{sector}
-\neq
-\int_0^\tau \chi(t)^2dt
+P_{sector}\neq\int_0^\tau\chi(t)^2dt
 ```
 
-en général, car les contributions sectorielles interfèrent dans la réponse totale.
+à cause des interférences entre canaux distincts.
 
-## 9. Une seule tolérance de garde
+## 9. Garde de chemin
 
-La garde d'interprétation utilise une tolérance unique :
-
-```math
-1-Purity_{direct}(\tau)
-\le
-\varepsilon_{path}.
-```
-
-Les diagnostics séparés restent publiés :
+La garde utilise la famille de contrôle `epsilon_path` définie dans les supports dédiés. Les diagnostics séparés restent publiés :
 
 ```math
-W(\tau)
-=
-\frac{P_{winding}}{P_{sector}},
+W(\tau)=P_{winding}/P_{sector},
 ```
 
 ```math
-O(\tau)
-=
-\frac{P_{non-target}}{P_{sector}}.
+O(\tau)=P_{non-target}/P_{sector}.
 ```
 
-mais ils ne possèdent pas de seuils d'acceptation indépendants.
-
-La raison est logique : deux seuils séparés permettraient à deux contaminations distinctes de passer chacune juste sous sa borne tout en produisant une impureté totale plus importante.
-
-La valeur numérique de `epsilon_path` reste :
-
-```text
-PATH_PURITY_TOLERANCE = OPEN
-```
-
-jusqu'au pré-enregistrement final.
+Aucun seuil indépendant n'est introduit pour chacun.
 
 ## 10. Portée du verdict
 
@@ -282,15 +257,7 @@ PATH_INTERPRETATION = INCONCLUSIVE
 
 La réponse de Kubo elle-même n'est pas invalidée.
 
-Le protocole doit publier :
-
-- `Purity_direct(tau)` ;
-- `W(tau)` ;
-- `O(tau)` ;
-- le spectre sectoriel complet `P_alpha(tau)` ;
-- le contrôle apparié `Lambda=2 -> Lambda=3`.
-
-Aucune interprétation ne doit reposer uniquement sur le franchissement discret de `epsilon_path` sans publication de ces quantités continues.
+Le protocole publie la pureté, `W`, `O`, le spectre sectoriel complet et le contrôle apparié `Lambda=2 -> Lambda=3`.
 
 ## 11. Statut
 
@@ -302,9 +269,11 @@ TARGET_DIRECT_CLASS           = VALIDATED_FOR_FREEZE for d < N/2
 TARGET_WINDING_CLASS          = VALIDATED_FOR_FREEZE for d < N/2
 NON_TARGET_TRANSITION_CLASS   = VALIDATED_FOR_FREEZE
 D_N_OVER_2_DIRECT_LABEL       = NOT_DEFINED
+SELF_ADJOINT_ZERO_GRADE       = IDENTIFIED
+ZERO_GRADE_KUBO_CHANNEL       = INACTIVE_EXACT
+ZERO_GRADE_DOUBLE_COUNTING    = REJECTED
 PATH_PURITY_STRUCTURE         = VALIDATED_FOR_FREEZE
-SINGLE_PATH_TOLERANCE         = VALIDATED_FOR_FREEZE
-PATH_PURITY_TOLERANCE         = OPEN
+PATH_PURITY_ZERO_GRADE_FIX    = NO_NUMERICAL_CHANGE
 FULL_SECTOR_SPECTRUM          = MANDATORY
 TRUNCATION_CONTROL            = MANDATORY
 ```
