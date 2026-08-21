@@ -219,19 +219,20 @@ La gouvernance de collaboration impose un préflight explicite et un profil d'ex
 Profils disponibles (cf. `docs/governance/collaboration-governance.md` §12) :
 
 ```text
-MECHANICAL_DOCUMENTATION        = CLAUDE_HAIKU_4_5 / AUTO
+DOCUMENTATION                    = CLAUDE_SONNET_5 / AUTO
 REVIEW_OR_ENGINEERING            = CLAUDE_SONNET_5 / AUTO
 SCIENTIFIC_ESCALATION            = CLAUDE_OPUS_5 / AUTO
 SCIENTIFIC_HARD_BLOCKING         = CLAUDE_OPUS_5 / HIGH
 ```
 
-Le profil mécanique Haiku est le profil normal pour les opérations documentaires et les tâches de secrétariat technique. Sonnet est réservé aux revues et à l'ingénierie nécessitant un raisonnement non trivial. Opus est une escalade explicite et ciblée, jamais un réglage par défaut.
+Sonnet 5 est désormais le modèle de production standard pour toute documentation versionnée ainsi que pour l'ingénierie courante. Haiku est retiré du workflow versionné Cosmobox. Opus reste une escalade explicite et ciblée pour la contre-expertise scientifique et les blocages scientifiques, jamais un modèle de production par défaut.
 
 Principe :
 
 ```text
-LOWEST_SUFFICIENT_MODEL = REQUIRED
-MODEL_ESCALATION = EXPLICIT
+VERSIONED_PRODUCTION_MODEL = CLAUDE_SONNET_5
+HAIKU_FOR_VERSIONED_PRODUCTION = NOT_USED
+MODEL_ESCALATION_ABOVE_SONNET = EXPLICIT
 ```
 
 Chaque mandat déclare aussi :

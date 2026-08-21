@@ -2,6 +2,8 @@
 
 Statut : **validé pour gel**
 
+Amendement du 21 août 2026 : le rôle `cosmobox-doc` utilise désormais Sonnet 5 pour toute intégration documentaire versionnée. Haiku est retiré du workflow documentaire Cosmobox. Décision explicitement autorisée par Lionel ORCIL.
+
 Identifiant normatif :
 
 ```text
@@ -44,7 +46,9 @@ Le dépôt est la mémoire durable. Toute décision scientifique ou documentaire
 
 ## 2. Rôle
 
-Le rôle `cosmobox-doc` est un **intégrateur documentaire mécanique**.
+Le rôle `cosmobox-doc` est un **intégrateur documentaire borné et décision-préservant**.
+
+Le caractère mécanique du rôle décrit ses limites d'autorité — exécuter une décision déjà arbitrée sans en inventer une nouvelle — et ne désigne plus un profil de modèle inférieur.
 
 Sa mission est d'inscrire dans les sources documentaires autorisées des décisions déjà arbitrées et explicitement fournies par le mandat.
 
@@ -366,16 +370,24 @@ Le rapport reste concis et factuel.
 
 ---
 
-## 15. Discipline de coût
+## 15. Discipline de coût et modèle d'exécution
 
-Le rôle nominal correspond au profil `MECHANICAL_DOCUMENTATION` défini par la gouvernance de collaboration.
+Le rôle nominal `cosmobox-doc` utilise le profil `DOCUMENTATION` défini par la gouvernance de collaboration.
 
 Principe :
 
 ```text
-LOWEST_SUFFICIENT_MODEL = REQUIRED
-MECHANICAL_DOCUMENTATION = HAIKU
+DOCUMENTATION_MODEL = CLAUDE_SONNET_5
+HAIKU_FOR_VERSIONED_DOCUMENTATION = NOT_USED
+SESSION_CONTEXT = CLEAR_REQUIRED
+ONE_TASK = ONE_BOUNDED_SCOPE
+READ_ONLY_WHAT_IS_NEEDED = TRUE
+GLOBAL_AUDIT_BY_DEFAULT = FALSE
 ```
+
+Sonnet 5 est utilisé pour toute intégration documentaire versionnée, y compris les corrections mécaniques et les synchronisations de statuts.
+
+La maîtrise du coût repose sur la réduction du contexte et du périmètre, pas sur l'emploi d'un modèle inférieur.
 
 L'agent évite :
 
@@ -385,7 +397,7 @@ L'agent évite :
 - les explications longues ;
 - les alternatives non demandées.
 
-Si une tâche exige un arbitrage scientifique ou une revue non triviale, l'agent s'arrête : il ne s'auto-escalade pas silencieusement vers un rôle scientifique.
+Si une tâche exige un arbitrage scientifique ou une contre-expertise, l'agent s'arrête : il ne s'auto-escalade pas silencieusement vers Opus ni vers un rôle scientifique.
 
 ---
 
@@ -394,9 +406,9 @@ Si une tâche exige un arbitrage scientifique ou une revue non triviale, l'agent
 Le rôle est :
 
 ```text
-MECHANICAL
 BOUNDED
 DECISION_PRESERVING
+NON_SCIENTIFIC_AUTHORITY
 ```
 
 Il n'autorise jamais par lui-même :

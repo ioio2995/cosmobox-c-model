@@ -4,6 +4,8 @@ Statut : **gelé**
 
 Amendement du 21 août 2026 : préflight d'exécution Claude Code, autorisé explicitement par Lionel ORCIL.
 
+Amendement du 21 août 2026 : Sonnet 5 devient le modèle minimal de production versionnée pour la documentation et l'ingénierie courante ; Haiku est retiré du workflow versionné Cosmobox. Modification autorisée explicitement par Lionel ORCIL.
+
 Ce document fixe qui décide, qui produit, qui publie et qui valide dans le dépôt `cosmobox-c-model`.
 
 Il complète `docs/governance/documentation-governance.md`.
@@ -188,7 +190,26 @@ GLOBAL_AUDIT_BY_DEFAULT = FALSE
 
 Les documents à lire et les fichiers autorisés sont bornés par le mandat. Claude Code n'élargit la lecture que si une contradiction bloquante ne peut pas être évaluée autrement.
 
-Le choix du modèle et de l'effort est proportionné au besoin : un modèle ou un effort supérieur est une **escalade explicite**, pas une valeur implicite pour les opérations mécaniques.
+Le choix du modèle et de l'effort reste proportionné au besoin, avec un plancher de production explicite :
+
+```text
+VERSIONED_PRODUCTION_MODEL = CLAUDE_SONNET_5
+```
+
+Sonnet 5 est le modèle minimal utilisé pour toute écriture versionnée du projet, y compris les opérations documentaires mécaniques et l'ingénierie courante.
+
+L'optimisation de coût repose donc prioritairement sur :
+
+```text
+SESSION_CONTEXT = CLEAR_REQUIRED
+ONE_TASK = ONE_BOUNDED_SCOPE
+READ_ONLY_WHAT_IS_NEEDED = TRUE
+GLOBAL_AUDIT_BY_DEFAULT = FALSE
+```
+
+et non sur l'emploi d'un modèle inférieur pour la production versionnée.
+
+Une escalade au-dessus de Sonnet, notamment vers Opus, reste explicite et doit correspondre à un besoin scientifique identifié.
 
 La lecture commence toujours par les documents de gouvernance réellement nécessaires au mandat. Les missions bornées peuvent référencer cette charte au lieu de la relire intégralement lorsque son contenu est déjà disponible dans le contexte propre de projet et qu'aucune modification de gouvernance n'est en jeu.
 
@@ -297,22 +318,26 @@ Le dépôt est la mémoire durable. Une décision devant survivre à la session 
 
 ## 12. Profils d'exécution Claude Code
 
-### 12.1 MECHANICAL_DOCUMENTATION
+### 12.1 DOCUMENTATION
 
 ```text
-MODEL = CLAUDE_HAIKU_4_5
+MODEL = CLAUDE_SONNET_5
 EFFORT = AUTO
 ```
 
 **Usage** :
 
-- intégration documentaire d'une décision déjà arbitrée ;
+- toute intégration documentaire versionnée ;
 - synchronisation de statuts ;
-- corrections mécaniques ;
-- opérations Git simples ;
-- commit / push d'un lot déjà validé.
+- transcription de valeurs, formules ou protocoles déjà arbitrés ;
+- corrections documentaires mécaniques ;
+- consolidation multi-documents ;
+- opérations Git simples attachées à un lot documentaire autorisé ;
+- commit / push d'un lot documentaire déjà validé.
 
-Haiku exécute une décision déjà prise. Il ne doit pas arbitrer une question scientifique.
+Sonnet exécute la décision fournie par le mandat. Le choix de Sonnet comme modèle documentaire ne lui confère aucune autorité scientifique supplémentaire.
+
+Pour le rôle spécialisé `cosmobox-doc`, les règles de `docs/governance/agents/cosmobox-doc-governance.md` restent intégralement applicables.
 
 ### 12.2 REVIEW_OR_ENGINEERING
 
@@ -326,7 +351,9 @@ EFFORT = AUTO
 - revue nécessitant un raisonnement non trivial ;
 - contrôle de cohérence documentaire ;
 - conception ou implémentation logicielle ;
-- analyse technique.
+- analyse technique ;
+- conception ou implémentation logicielle versionnée ;
+- correctifs de code et maintenance courante.
 
 ### 12.3 SCIENTIFIC_ESCALATION
 
@@ -354,11 +381,23 @@ Usage exceptionnel uniquement pour un BLOCKING scientifique précis lorsque le n
 ### 12.5 Principe normatif
 
 ```text
-LOWEST_SUFFICIENT_MODEL = REQUIRED
-MODEL_ESCALATION = EXPLICIT
+VERSIONED_PRODUCTION_MODEL = CLAUDE_SONNET_5
+DOCUMENTATION_MODEL = CLAUDE_SONNET_5
+ENGINEERING_MODEL = CLAUDE_SONNET_5
+
+SCIENTIFIC_ESCALATION_MODEL = CLAUDE_OPUS_5
+
+HAIKU_FOR_VERSIONED_PRODUCTION = NOT_USED
+MODEL_ESCALATION_ABOVE_SONNET = EXPLICIT
 ```
 
-Le modèle le moins coûteux capable d'exécuter correctement le lot doit être utilisé. Une escalade vers Sonnet ou Opus doit correspondre à une nécessité de raisonnement identifiée, pas à un réglage par défaut.
+Sonnet 5 constitue le plancher de production du workflow Cosmobox pour la documentation versionnée et l'ingénierie courante.
+
+Haiku n'est plus utilisé pour produire ou modifier des fichiers versionnés du projet.
+
+Opus reste une escalade ciblée pour la contre-expertise scientifique, les démonstrations difficiles, la recherche de contre-exemples et les blocages scientifiques explicitement identifiés.
+
+La discipline de coût ne consiste plus à sélectionner un modèle inférieur à Sonnet pour une modification versionnée. Elle repose sur un contexte propre, un périmètre borné, des lectures ciblées et l'absence d'audit global par défaut.
 
 ## 13. Évolution
 
