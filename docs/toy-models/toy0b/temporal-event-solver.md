@@ -106,9 +106,15 @@ Le protocole doit :
 1. certifier qu'aucune racine qualifiante antérieure de `chi'` n'a été manquée ;
 2. résoudre `chi'(t)=0` dans la première cellule candidate ;
 3. vérifier `chi(T_peak) != 0` au niveau de résolution déclaré ;
-4. confirmer que `F'` passe de `+` à `-`, ou de manière équivalente que la racine de `chi'` correspond bien à un maximum de `|chi|` sur le premier lobe.
+4. pour un maximum non dégénéré, vérifier :
 
-Les racines tangentielles de `chi'` sans changement de caractère ne sont pas automatiquement des pics.
+```math
+\boxed{\chi(T_{peak})\chi''(T_{peak})<0;}
+```
+
+5. dans les cas dégénérés où `chi''=0`, revenir à la définition scientifique par changement de signe de `F'` et/ou examiner les dérivées supérieures.
+
+La condition `chi != 0` et `chi'' != 0` n'est pas suffisante à elle seule : `chi chi'' > 0` correspond à un minimum local non nul de `F`.
 
 ## 5. Certification de T_thr et T_down par croisement de niveau de chi
 
@@ -131,7 +137,7 @@ Sur le premier lobe, `chi` conserve un signe `s` fixé par le premier coefficien
 
 Le signe de `chi'` au voisinage de la racine distingue montée et descente.
 
-Cette réduction évite de certifier directement `F-eta`, qui possède une bande jusqu'à `2 Omega_chi` alors que le croisement de niveau équivalent vit à la bande de `chi`.
+Cette réduction est retenue pour la certification parce qu'elle évite la convolution spectrale de `F`, fournit des bornes directes sur `chi` et simplifie le modèle d'erreur spectral. Elle n'est pas revendiquée comme intrinsèquement mieux conditionnée que l'équation équivalente `F-eta=0`.
 
 ## 6. T_grow
 
@@ -162,6 +168,29 @@ La stratégie nominale est :
 - choisir le premier maximiseur global conformément à la définition scientifique.
 
 `H_grow` contient des fréquences jusqu'à `2 Omega_chi`; c'est pourquoi `s_grow=2`.
+
+De plus :
+
+```math
+H_{grow}'=3\chi'\chi''+\chi\chi'''=2F'''.
+```
+
+Avec :
+
+```math
+S_r=\sum_\omega |C_\omega|\omega^r,
+```
+
+une borne sûre est :
+
+```math
+\boxed{
+\sup|H_{grow}'|
+\le3S_1S_2+S_0S_3.
+}
+```
+
+La certification de `T_grow` est donc potentiellement plus coûteuse non seulement par le facteur de bande deux, mais aussi par cette borne composite plus lâche.
 
 Si plusieurs maxima sont quasi-égaux au niveau de l'incertitude numérique, l'identité de `T_grow` est conditionnée et doit être signalée.
 
@@ -224,9 +253,7 @@ jusqu'à résolution suffisante.
 
 ## 10. Conditionnement des événements
 
-Le conditionnement numérique de localisation est attaché à la fonction réellement résolue.
-
-Pour une racine simple `g(t*)=0` :
+Pour une racine simple `g(t*)=0`, le déplacement au premier ordre est :
 
 ```math
 |\delta t_*|
@@ -234,29 +261,25 @@ Pour une racine simple `g(t*)=0` :
 \frac{|\delta g(t_*)|}{|g'(t_*)|}.
 ```
 
-Les diagnostics nominaux sont donc :
+Le protocole doit donc associer à chaque pente locale une borne ou estimation de l'erreur sur la fonction résolue. Une pente brute n'est pas un nombre de conditionnement invariant.
+
+Les pentes disponibles sont :
 
 ```text
-T_thr  -> |chi'(T_thr)|
-T_down -> |chi'(T_down)|
-T_peak -> |chi''(T_peak)|
-T_grow -> |H_grow'(T_grow)|
+T_thr/down -> |chi'|
+T_peak     -> |chi''|
+T_grow     -> |H_grow'|
 ```
 
-avec :
+mais le diagnostic de précision sur le temps est de la forme :
 
-```math
-H_{grow}'=3\chi'\chi''+\chi\chi'''=2F'''.
+```text
+error_on_root_function / root_slope
 ```
 
-Les quantités basées sur `F` peuvent être publiées en complément. Par exemple, à `T_peak` :
+avec un modèle d'erreur cohérent issu des perturbations spectrales.
 
-```math
-F''(T_{peak})
-=\frac12\chi(T_{peak})\chi''(T_{peak}).
-```
-
-Mais elles ne remplacent pas le conditionnement de la fonction de racine effectivement utilisée.
+Les formulations équivalentes en `F` ont le même conditionnement local si leurs erreurs sont propagées depuis les mêmes perturbations sous-jacentes. En particulier, le facteur `sqrt(eta)` des seuils multiplie simultanément pente et erreur et ne constitue pas une pénalité intrinsèque.
 
 ## 11. Budget spectral dynamique
 
@@ -270,7 +293,9 @@ Le protocole numérique devra contrôler au minimum :
 - stabilité des fréquences et poids spectraux sous précision / solveur ;
 - accumulation de phase delta_omega * t ;
 - annulations dans les sommes trigonométriques ;
-- conditionnement des événements ci-dessus.
+- erreur propagée sur la fonction de racine ;
+- pente locale de la fonction de racine ;
+- conditionnement de l'argmax de T_grow.
 ```
 
 La stabilité sous augmentation de précision peut être utilisée comme contrôle numérique indépendant, avec une règle uniforme préenregistrée.
@@ -310,13 +335,18 @@ COMMON_BETA_REFINEMENT_FAMILY          = VALIDATED_FOR_FREEZE
 PEAK_SOLVED_VIA_CHI_PRIME              = VALIDATED_FOR_FREEZE
 THRESHOLDS_SOLVED_VIA_CHI_LEVEL        = VALIDATED_FOR_FREEZE
 GROW_SOLVED_VIA_HGROW                  = VALIDATED_FOR_FREEZE
+PEAK_NONDEGENERATE_CRITERION           = chi*chi'' < 0
 GLOBAL_FACTOR_TWO_FOR_ALL_EVENTS       = REJECTED
 ESTIMATOR_SPECIFIC_BAND_FACTOR         = VALIDATED_FOR_FREEZE
 SPECTRAL_CELL_EXCLUSION                = VALIDATED_IN_PRINCIPLE
 CONTINUOUS_ROOT_SOLVER                 = VALIDATED_FOR_FREEZE_IN_PRINCIPLE
 CONTINUOUS_ARGMAX                      = VALIDATED_FOR_FREEZE_IN_PRINCIPLE
 INTERPOLATION_ROOT_FINDING_FINAL       = REJECTED
-EVENT_ROOT_CONDITIONING_PUBLICATION    = VALIDATED_FOR_FREEZE
+ROOT_SLOPE_ALONE_IS_CONDITION_NUMBER   = REJECTED
+ERROR_NORMALIZED_ROOT_CONDITIONING     = VALIDATED_FOR_FREEZE
+SQRT_ETA_CONDITIONING_PENALTY          = REJECTED
+HGROW_DERIVATIVE_BOUND                 = 3 S1 S2 + S0 S3
+GROW_COMPOSITE_CERTIFICATION_COST      = VALIDATED_FOR_FREEZE
 BRACKETING_REFINEMENT_VALUES           = OPEN
 ROOT_SOLVER_TOLERANCES                 = OPEN
 ARGMAX_TOLERANCES                      = OPEN
