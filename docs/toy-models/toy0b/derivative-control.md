@@ -80,7 +80,7 @@ DERIVATIVE_NOT_APPLICABLE
 
 `DERIVATIVE_NOT_APPLICABLE` s'applique notamment si le fond canonique n'est pas différentiable par rapport à `delta` au point considéré ou si une dégénérescence exacte empêche de définir la dérivée retenue.
 
-## 4. Croisements évités
+## 4. Gap spectral et conditionnement
 
 À chaque point de campagne, publier :
 
@@ -89,23 +89,43 @@ d_GS
 gap_GS = E_1-E_0
 ```
 
-Un statut :
+Un petit gap n'implique pas à lui seul un croisement évité. Il peut provenir d'un mode physique mou identifiable, comme le doublet cyclique à `mu<0` décrit dans `negative-mu-soft-loop.md`.
+
+Le terme :
 
 ```text
 NEAR_CROSSING
 ```
 
-peut être déclenché par un seuil de gap préenregistré. Ce seuil reste `OPEN` jusqu'au gel numérique.
+ne doit donc pas être déclenché par un simple seuil sur `gap_GS`.
 
-`NEAR_CROSSING` est un diagnostic de conditionnement. Il n'annule pas un résultat physique et n'impose pas à lui seul `DERIVATIVE_NOT_APPLICABLE`.
+La grandeur `gap_GS` est publiée comme diagnostic spectral continu. Pour la sensibilité spécifique à `delta`, on peut également publier un indicateur continu de conditionnement fondé sur le générateur :
 
-En revanche, toute dérivée évaluée dans un régime `NEAR_CROSSING` doit impérativement satisfaire le contrôle par la famille `H_delta`. En l'absence de plateau/stabilité :
+```math
+\kappa_\delta
+=\frac{\|\partial_\delta H\|}{gap_{GS}}
+=\frac{g\,\|V_\delta\|}{gap_{GS}},
+```
+
+lorsque `gap_GS>0`.
+
+Cet indicateur exprime le fait que les bornes de perturbation du projecteur fondamental se dégradent lorsque le générateur devient grand par rapport au gap. Il est un diagnostic continu, pas un seuil physique.
+
+Aucun seuil `SMALL_GAP` n'est requis pour le verdict scientifique. Si un drapeau opérationnel est ultérieurement nécessaire pour des raisons numériques, son seuil devra être justifié comme critère de conditionnement numérique et non comme frontière physique.
+
+Le verdict sur la dérivée reste donné par la famille `H_delta` : si l'estimation ne se stabilise pas sous réduction préenregistrée du pas,
 
 ```text
 DERIVATIVE_CONTROL_SENSITIVE
 ```
 
-et non une valeur de dérivée présentée comme robuste.
+est rapporté, quelle que soit l'origine physique du petit gap.
+
+Une dégénérescence exacte ou une non-régularité du projecteur peut conduire à :
+
+```text
+DERIVATIVE_NOT_APPLICABLE.
+```
 
 ## 5. Une logique commune de contrôle
 
@@ -159,8 +179,10 @@ XI1_DELTA0_DEFINITION             = VALIDATED_FOR_FREEZE_IF_DIFFERENTIABLE
 DERIVATIVE_STEP_FAMILY            = VALIDATED_FOR_FREEZE
 SINGLE_DERIVATIVE_STEP            = REJECTED
 DERIVATIVE_STABILITY_REQUIRED     = VALIDATED_FOR_FREEZE
-NEAR_CROSSING_DIAGNOSTIC          = VALIDATED_FOR_FREEZE
-NEAR_CROSSING_GAP_THRESHOLD       = OPEN
+GAP_GS_PUBLICATION                = MANDATORY
+NEAR_CROSSING_FROM_GAP_ONLY       = REJECTED
+KAPPA_DELTA_DIAGNOSTIC            = VALIDATED_IN_PRINCIPLE
+SMALL_GAP_PHYSICAL_THRESHOLD      = NOT_REQUIRED
 H_DELTA_VALUES                    = OPEN
 DERIVATIVE_NUMERICAL_TOLERANCE    = OPEN
 SAME_H_DELTA_ACROSS_CUTOFFS       = MANDATORY
