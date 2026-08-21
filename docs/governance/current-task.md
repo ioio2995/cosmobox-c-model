@@ -159,21 +159,39 @@ BETA_COMMIT = 1b37a96b832f45549bc24e41347a46e68d172db0
 
 ---
 
+## Contrôles numériques fermés — lot de fermeture mécanique
+
+```text
+# temporal / spectral / simple roots
+ROOT_SOLVER_TOLERANCES                = VALIDATED_FOR_FREEZE
+SPECTRAL_PRECISION_CONTROL             = VALIDATED_FOR_FREEZE
+SIMPLE_ROOT_CONTROL                    = VALIDATED_FOR_FREEZE
+
+# Delta1 error budget
+DELTA1_PROPAGATED_ERROR_BUDGET          = VALIDATED_FOR_FREEZE
+
+# SOFT-LOOP / derivative
+A_DELTA_VALUES                          = VALIDATED_FOR_FREEZE
+DERIVATIVE_STABILITY_CRITERION          = VALIDATED_FOR_FREEZE
+RICHARDSON_USAGE_RULE                   = VALIDATED_FOR_FREEZE
+```
+
+Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
+documentairement. Ils ne sont pas encore `FROZEN` : seule une décision explicite
+de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
+
+---
+
 ## Paramètres encore OPEN avant gel
 
 ```text
 # temporal / numerical
-ROOT_SOLVER_TOLERANCES
-ARGMAX_TOLERANCES
-SPECTRAL_PRECISION_CONTROL
-DELTA1_PROPAGATED_ERROR_BUDGET
+ARGMAX_TOLERANCES                      = OPEN
+DEGENERATE_ROOT_CONTROL                = OPEN
 
 # SOFT-LOOP
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
-A_DELTA_VALUES
-DERIVATIVE_STABILITY_CRITERION
-RICHARDSON_USAGE_RULE
 
 # threshold / interpretation
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
@@ -252,8 +270,14 @@ Une objection `BLOCKING` peut arrêter le lot. Un élément `NON_BLOCKING_BACKLO
 ```text
 CURRENT_LOT = Toy Model 0B numerical preregistration closure
 PHASE       = CLOSE_ONE_NUMERICAL_CONTROL_AT_A_TIME
-CURRENT_PARAMETER = BETA_REFINEMENT_VALUES
+CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-Prochaine action : terminer l'intégration documentaire de `BETA_VALUES={1,1/2,1/4,1/8}`, examiner le diff produit, puis passer au paramètre numérique suivant. Aucun audit global n'est requis.
+**État** : sept paramètres numériques majeurs viennent d'être fermés et intégrés
+documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
+SIMPLE_ROOT_CONTROL, DELTA1_PROPAGATED_ERROR_BUDGET, A_DELTA_VALUES,
+DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE).
+
+**Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
+paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.
