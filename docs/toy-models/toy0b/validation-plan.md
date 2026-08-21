@@ -53,7 +53,8 @@ spread=2 -> 3 configurations
 ```
 
 ```math
-\dim\mathcal H_{phys}(\Lambda)=40\Lambda-2.
+\dim\mathcal H_{phys}(\Lambda)=40\Lambda-2
+\qquad(\Lambda\ge1).
 ```
 
 ```text
@@ -62,11 +63,38 @@ Lambda=2 -> 78
 Lambda=3 -> 118
 ```
 
+Hors de ce domaine, seul le comptage exact par `spread` fait foi (cf. A02).
+
 ### A02 — intérieur
+
+L'identité structurelle exacte est :
 
 ```math
 \dim\mathcal H_{interior}(\Lambda)
-=\dim\mathcal H_{phys}(\Lambda-1).
+=\sum_n\max\bigl(0,2(\Lambda-1)+1-spread(n)\bigr).
+```
+
+Elle équivaut à :
+
+```math
+\dim\mathcal H_{interior}(\Lambda)
+=\dim\mathcal H_{phys}(\Lambda-1)
+```
+
+à condition que `H_phys(0)` soit défini par ce même comptage exact, ce qui donne :
+
+```text
+Lambda=0 -> dim H_phys = 1
+```
+
+La forme fermée `dim H_phys(Lambda)=40*Lambda-2` n'est valide que pour `Lambda>=1` et ne doit donc **pas** être substituée à `Lambda-1` lorsque `Lambda=1`.
+
+Valeurs de régression :
+
+```text
+Lambda=1 -> dim H_interior = 1
+Lambda=2 -> dim H_interior = 38
+Lambda=3 -> dim H_interior = 78
 ```
 
 ### A03 — shifts cycliques
@@ -270,6 +298,8 @@ activity_status
 ---
 
 ## 6. Identifiabilité statique et dynamique
+
+`M_F` est la carte de mesure définie dans la spécification §6 : elle agit sur l'espace tangent `V={A=A^dagger, Tr A=0}` et utilise les représentants traceless des observables de `F`. Tout rang publié ici est un rang de `M_F`, jamais un comptage d'opérateurs listés.
 
 Pour chaque sous-espace de réponse pré-déclaré `S_resp` et famille de mesure `F`, construire la restriction :
 
@@ -613,13 +643,55 @@ Si `P_sector=0` :
 PATH_DIAGNOSTIC = INACTIVE
 ```
 
+Ligne de base algébrique, calculée avant l'évolution temporelle :
+
+```math
+P_0(\theta,\Lambda,pq)=Purity_{direct}(0^+),
+\qquad
+I_0(\theta)=1-P_0(\theta).
+```
+
 Impureté monotone :
 
 ```math
-I_{max}(\tau)=\sup_{0<s\le\tau}(1-Purity_{direct}(s)).
+I_{max}(\theta,\tau)=\sup_{0<s\le\tau}(1-Purity_{direct}(\theta,s)).
 ```
 
-La famille `epsilon_path` est `OPEN` numériquement et doit être commune aux cutoffs comparés.
+La garde normative porte sur la dégradation supplémentaire normalisée, définie lorsque `P_0>0` :
+
+```math
+R_{path}(\theta,\tau)
+=\frac{I_{max}(\theta,\tau)-I_0(\theta)}{P_0(\theta)},
+```
+
+```math
+\tau_{path}(\epsilon)
+=\inf\{\tau>0:R_{path}(\tau)>\epsilon\}.
+```
+
+Un événement passe la garde pour `epsilon` si `R_path(T_event)<=epsilon`.
+
+Si `P_0=0` :
+
+```text
+PATH_BASELINE_STATUS = NO_DIRECT_BASELINE
+```
+
+et `R_path` n'est pas applicable.
+
+La famille de contrôle `epsilon in E_path subset (0,1)` est `OPEN` numériquement et doit être commune aux cutoffs comparés. Appliquer une grille de contrôle commune directement à `I_max` est supersédé.
+
+À publier par domaine complet `(theta,Lambda,pq)` :
+
+```text
+P_0(theta)
+W(0+)
+O(0+)
+R_path(theta,tau)
+tau_path(theta,epsilon)
+```
+
+Le contrôle `Lambda=2 -> 3` est obligatoire avec la même grille `E_path`.
 
 Pour `d=3` :
 
@@ -637,20 +709,71 @@ Autocorrélation connectée :
 
 ```math
 C_j(t)
-=\frac{Re\,Tr[\rho\,\delta n_j(t)\delta n_j]}
-{Tr[\rho(\delta n_j)^2]}.
+=\frac{Re\,Tr[\rho_\theta\,\delta n_j(t)\delta n_j]}
+{Tr[\rho_\theta(\delta n_j)^2]}.
+```
+
+Si le dénominateur est nul :
+
+```text
+RECURRENCE_DIAGNOSTIC = NOT_APPLICABLE_ZERO_LOCAL_VARIANCE
 ```
 
 Sites normatifs :
 
 ```text
-source p
-receiver q
+RECURRENCE_SITE_SET(p,q) = {p,q}
 ```
 
-Les sites intermédiaires sont diagnostics uniquement.
+Les sites intermédiaires sont `DIAGNOSTIC_ONLY` et ne participent pas au veto normatif.
 
-La famille `Gamma` utilise une hystérésis préenregistrée ; ses bornes numériques restent `OPEN`.
+Détecteur hystérétique : pour `gamma=(gamma_-,gamma_+)` avec `gamma_-<gamma_+<1` et un horizon `tau`, il y a sortie lorsque `C_j<=gamma_-`, puis retour si `C_j>=gamma_+` après cette sortie et avant `tau`. Les trois états sont exhaustifs :
+
+```text
+NO_EXIT_BEFORE_EVENT
+EXIT_NO_RETURN_BEFORE_EVENT
+RETURN_BEFORE_EVENT
+```
+
+Pour la relation `(p,q)`, un retour à l'une quelconque des deux extrémités compte comme retour avant événement.
+
+Horizons normatifs, obligatoires :
+
+```text
+T_grow       -> tau = T_peak
+T_thr(eta)   -> tau = T_down(eta)
+```
+
+`T_down(eta)` est donc un auxiliaire obligatoire de la garde de récurrence des seuils et non un estimateur scientifique indépendant.
+
+La famille `Gamma` est un ensemble préenregistré contenu dans `{(gamma_-,gamma_+):gamma_-<gamma_+<1}`, borné dans l'ordre partiel :
+
+```math
+\gamma^{strict}\preceq\gamma\preceq\gamma^{perm},
+```
+
+```math
+\gamma_-^{strict}\le\gamma_-\le\gamma_-^{perm},
+\qquad
+\gamma_+^{strict}\ge\gamma_+\ge\gamma_+^{perm}.
+```
+
+Aucun domaine rectangulaire `G_- x G_+` n'est exigé. La largeur `h(gamma)=gamma_+-gamma_->0` est explicite ; `h=0` est exclu du contrôle principal. Les bornes numériques restent `OPEN`.
+
+Verdict robuste évalué aux deux bornes seulement :
+
+```text
+gamma_perm ne détecte aucun retour
+    -> RECURRENCE_STATUS = ROBUST_CLEAN
+
+gamma_strict détecte un retour
+    -> RECURRENCE_STATUS = ROBUST_CONTAMINATED
+
+sinon
+    -> RECURRENCE_STATUS = CONTROL_SENSITIVE
+```
+
+Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`, `Lambda=2` et `Lambda=3`.
 
 Un événement candidat est temporellement interprétable seulement si :
 
@@ -909,6 +1032,8 @@ RAW_EIGENVECTOR_NONZERO_COUNT_ORACLE
 
 ## 18. Verdicts autorisés
 
+La liste des verdicts scientifiques généraux ci-dessous n'est **pas exhaustive** des statuts publiables : elle ne décrit que la couche de verdict général.
+
 Verdicts scientifiques généraux :
 
 ```text
@@ -919,9 +1044,20 @@ INACTIVE
 NOT_APPLICABLE
 ```
 
-Verdicts de contrôles :
+Statuts spécialisés explicitement autorisés, notamment :
 
 ```text
+NOT_DEFINED
+EXCLUDED
+INACTIVE_EXACT
+ZERO_EXACT
+NOT_APPLICABLE_ZERO_LOCAL_VARIANCE
+NO_DIRECT_BASELINE
+NO_EXIT_BEFORE_EVENT
+EXIT_NO_RETURN_BEFORE_EVENT
+RETURN_BEFORE_EVENT
+ROBUST_CLEAN
+ROBUST_CONTAMINATED
 CONTROL_SENSITIVE
 TIME_EVENT_CONTROL_SENSITIVE
 DERIVATIVE_CONTROL_SENSITIVE
@@ -929,6 +1065,8 @@ SOFT_LOOP_STATIC_SUPPORTED
 SOFT_LOOP_STATIC_DEVIATES
 SOFT_LOOP_STATIC_NUMERICALLY_INCONCLUSIVE
 ```
+
+Un statut spécialisé ne doit pas être remappé silencieusement vers `PASS` ou `FAIL`.
 
 Tout verdict doit publier son domaine complet et les contrôles ayant conduit à ce statut.
 

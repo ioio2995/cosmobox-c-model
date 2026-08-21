@@ -89,21 +89,37 @@ gamma_+ : niveau de récupération exigé
 
 Ils ne sont pas réduits à un unique paramètre.
 
-On déclare deux ensembles finis de contrôle `G_-` et `G_+` vérifiant la condition forte :
+Le domaine normatif `Gamma` est un **ensemble fini préenregistré** contenu dans :
 
 ```math
-max(G_-)<min(G_+)<1.
+\{(\gamma_-,\gamma_+):\gamma_-<\gamma_+<1\},
 ```
 
-Ainsi tous les couples du produit :
+et borné dans l'ordre partiel du détecteur :
 
 ```math
-Gamma=G_-\times G_+
+\gamma^{strict}\preceq\gamma\preceq\gamma^{perm},
 ```
 
-satisfont automatiquement `gamma_-<gamma_+`.
+c'est-à-dire :
 
-Les valeurs numériques de `G_-` et `G_+` restent ouvertes jusqu'au gel numérique du protocole.
+```math
+\gamma_-^{strict}\le\gamma_-\le\gamma_-^{perm},
+\qquad
+\gamma_+^{strict}\ge\gamma_+\ge\gamma_+^{perm}.
+```
+
+Aucune structure de produit rectangulaire `G_- x G_+` n'est exigée : l'ancienne exigence rectangulaire est supersédée. Un produit reste un cas particulier admissible lorsqu'il satisfait la contrainte ci-dessus.
+
+La largeur :
+
+```math
+h(\gamma)=\gamma_+-\gamma_->0
+```
+
+est explicite pour tout point du domaine. Le point permissif porte la largeur minimale positive du domaine préenregistré ; `h=0` est exclu du contrôle principal.
+
+Les bornes numériques `gamma^strict` et `gamma^perm` restent ouvertes jusqu'au gel numérique du protocole.
 
 ## 4. Monotonie du détecteur
 
@@ -114,23 +130,17 @@ Les valeurs numériques de `G_-` et `G_+` restent ouvertes jusqu'au gel numériq
 
 Le détecteur `RETURN_BEFORE_EVENT` est donc monotone dans l'ordre partiel correspondant.
 
-Le couple le plus permissif est :
+Le couple le plus permissif est la borne supérieure `gamma^perm` du domaine préenregistré : plus grand `gamma_-` et plus petit `gamma_+` admis.
 
-```math
-\gamma^{perm}=(max G_-,\ min G_+).
-```
+Le couple le plus strict est la borne inférieure `gamma^strict` : plus petit `gamma_-` et plus grand `gamma_+` admis.
 
-Le couple le plus strict est :
+Ces deux bornes sont déclarées avec le domaine ; lorsque `Gamma` est un produit `G_- x G_+`, elles valent respectivement `(max G_-, min G_+)` et `(min G_-, max G_+)`.
 
-```math
-\gamma^{strict}=(min G_-,\ max G_+).
-```
-
-## 5. Verdict robuste par deux coins
+## 5. Verdict robuste par les deux bornes
 
 Le verdict sur tout `Gamma` est déterminé par deux évaluations seulement.
 
-Si le coin permissif donne :
+Si la borne permissive `gamma^perm` donne :
 
 ```text
 NO_EXIT_BEFORE_EVENT
@@ -148,7 +158,7 @@ alors aucun couple de `Gamma` ne peut donner de retour :
 RECURRENCE_STATUS = ROBUST_CLEAN
 ```
 
-Si le coin strict donne :
+Si la borne stricte `gamma^strict` donne :
 
 ```text
 RETURN_BEFORE_EVENT
@@ -202,7 +212,7 @@ Lambda=3
 
 Un test de covariance `+delta <-> -delta` n'est recevable que si les événements comparés ont des statuts de récurrence compatibles sous le même `Gamma`.
 
-Aucun changement de `G_-` ou `G_+` ne peut être utilisé pour rétablir une covariance ou une convergence de troncature après inspection des résultats.
+Aucun changement du domaine `Gamma` ou de ses bornes `gamma^strict` / `gamma^perm` ne peut être utilisé pour rétablir une covariance ou une convergence de troncature après inspection des résultats.
 
 ## 8. Portée
 
@@ -221,9 +231,10 @@ RECURRENCE_CONTROL
 GLOBAL_REVIVAL_WINDOW          = ABANDONED
 EVENT_LOCAL_RECURRENCE_GUARD   = VALIDATED_FOR_FREEZE
 HYSTERETIC_PAIR_STRUCTURE      = VALIDATED_FOR_FREEZE
-GAMMA_RECTANGULAR_DOMAIN       = VALIDATED_FOR_FREEZE
-GAMMA_TWO_CORNER_VERDICT       = VALIDATED_FOR_FREEZE
+GAMMA_RECTANGULAR_DOMAIN       = SUPERSEDED
+GAMMA_ORDERED_DOMAIN           = VALIDATED_FOR_FREEZE
+GAMMA_TWO_BOUND_VERDICT        = VALIDATED_FOR_FREEZE
 ZERO_LOCAL_VARIANCE_STATUS     = VALIDATED_FOR_FREEZE
-G_MINUS_VALUES                 = OPEN
-G_PLUS_VALUES                  = OPEN
+GAMMA_STRICT_VALUES            = OPEN
+GAMMA_PERM_VALUES              = OPEN
 ```

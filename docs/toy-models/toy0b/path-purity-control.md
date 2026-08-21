@@ -136,34 +136,55 @@ Cette enveloppe répond directement à la question : quelle est la plus grande i
 
 Aucune valeur unique de `epsilon_path` n'est privilégiée.
 
-Pour une valeur de contrôle `epsilon`, on définit :
+La garde n'est **pas** fondée sur une impureté absolue commune à tous les fonds : elle porte sur la dégradation supplémentaire relative à la ligne de base `P_0^{pq}`. Avec :
 
 ```math
-\tau_{pure}(\epsilon)
-=\inf\{\tau>0: I_{max}(\tau)>\epsilon\}.
+I_0=1-P_0^{pq},
 ```
 
-Cette définition est équivalente au premier franchissement de l'impureté et reste bien définie lorsque la pureté oscille.
+et lorsque `P_0^{pq}>0` :
+
+```math
+R_{path}(\tau)
+=\frac{I_{max}(\tau)-I_0}{P_0^{pq}}.
+```
+
+Pour une valeur de contrôle `epsilon in (0,1)`, on définit :
+
+```math
+\tau_{path}(\epsilon)
+=\inf\{\tau>0: R_{path}(\tau)>\epsilon\}.
+```
+
+Cette définition est équivalente au premier franchissement de la dégradation normalisée et reste bien définie lorsque la pureté oscille.
 
 Un événement temporel candidat `T_event` passe la garde pour une valeur de contrôle donnée si :
 
 ```math
-T_{event}<\tau_{pure}(\epsilon),
+T_{event}<\tau_{path}(\epsilon),
 ```
 
 ou, de manière équivalente :
 
 ```math
-I_{max}(T_{event})\le\epsilon.
+R_{path}(T_{event})\le\epsilon.
 ```
 
 Si :
 
 ```math
-\epsilon < 1-P_0^{pq},
+P_0^{pq}=0,
 ```
 
-alors aucun régime asymptotiquement aussi pur n'existe et `tau_pure(epsilon)=0` au sens de la garde.
+alors :
+
+```text
+PATH_BASELINE_STATUS = NO_DIRECT_BASELINE
+```
+
+et `R_path` n'est pas applicable ; la garde de pureté ne rend aucun verdict pour ce couple.
+
+À `d=1` régulier, `P_0^{pq}=1` et `I_0=0` : `R_path` se réduit à l'impureté enveloppée absolue `I_max`. À `d=2`, `P_0^{pq}` n'est pas structurellement égal à `1` et doit être publié par domaine complet `(theta,Lambda,pq)`.
 
 ## 5. Domaine de contrôle pré-enregistré
 
@@ -195,16 +216,16 @@ CONTROL_SENSITIVE
 
 ## 6. Contrôle de troncature
 
-La courbe :
+La ligne de base `P_0^{pq}`, la courbe :
 
 ```math
-I_{max}(\tau)
+R_{path}(\tau)
 ```
 
 et/ou son inverse :
 
 ```math
-\tau_{pure}(\epsilon)
+\tau_{path}(\epsilon)
 ```
 
 doivent être publiées à `Lambda=2` et `Lambda=3` avec le même domaine de contrôle `epsilon`.

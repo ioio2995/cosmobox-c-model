@@ -319,6 +319,58 @@ r_\Lambda(L^k)
 
 ## 6. Familles de mesure et identifiabilité
 
+### Espace tangent et carte de mesure
+
+Les rangs instrumentaux sont des rangs de fonctionnelles sur l'espace tangent :
+
+```math
+\mathcal V=\{A=A^\dagger,\ \operatorname{Tr}A=0\}.
+```
+
+Sur `V`, la composante identité d'une observable est invisible. Pour toute observable `O`, on peut donc utiliser indifféremment `O` ou son représentant traceless :
+
+```math
+\widetilde O=O-\frac{\operatorname{Tr}O}{d_{phys}}I.
+```
+
+Pour une famille ordonnée `F={O_mu}`, `mu=1..m`, la carte de mesure est :
+
+```math
+\boxed{
+\mathcal M_F(A)
+=\bigl(\operatorname{Tr}(A\widetilde O_1),\ldots,
+       \operatorname{Tr}(A\widetilde O_m)\bigr).
+}
+```
+
+`rank(F)` désigne toujours le rang de `M_F`, c'est-à-dire la dimension du span des représentants traceless, jamais le nombre brut d'opérateurs listés.
+
+### Transport gauge-dressed le long d'un arc
+
+Pour un arc simple orienté :
+
+```text
+P=(i_0,i_1,...,i_d)
+```
+
+le transporteur de jauge `W_P` est le produit ordonné des `U_i` lorsque l'arc suit l'orientation du lien et des `U_i^dagger` lorsqu'il la remonte. Le transport ouvert est :
+
+```math
+T_P=c_{i_0}^\dagger W_P c_{i_d},
+```
+
+et ses deux quadratures hermitiennes sont :
+
+```math
+X_P=\frac{T_P+T_P^\dagger}{2},
+\qquad
+Y_P=\frac{T_P-T_P^\dagger}{2i}.
+```
+
+Une normalisation globale non nulle différente ne change ni le span ni les rangs. Pour une paire non orientée, inverser simultanément l'arc et ses extrémités envoie `T_P` sur `T_P^dagger` : cela ne crée donc pas une nouvelle paire de quadratures indépendante dans la famille.
+
+### Familles exactes
+
 Stratification statique :
 
 ```math
@@ -326,18 +378,40 @@ F_D\subset F_{edge}\subset F_{path}\subset F_{loop}^{(1)}\subset F_{loop}^{harm}
 ```
 
 ```text
-F_D            = {n_i,E_i}
-F_edge         = F_D + transports gauge-dressed d'arête
-F_path         = F_edge + transports ouverts déclarés
-F_loop^(1)     = F_path + {X_L,Y_L}
-F_loop^harm    = F_path + H_Lambda
+F_D
+    {n_i,E_i}, i=0..5
+
+F_edge
+    F_D
+    + {X_P,Y_P} pour les six arcs minimaux de distance 1
+
+F_path
+    F_edge
+    + {X_P,Y_P} pour les six arcs minimaux uniques de distance 2
+    + {X_P,Y_P} pour les deux arcs minimaux de chacune des trois paires opposées d=3
+
+F_loop^(1)
+    F_path + {X_L,Y_L}
+
+F_loop^harm
+    F_path + span_R{X_{L^k},Y_{L^k} | 1<=k<=2*Lambda}
 ```
+
+Sur le secteur physique, la relation :
+
+```math
+n_i-b_iI=E_i-E_{i-1}
+```
+
+montre que la partie traceless des `n_i` est déjà portée par le span des `E_i`.
 
 Toujours distinguer :
 
 ```math
 span(F)\neq Alg(F).
 ```
+
+### Rangs pilotes
 
 Pilote `Lambda=1`, déjà vu avant pré-enregistrement :
 
@@ -348,6 +422,8 @@ rank(F_path)     = 36
 rank(F_loop^(1)) = 38
 rank(L)          = 18
 ```
+
+Ce sont des **rangs mesurés de `M_F`**, une fois l'identité quotientée par la restriction `Tr A=0`, et non des comptages d'éléments de famille. `rank(F_D)=6` est ainsi cohérent avec les douze opérateurs listés dans `F_D`, et `rank(F_path)` ne se reconstruit pas par simple addition du nombre d'observables ajoutées.
 
 Ces nombres restent `PILOT_LAMBDA1`, jamais confirmatoires pour `Lambda=2`.
 
@@ -766,29 +842,147 @@ Purity_{direct}=P_{direct}/P_{sector}.
 
 Cette pureté est un indice de composition sectorielle, pas une probabilité ni une décomposition additive de `chi^2`.
 
-Impureté :
+### Garde de pureté normalisée
+
+La garde normative n'est pas fondée sur une impureté absolue commune à tous les fonds.
+
+Ligne de base algébrique, à calculer avant toute évolution temporelle :
 
 ```math
-I(\tau)=1-Purity_{direct}(\tau),
+P_0(\theta,\Lambda,pq)=Purity_{direct}(0^+),
+\qquad
+I_0(\theta)=1-P_0(\theta).
 ```
+
+Enveloppe monotone d'impureté :
 
 ```math
-I_{max}(\tau)=\sup_{0<s\le\tau}I(s).
+I_{max}(\theta,\tau)
+=\sup_{0<s\le\tau}\bigl[1-Purity_{direct}(\theta,s)\bigr].
 ```
 
-`epsilon_path` est une famille de contrôle préenregistrée. Les valeurs restent ouvertes.
+Lorsque `P_0>0`, la garde porte sur la dégradation supplémentaire normalisée :
+
+```math
+\boxed{
+R_{path}(\theta,\tau)
+=\frac{I_{max}(\theta,\tau)-I_0(\theta)}{P_0(\theta)}.
+}
+```
+
+La famille de contrôle commune est `epsilon in E_path subset (0,1)`, préenregistrée, avec :
+
+```math
+\tau_{path}(\epsilon)
+=\inf\{\tau>0:R_{path}(\tau)>\epsilon\}.
+```
+
+Un événement passe la garde pour `epsilon` si :
+
+```math
+R_{path}(T_{event})\le\epsilon.
+```
+
+Lorsque `P_0=0` :
+
+```text
+PATH_BASELINE_STATUS = NO_DIRECT_BASELINE
+```
+
+et `R_path` n'est pas applicable.
+
+À `d=1` régulier, `P_0=1` et `I_0=0` : `R_path` se réduit à l'impureté enveloppée absolue. À `d=2`, `P_0` n'est pas structurellement égal à `1` et doit être publié par domaine complet `(theta,Lambda,pq)`.
+
+Les valeurs numériques de `E_path` restent ouvertes. Toute formulation appliquant une grille de contrôle commune directement à `I_max` est supersédée.
+
+### Garde de récurrence
+
+Sites normatifs :
+
+```text
+RECURRENCE_SITE_SET(p,q) = {p,q}
+```
+
+Les sites intermédiaires sont `DIAGNOSTIC_ONLY` et ne participent pas au veto normatif.
 
 La récurrence est contrôlée par l'autocorrélation locale connectée normalisée :
 
 ```math
 C_j(t)
-=\frac{Re\,Tr[\rho\,\delta n_j(t)\delta n_j]}
-{Tr[\rho(\delta n_j)^2]}.
+=\frac{Re\,Tr[\rho_\theta\,\delta n_j(t)\delta n_j]}
+{Tr[\rho_\theta(\delta n_j)^2]}.
 ```
 
-Sites normatifs : source `p` et récepteur `q`; les sites intermédiaires sont diagnostiques seulement.
+Si le dénominateur est nul :
 
-La famille de récurrence est hystérétique `Gamma`; ses valeurs numériques restent ouvertes.
+```text
+RECURRENCE_DIAGNOSTIC = NOT_APPLICABLE_ZERO_LOCAL_VARIANCE
+```
+
+Détecteur hystérétique : pour :
+
+```math
+\gamma=(\gamma_-,\gamma_+),
+\qquad\gamma_-<\gamma_+<1,
+```
+
+et un horizon `tau`, il y a sortie lorsque `C_j<=gamma_-`, puis retour si `C_j>=gamma_+` après cette sortie et avant `tau`. Les trois états sont exhaustifs :
+
+```text
+NO_EXIT_BEFORE_EVENT
+EXIT_NO_RETURN_BEFORE_EVENT
+RETURN_BEFORE_EVENT
+```
+
+Pour la relation `(p,q)`, le statut de garde combine les deux extrémités : un retour à l'une quelconque des extrémités compte comme retour avant événement.
+
+Horizons normatifs :
+
+```text
+T_grow       -> tau = T_peak
+T_thr(eta)   -> tau = T_down(eta)
+```
+
+`T_down` est donc un auxiliaire obligatoire de la garde de récurrence des seuils, et non un estimateur scientifique indépendant.
+
+Domaine `Gamma` : ensemble préenregistré contenu dans :
+
+```math
+\{(\gamma_-,\gamma_+):\gamma_-<\gamma_+<1\}
+```
+
+et borné dans l'ordre partiel :
+
+```math
+\gamma^{strict}\preceq\gamma\preceq\gamma^{perm},
+```
+
+avec :
+
+```math
+\gamma_-^{strict}\le\gamma_-\le\gamma_-^{perm},
+\qquad
+\gamma_+^{strict}\ge\gamma_+\ge\gamma_+^{perm}.
+```
+
+Aucun domaine rectangulaire `G_- x G_+` n'est exigé. La largeur `h(gamma)=gamma_+-gamma_->0` est explicite ; le point permissif porte la largeur minimale positive du domaine préenregistré, et `h=0` est exclu du contrôle principal.
+
+Verdict robuste par les deux bornes :
+
+```text
+gamma_perm ne détecte aucun retour
+    -> RECURRENCE_STATUS = ROBUST_CLEAN
+
+gamma_strict détecte un retour
+    -> RECURRENCE_STATUS = ROBUST_CONTAMINATED
+
+sinon
+    -> RECURRENCE_STATUS = CONTROL_SENSITIVE
+```
+
+Les valeurs numériques de `Gamma` restent ouvertes.
+
+### Condition d'interprétation
 
 Un événement temporel est interprétable comme arrivée propre seulement si :
 
