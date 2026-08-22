@@ -599,6 +599,146 @@ Borne structurelle globale (`short-time-oracles.md` §9) :
 La densification de la grille au-delà des valeurs préenregistrées ci-dessus
 est `NON_BLOCKING_BACKLOG` pour ce lot et n'est pas appliquée.
 
+### Règle opérationnelle de convergence court-terme
+
+Dérivation analytique complète : `short-time-oracles.md` §10.
+
+**Applicabilité en exposant.** Requiert référence et état de même exposant
+dominant certifié `nu in {1,3,5}` avec coefficients dominants certifiés non
+nuls. Sinon `SHORT_TIME_CONVERGENCE_NOT_APPLICABLE`
+(`SHORT_TIME_COMPARISON=NOT_APPLICABLE`, `D_THR=NOT_DEFINED`) ; exposant non
+résolu -> `SHORT_TIME_CONVERGENCE_EXPONENT_UNRESOLVED` ; `nu>5` ->
+`SHORT_TIME_CONVERGENCE_RANGE_NOT_PREREGISTERED`. Ces trois statuts sont
+`NONCONFIRMATORY`. `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` reste `OPEN` et
+conditionne les classifications de zéro numérique.
+
+**Construction de la queue commune.** Utiliser le domaine `eta` commun
+admissible déjà validé (§27 de `temporal-event-solver.md`). Sélectionner
+déterministiquement les trois plus petites valeurs `lambda` communes
+admissibles `lambda_0>lambda_1>lambda_2`
+(`SHORT_TIME_CONVERGENCE_MIN_COMMON_LEVELS=3`), sans saut de niveau, sans
+triplet intérieur, sans substitution ni ajout d'`eta`. Moins de 3 niveaux
+communs -> `SHORT_TIME_CONVERGENCE_INSUFFICIENT_COMMON_RANGE`.
+
+**Résidu et budget.** Avec `S_short^(q)=(1/nu) log|a_state^(q)/a_ref^(q)|`,
+`L_thr^(q)(eta)=log[T_ref^(q)(eta)/T_state^(q)(eta)]`,
+`D^(q)(eta)=L_thr^(q)(eta)-S_short^(q)`, et le budget déjà validé
+`r_T=e_u/u`, `L(r)=-log(1-r)` :
+
+```math
+e_D(\eta)=\max\bigl(|D^{(2p)}-D^{(p)}|,\;L(r_{T,ref})+L(r_{T,state})+|S_{short}^{(2p)}-S_{short}^{(p)}|\bigr).
+```
+
+`D(eta)=D^(2p)(eta)`, `m_D=max(0,|D|-e_D)`, `M_D=|D|+e_D`. Résolu ssi
+`m_D>0`. Aucune tolérance nouvelle.
+
+**Motif de résolution information-monotone.** Avec `R_i:=(m_D,i>0)`, seul un
+préfixe résolu contigu suivi éventuellement d'un suffixe de plancher est
+admis. Tout motif non contigu -> `SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE`.
+
+**Triage exécutable :**
+
+```text
+R0=F, R1=F, R2=F
+    -> SHORT_TIME_CONVERGENCE_NO_RESOLVED_RESIDUAL
+       (NONCONFIRMATORY_INSUFFICIENT_RESOLUTION, non éligible au verdict fort)
+
+R0=T, R1=T, R2=F
+    -> exiger même signe certifié (I_D,0, I_D,1), M_D,1<m_D,0, M_D,2<m_D,1
+    -> si passe : SHORT_TIME_CONVERGENCE_SUPPORTED_FLOOR_AFTER_CONTRACTION
+       (SUPPORT_MODE=FLOOR_AFTER_CONTRACTION)
+    -> sinon : SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE
+
+R0=T, R1=F, R2=F
+    -> exiger M_D,1<m_D,0, M_D,2<M_D,1
+    -> si passe : SHORT_TIME_CONVERGENCE_SUPPORTED_FLOOR_AFTER_CONTRACTION
+    -> sinon : SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE
+
+R0=T, R1=T, R2=T
+    -> exiger même signe certifié sur les trois, M_D,1<m_D,0, M_D,2<m_D,1
+    -> former z_i=lambda_i^(2/nu), q_01=z_1/z_0, q_12=z_2/z_1,
+       R_01=(D_1-q_01 D_0)/(1-q_01), R_12=(D_2-q_12 D_1)/(1-q_12),
+       e_R01, e_R12 (mêmes pondérations), m_R12=max(0,|R_12|-e_R12),
+       M_shift=|R_12-R_01|+e_R12+e_R01
+    -> exiger m_R12<=M_shift
+    -> si tout passe : SHORT_TIME_CONVERGENCE_SUPPORTED_RESOLVED_TREND
+       (SUPPORT_MODE=RESOLVED_RICHARDSON_TREND)
+    -> sinon : SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE
+
+motif non contigu (ex. F,T,F ou F,T,T)
+    -> SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE
+```
+
+`SHORT_TIME_CONVERGENCE_CONTROL_SENSITIVE` n'est jamais présenté comme une
+falsification physique de l'oracle analytique de court terme. Aucune valeur
+`c1`/`c2`/taux résolu n'est inférée de `FLOOR_AFTER_CONTRACTION`. `M_shift`
+n'est jamais présenté comme une borne de troncature rigoureuse
+(`RICHARDSON_ZERO_COMPATIBILITY = OPERATIONAL_COMPATIBILITY_NOT_RIGOROUS_TRUNCATION_BOUND`).
+
+```text
+SHORT_TIME_CONVERGENCE_STRONG_STATUS_SET =
+{ SUPPORTED_RESOLVED_TREND, SUPPORTED_FLOOR_AFTER_CONTRACTION }
+```
+
+**Traitement par paire avant `Delta1`.** Évaluer séparément `D_A^thr` et
+`D_B^thr` (`SHORT_TIME_CONVERGENCE_PAIRWISE_PRIMARY=YES`). Une annulation
+`D_A-D_B~=0` ne peut jamais racheter un canal non confirmatoire
+(`DELTA1_CANCELLATION_AS_PRIMARY_EVIDENCE=REJECTED`). `Delta1_dyn^thr=D_A-D_B`
+reste secondaire.
+
+**Agrégation complète `Delta1` :**
+
+```text
+1. si A et B sont tous deux dans STRONG_STATUS_SET
+       -> DELTA1_SHORT_LIMIT = SUPPORTED
+2. sinon si A ou B est NOT_APPLICABLE ou RANGE_NOT_PREREGISTERED
+       -> DELTA1_SHORT_LIMIT = NOT_APPLICABLE
+3. sinon si A ou B est INSUFFICIENT_COMMON_RANGE
+       -> DELTA1_SHORT_LIMIT = INSUFFICIENT_COMMON_RANGE
+4. sinon si A ou B est CONTROL_SENSITIVE
+       -> DELTA1_SHORT_LIMIT = CONTROL_SENSITIVE
+5. sinon
+       -> DELTA1_SHORT_LIMIT = NONCONFIRMATORY
+```
+
+Aucune paire mixte n'est promue silencieusement à `SUPPORTED`.
+
+**Statut local par cutoff et queue conjointe.** Un statut local par `Lambda`
+peut être publié à titre `LOCAL_DIAGNOSTIC_ONLY`, en utilisant le domaine
+commun admissible propre à ce cutoff ; il ne supporte pas seul une
+revendication de stabilité de cutoff. Pour une revendication comparant
+`Lambda=2` et `Lambda=3`, appliquer D'ABORD l'intersection conjointe :
+
+```math
+E_\eta^{joint\_cutoff}(Q)=\bigcap(\text{eta admissibles à }\Lambda=2\text{ ET }\Lambda=3\text{, pour chaque membre comparé}).
+```
+
+Sélectionner ENSUITE les trois plus petites valeurs `lambda` de
+`E_eta^joint_cutoff(Q)`, et utiliser cette même queue à `Lambda=2` et à
+`Lambda=3`. Si `D_A` et `D_B` sont forts aux deux cutoffs sur cette même
+queue : `CUTOFF_STABLE_SHORT_TIME_CONVERGENCE=SUPPORTED`. Si l'intersection
+conjointe contient moins de 3 niveaux :
+`CUTOFF_STABLE_SHORT_TIME_CONVERGENCE=INSUFFICIENT_COMMON_RANGE`. Sinon,
+propager les statuts non confirmatoires fail-closed. Ceci ne ferme pas
+`TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
+
+**Publication diagnostique** par queue par paire : `nu`, triplets `lambda`/`z`,
+`q_01`,`q_12`, `D_i`, `e_D,i`, `m_D,i`/`M_D,i`, motif résolu/non résolu,
+mode/statut de support ; pour `RESOLVED_RICHARDSON_TREND` en plus `R_01`,
+`R_12`, `e_R01`, `e_R12`, `m_R12`, `M_shift`. Contraction dominante attendue
+par pas de grille `lambda` : facteur `16` (`nu=1`), `4^(2/3)~=2.52` (`nu=3`),
+`4^(2/5)~=1.74` (`nu=5`). Un verdict `nu=1` typique peut n'avoir exactement
+que les trois niveaux minimaux ; la perte d'un niveau donne
+`INSUFFICIENT_COMMON_RANGE`, pas une réparation post hoc de la grille.
+
+```text
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE       = VALIDATED_FOR_FREEZE
+SHORT_TIME_CONVERGENCE_MIN_COMMON_LEVELS    = 3
+SHORT_TIME_CONVERGENCE_MAX_PREREGISTERED_NU = 5
+SHORT_TIME_CONVERGENCE_PAIRWISE_PRIMARY     = YES
+SHORT_TIME_CONVERGENCE_NEW_SCALAR_TOLERANCE = NONE
+```
+
 ### `T_grow`
 
 ```math
@@ -1152,7 +1292,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # threshold / interpretation
-SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
@@ -1190,6 +1329,7 @@ DEGENERATE_ROOT_CONTROL
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1201,6 +1341,15 @@ borne structurelle `1/16`, éligibilité pré-pic, qualification montante
 stricte, garde de précision relative et fermeture de dépendance commune ;
 protocole détaillé : `temporal-event-solver.md` §27, `short-time-oracles.md`
 §9).
+
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` est `VALIDATED_FOR_FREEZE` (cible
+`D_pq^thr -> 0`, coordonnée `z=lambda_eta^(2/nu)`, portée `nu in {1,3,5}`,
+queue commune à trois niveaux minimum, branchement information-monotone,
+statuts forts `SUPPORTED_RESOLVED_TREND`/`SUPPORTED_FLOOR_AFTER_CONTRACTION`,
+traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff ;
+protocole détaillé ci-dessus et `short-time-oracles.md` §10). Ne ferme ni
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
+qui restent `OPEN`.
 
 ---
 

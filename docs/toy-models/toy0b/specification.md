@@ -756,7 +756,13 @@ Aucune tolérance nouvelle n'est introduite.
 
 Fermeture de dépendance commune : pour toute quantité ou verdict dérivé comparant, combinant ou testant en stabilité des temps de seuil, le domaine `eta` commun est l'intersection, sur la fermeture complète de dépendance, des niveaux préenregistrés numériquement admissibles pour chaque série de réponse élémentaire concernée. Aucune substitution post-hoc d'un niveau `eta` n'est autorisée. Chaque niveau publie ses diagnostics associés ; seul `e_u/u_thr` est la porte normative de précision, les autres rapports sont diagnostiques.
 
-La plage dynamique potentielle complète (`2^14` en `lambda_eta`, soit `~6.96` en temps de seuil pour `nu=5`) est potentielle seulement ; l'admissibilité commune peut la réduire. `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` reste `OPEN`.
+La plage dynamique potentielle complète (`2^14` en `lambda_eta`, soit `~6.96` en temps de seuil pour `nu=5`) est potentielle seulement ; l'admissibilité commune peut la réduire.
+
+Règle opérationnelle de convergence court-terme (définition normative complète : `short-time-oracles.md` §10) : pour `D_pq^thr(eta)=log[C_eff,pq^thr(eta)/C_short,pq]`, la cible est `D_pq^thr -> 0` en coordonnée asymptotique `z=lambda_eta^(2/nu)`, pour `nu in {1,3,5}`. Le protocole sélectionne les trois plus petites valeurs `lambda` communes admissibles (`SHORT_TIME_CONVERGENCE_MIN_COMMON_LEVELS=3`) et classe le résultat selon un motif de résolution information-monotone en deux statuts forts (`SHORT_TIME_CONVERGENCE_STRONG_STATUS_SET = {SUPPORTED_RESOLVED_TREND, SUPPORTED_FLOOR_AFTER_CONTRACTION}`) ou en statuts non confirmatoires (absence de résidu résolu, portée commune insuffisante, exposant non résolu, non applicable, contrôle sensible). L'évaluation par paire `D_A^thr`/`D_B^thr` précède toute agrégation `Delta1` (`SHORT_TIME_CONVERGENCE_PAIRWISE_PRIMARY=YES`) ; une revendication de stabilité au cutoff exige l'intersection conjointe des domaines admissibles `Lambda=2` et `Lambda=3` avant la sélection de la queue à trois niveaux. Aucune tolérance numérique scalaire nouvelle n'est introduite.
+
+```text
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE = VALIDATED_FOR_FREEZE
+```
 
 Une seule famille de raffinement :
 
@@ -1408,8 +1414,9 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 `ETA_GRID_AND_ADMISSIBLE_DOMAIN` est `VALIDATED_FOR_FREEZE` ; la grille absolue, la borne structurelle `1/16`, l'éligibilité pré-pic et la garde de précision relative sont définies dans `temporal-event-solver.md` §27 et `short-time-oracles.md` §9.
 
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` est également `VALIDATED_FOR_FREEZE` ; le protocole opérationnel complet (cible `D_pq^thr -> 0`, coordonnée `z=lambda_eta^(2/nu)`, portée `nu in {1,3,5}`, queue commune à trois niveaux minimum, branchement information-monotone, statuts forts `SUPPORTED_RESOLVED_TREND`/`SUPPORTED_FLOOR_AFTER_CONTRACTION`, traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff) est défini dans `short-time-oracles.md` §10.
+
 ```text
-SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
@@ -1437,7 +1444,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
-`STATIC_COLLAPSE_NUMERICAL_CRITERION` et `ETA_GRID_AND_ADMISSIBLE_DOMAIN`.
+`STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN` et
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`.
 
 ---
 
