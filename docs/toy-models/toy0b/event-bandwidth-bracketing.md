@@ -304,7 +304,104 @@ mais le diagnostic de précision sur le temps doit utiliser le rapport `error_on
 
 Pour les seuils, l'ancienne affirmation selon laquelle la formulation en `F` introduirait artificiellement un facteur `sqrt(eta)` dans le conditionnement est rejetée : ce facteur multiplie simultanément la pente et l'erreur propagée et s'annule au premier ordre.
 
-## 8. Statut
+## 8. Certification de l'extremum de pureté de chemin (`H_path`)
+
+Cette bande est distincte de celle des événements `T_peak`/`T_thr`/`T_down`/`T_grow` déjà traités ci-dessus ; elle concerne la certification continue de l'extremum de `Purity_direct(t)=P_direct(t)/P_sector(t)` (définition complète : `path-purity-control.md`).
+
+### Identité exacte
+
+Avec `P_D=P_direct`, `P_S=P_sector`, `Q_D=P_D'`, `Q_S=P_S'` :
+
+```math
+\boxed{
+H_{path}(t)=Q_D(t)P_S(t)-P_D(t)Q_S(t).
+}
+```
+
+Les points stationnaires intérieurs de `Purity_direct` sont exactement les racines de `H_path`.
+
+### Facteur oscillatoire
+
+Chaque `chi_alpha` a des fréquences `<=Omega_safe`. Donc `Q_D`,`Q_S` contiennent des fréquences `<=2 Omega_safe`, et `H_path` contient des termes polynôme-fois-trigonométrique de degré `<=1` avec des fréquences oscillatoires `<=4 Omega_safe` :
+
+```text
+PATH_CERTIFICATION_OSCILLATORY_FACTOR = 4
+s_path = 4.
+```
+
+`H_path` n'est **pas** un polynôme trigonométrique pur à bande limitée : c'est un produit polynôme-secant-trigonométrique. `s_path=4` sert uniquement de facteur de fréquence oscillatoire pour dimensionner le bracketing initial ; il ne remplace pas l'exclusion de cellule par dérivée, la subdivision adaptative et l'exhaustion finie. `ZERO_DENSITY` n'est jamais une preuve de complétude (§5).
+
+Réutiliser exactement `BETA_VALUES = {1,1/2,1/4,1/8}`. Taille de cellule de certification de chemin initiale :
+
+```math
+\Delta t_k^{path}=\beta_k\frac{\pi}{4\Omega_{safe}}.
+```
+
+Ceci n'altère pas les facteurs de bande déjà validés des autres événements :
+
+```text
+s_peak = 1
+s_thr  = 1
+s_down = 1
+s_grow = 2
+```
+
+### Bornes de dérivées
+
+Avec `S_(alpha,r)=sum_omega |C_(alpha,omega)| omega^r`, pour un groupe `G in {D,S}` :
+
+```math
+B_{G,0}=\sum_{\alpha\in G}S_{\alpha,0}^2,
+\qquad
+B_{G,1}=2\sum_{\alpha\in G}S_{\alpha,0}S_{\alpha,1},
+\qquad
+B_{G,2}=2\sum_{\alpha\in G}\left[S_{\alpha,1}^2+S_{\alpha,0}S_{\alpha,2}\right].
+```
+
+Bornes sûres pour la certification de cellule (dérivées exactes et bornes complètes : `path-purity-control.md` §10) :
+
+```math
+\boxed{
+L_{path}(T)=T\left[B_{D,1}B_{S,0}+B_{D,0}B_{S,1}\right],
+}
+```
+
+```math
+\boxed{
+L2_{path}(T)=T\left[B_{D,2}B_{S,0}+B_{D,0}B_{S,2}\right]+B_{D,1}B_{S,0}+B_{D,0}B_{S,1}.
+}
+```
+
+### Origine exclue de la certification générique
+
+`H_path` possède un zéro structurel d'ordre élevé à l'origine (`ord_0(H_path)>=4 nu_*+3>=7`). La cellule touchant `t=0` n'est donc **jamais** soumise au protocole générique de cellule ci-dessous : elle est couverte par une fenêtre analytique de Taylor certifiée, à partir de :
+
+```math
+t_0=\frac{\pi}{32\Omega_{safe}}
+```
+
+(`beta_min=1/8`, dérivé sans nouveau scalaire). La certification par cellule `H_path` commence à `t_0` et s'applique sur `[t_0,T]` uniquement (protocole complet, Taylor certifié et bornes de pureté : `path-purity-control.md` §11-14).
+
+### Raccourci structurel exact
+
+Si un oracle `STRUCTURAL_ANALYTIC` établit `H_path(t)==0` identiquement sur le domaine actif, alors `Purity_direct(t)==P_0` et `R_path(t)==0` pour tout `t` de l'horizon, sans certification de racine (`path-purity-control.md` §15).
+
+### Statut
+
+```text
+PATH_EXTREMUM_CERTIFICATION_FUNCTION  = H_path
+PATH_CERTIFICATION_OSCILLATORY_FACTOR = 4
+PATH_CERTIFICATION_BETA_VALUES        = EXISTING_BETA_VALUES
+PATH_ORIGIN_WINDOW                    = ANALYTIC_TAYLOR_CERTIFICATE
+PATH_ORIGIN_WINDOW_T0                 = pi/(32 Omega_safe)
+PATH_CONSTANT_COMPOSITION_ORACLE      = STRUCTURAL_ANALYTIC
+ZERO_DENSITY_AS_COMPLETENESS_BOUND    = REJECTED
+PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
+```
+
+Aucune nouvelle tolérance de racine n'est introduite : la certification de cellule `H_path` réutilise exactement `BETA_VALUES`, `tau_root=1e-12`, `SIMPLE_ROOT_CONTROL` et `DEGENERATE_ROOT_CONTROL`.
+
+## 9. Statut
 
 ```text
 CHI_BANDWIDTH_SCALE                    = VALIDATED_FOR_FREEZE

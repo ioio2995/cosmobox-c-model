@@ -958,7 +958,46 @@ et `R_path` n'est pas applicable.
 
 À `d=1` régulier, `P_0=1` et `I_0=0` : `R_path` se réduit à l'impureté enveloppée absolue. À `d=2`, `P_0` n'est pas structurellement égal à `1` et doit être publié par domaine complet `(theta,Lambda,pq)`.
 
-Les valeurs numériques de `E_path` restent ouvertes. Toute formulation appliquant une grille de contrôle commune directement à `I_max` est supersédée.
+### Grille `EPS_PATH_VALUES` préenregistrée et certification continue
+
+Définition normative complète : `path-purity-control.md`.
+
+`R_path` est structurellement bornée :
+
+```text
+R_PATH_NORMALIZED_RANGE = STRUCTURAL_ANALYTIC
+R_PATH_RANGE = [0,1]
+```
+
+Grille de contrôle préenregistrée :
+
+```text
+EPS_PATH_VALUES     = {1/32, 1/16, 1/8, 1/4}
+EPS_PATH_STRICT      = 1/32
+EPS_PATH_PERMISSIVE  = 1/4
+```
+
+Trichotomie de ligne de base, distincte du statut de dégradation : `DIRECT_DOMINANT_BASELINE` (`P_0=1`), `MIXED_BASELINE` (`0<P_0<1`), `NO_DIRECT_BASELINE` (`P_0=0`), `NO_ACTIVE_PATH_RESPONSE`. `PATH_CONTROL_STATUS` (`ROBUST_CLEAN`/`CONTROL_SENSITIVE`/`ROBUST_CONTAMINATED`) mesure uniquement la dégradation relative à cette ligne de base ; `ROBUST_CLEAN` seul ne signifie jamais une arrivée directe propre. Une interprétation confirmatoire d'arrivée propre côté chemin exige :
+
+```text
+PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE =
+DIRECT_DOMINANT_BASELINE AND ROBUST_CLEAN
+```
+
+La certification de l'extremum continu de `Purity_direct` est obligatoire (aucun minimum sur grille échantillonnée n'est admis). Elle repose sur la fonction exacte `H_path=Q_D P_S-P_D Q_S`, avec facteur de bracketing oscillatoire `s_path=4` (bracketing initial seulement, `BETA_VALUES` réutilisées). L'origine `t=0` est exclue de la certification générique par cellule (zéro structurel d'ordre élevé de `H_path`) et couverte par une fenêtre analytique de Taylor certifiée `(0,t_0]` avec `t_0=pi/(32 Omega_safe)` ; la certification par cellule ne s'applique que sur `[t_0,T]`. Un oracle `STRUCTURAL_ANALYTIC` établissant `H_path==0` identiquement dispense de toute certification de racine.
+
+```text
+PATH_EXTREMUM_CONTINUOUS_CERTIFICATION = REQUIRED
+PATH_SAMPLED_SUPREMUM_AS_CERTIFICATE   = REJECTED
+```
+
+`d=3` reste exclu de toute interprétation d'arrivée, même en `DIRECT_DOMINANT_BASELINE` + `ROBUST_CLEAN` ; le profil complet reste publiable en `DIAGNOSTIC_ONLY`.
+
+La même grille `EPS_PATH_VALUES` est utilisée à `Lambda=2` et `Lambda=3` ; `ROBUST_CLEAN` aux deux cutoffs ne prouve pas que `P_0` lui-même est stable au cutoff, ce qui reste conditionnel à `TRUNCATION_COMPARISON_TOLERANCES` (`OPEN`).
+
+```text
+EPS_PATH_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+```
 
 ### Garde de récurrence
 
@@ -1416,8 +1455,9 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` est également `VALIDATED_FOR_FREEZE` ; le protocole opérationnel complet (cible `D_pq^thr -> 0`, coordonnée `z=lambda_eta^(2/nu)`, portée `nu in {1,3,5}`, queue commune à trois niveaux minimum, branchement information-monotone, statuts forts `SUPPORTED_RESOLVED_TREND`/`SUPPORTED_FLOOR_AFTER_CONTRACTION`, traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff) est défini dans `short-time-oracles.md` §10.
 
+`EPS_PATH_CONTROL_DOMAIN_AND_GRID` est également `VALIDATED_FOR_FREEZE` ; la grille `EPS_PATH_VALUES={1/32,1/16,1/8,1/4}`, la trichotomie de ligne de base, la certification continue de l'extremum `H_path` (fenêtre analytique d'origine, raccourci structurel exact) et la classification epsilon sont définies dans `path-purity-control.md` et `event-bandwidth-bracketing.md` §8.
+
 ```text
-EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 ```
@@ -1444,8 +1484,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
-`STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN` et
-`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`.
+`STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN`,
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` et `EPS_PATH_CONTROL_DOMAIN_AND_GRID`.
 
 ---
 

@@ -938,19 +938,157 @@ PATH_BASELINE_STATUS = NO_DIRECT_BASELINE
 
 et `R_path` n'est pas applicable.
 
-La famille de contrôle `epsilon in E_path subset (0,1)` est `OPEN` numériquement et doit être commune aux cutoffs comparés. Appliquer une grille de contrôle commune directement à `I_max` est supersédé.
-
-À publier par domaine complet `(theta,Lambda,pq)` :
+La famille de contrôle préenregistrée est désormais fixée (définition normative complète : `path-purity-control.md`) :
 
 ```text
-P_0(theta)
-W(0+)
-O(0+)
-R_path(theta,tau)
-tau_path(theta,epsilon)
+EPS_PATH_VALUES     = {1/32, 1/16, 1/8, 1/4}
+EPS_PATH_STRICT      = 1/32
+EPS_PATH_PERMISSIVE  = 1/4
 ```
 
-Le contrôle `Lambda=2 -> 3` est obligatoire avec la même grille `E_path`.
+et doit être commune aux cutoffs comparés. Appliquer une grille de contrôle commune directement à `I_max` est supersédé. `R_path` est structurellement bornée : `R_PATH_NORMALIZED_RANGE=STRUCTURAL_ANALYTIC`, `R_PATH_RANGE=[0,1]`.
+
+### Trichotomie de ligne de base
+
+Avec `nu_*` l'exposant dominant certifié minimum des canaux de chemin actifs, `A_D^2=sum_{alpha in DIRECT,nu_alpha=nu_*} c_alpha^2`, `A_S^2=sum_{alpha,nu_alpha=nu_*} c_alpha^2`, et `P_0=A_D^2/A_S^2` quand `A_S^2>0` :
+
+```text
+DIRECT_DOMINANT_BASELINE  iff A_D^2=A_S^2>0 iff P_0=1
+MIXED_BASELINE            iff 0<A_D^2<A_S^2 iff 0<P_0<1
+NO_DIRECT_BASELINE        iff A_D^2=0<A_S^2 iff P_0=0
+NO_ACTIVE_PATH_RESPONSE   si aucune réponse de chemin active à aucun ordre certifié
+```
+
+Aucun seuil scalaire sur `P_0`. Les classifications de zéro/non-zéro non structurelles restent conditionnelles à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`).
+
+Une interprétation confirmatoire d'arrivée propre côté chemin exige :
+
+```text
+PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE
+    iff PATH_BASELINE_STATUS = DIRECT_DOMINANT_BASELINE
+    AND PATH_CONTROL_STATUS  = ROBUST_CLEAN
+```
+
+`MIXED_BASELINE + ROBUST_CLEAN` signifie une composition mixte stable, jamais une arrivée directe propre. `NO_DIRECT_BASELINE` et `NO_ACTIVE_PATH_RESPONSE` ne sont jamais des passages d'arrivée propre.
+
+### Certification continue de l'extremum de `Purity_direct`
+
+Aucun minimum sur grille échantillonnée n'est admis comme certificat
+(`PATH_SAMPLED_SUPREMUM_AS_CERTIFICATE = REJECTED`) ; la certification continue
+est obligatoire (`PATH_EXTREMUM_CONTINUOUS_CERTIFICATION = REQUIRED`).
+
+Fonction exacte, avec `P_D=P_direct`, `P_S=P_sector`, `Q_D=P_D'`, `Q_S=P_S'` :
+
+```math
+H_{path}(t)=Q_D(t)P_S(t)-P_D(t)Q_S(t).
+```
+
+Facteur de bracketing oscillatoire (`event-bandwidth-bracketing.md` §8) :
+
+```text
+s_path = 4
+```
+
+réutilisant `BETA_VALUES = {1,1/2,1/4,1/8}`.
+
+**Fenêtre analytique d'origine.** `H_path` a un zéro structurel d'ordre élevé
+en `t=0` (`ord_0(H_path)>=4 nu_*+3>=7`) ; la cellule touchant l'origine est
+exclue de la certification générique par cellule. Avec `beta_min=1/8` :
+
+```math
+t_0=\pi/(32\Omega_{safe}).
+```
+
+Sur `(0,t_0]`, un certificat de Taylor explicite (`path-purity-control.md`
+§13) donne des bornes `K_G pm C_(P,G) t_0^2` sur `P_G(t)/t^m` (`m=2nu_*+1`),
+d'où une borne inférieure certifiée `L_Purity_origin=D_low/S_high` de
+`Purity_direct` sur toute la fenêtre, et une borne supérieure
+`U_Purity_origin=min(P_0_upper, Purity_direct(t_0)_upper)`. Classification
+requise non résolue -> `PATH_ORIGIN_WINDOW_CERTIFICATION_UNRESOLVED`, verdict
+`NONCONFIRMATORY`. Aucun rétrécissement post-hoc de `t_0`.
+
+**Raccourci structurel exact.** Si un oracle `STRUCTURAL_ANALYTIC` établit
+`H_path(t)==0` identiquement sur le domaine actif, alors
+`Purity_direct(t)==P_0` et `R_path(t)==0` pour tout `t` de l'horizon, sans
+certification de racine (`PATH_CONSTANT_COMPOSITION_ORACLE=STRUCTURAL_ANALYTIC`).
+Cas suffisant obligatoire : tous les secteurs non directs identiquement nuls
+-> `P_0=1`, `R_path=0`.
+
+**Certification de cellule sur `[t_0,T]`.** Réutiliser exactement le
+mécanisme de racine déjà validé (`BETA_VALUES`, `tau_root=1e-12`,
+`SIMPLE_ROOT_CONTROL`, `DEGENERATE_ROOT_CONTROL`, exhaustion de subdivision
+dérivée) avec `g=H_path` et les bornes `L_path(T)`/`L2_path(T)` (formules
+complètes : `path-purity-control.md` §10, `event-bandwidth-bracketing.md`
+§8). Toute cellule non résolue -> `PATH_EXTREMUM_CERTIFICATION_UNRESOLVED`
+-> `PATH_CONTROL_NUMERICALLY_INCONCLUSIVE`.
+
+**Minimum continu combiné.** Combiner la fenêtre d'origine `(0,t_0]` et la
+fenêtre tardive `[t_0,T]` (bornes issues des cellules de racine certifiées et
+de la monotonie de `P_D`/`P_S`) pour former `L_Purity_min<=Purity_min(T)<=U_Purity_min`,
+puis l'intervalle certifié de `R_path` : `L_R<=R_path(T)<=U_R`, en respectant
+les directions monotones du quotient. Évaluer indépendamment à `p` et `2p`.
+Extrema/cellules non appariables ou échelle de précision non résolue ->
+`PATH_CONTROL_NUMERICALLY_INCONCLUSIVE`.
+
+**Enveloppe de temps d'événement.** Pour un événement certifié `T_e^(2p)` avec
+`e_u` déjà existant, `e_t=pi e_u/(s_event Omega_safe)`,
+`t_-=max(0,T_e^(2p)-e_t)`, `t_+=T_e^(2p)+e_t`. Par continuité `R_path(0)=0` et
+monotonie : `R_path(t_-)<=R_path(T_true)<=R_path(t_+)`, les deux évaluations
+utilisant la certification continue complète.
+
+### Classification epsilon
+
+Pour chaque `epsilon in EPS_PATH_VALUES` :
+
+```text
+U_R <= epsilon -> PATH_EPSILON_PASS
+L_R > epsilon  -> PATH_EPSILON_FAIL
+sinon          -> PATH_EPSILON_INCONCLUSIVE
+```
+
+Verdict de famille :
+
+```text
+U_R <= 1/32 -> PATH_CONTROL_STATUS = ROBUST_CLEAN
+L_R > 1/4   -> PATH_CONTROL_STATUS = ROBUST_CONTAMINATED
+sinon       -> PATH_CONTROL_STATUS = CONTROL_SENSITIVE
+```
+
+Seul le point strict `1/32` peut soutenir `PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE`.
+Les points intérieurs et le point permissif restent des diagnostics de
+sensibilité, jamais une évidence indépendante.
+
+### Agrégation de dépendance
+
+Pour une quantité dérivée `Q` : toute dépendance requise à `d=3` ->
+`ARRIVAL_INTERPRETATION_FOR_Q=EXCLUDED` ; sinon chaque dépendance requise doit
+avoir `DIRECT_DOMINANT_BASELINE` ET `ROBUST_CLEAN`. Un événement requis
+`ROBUST_CONTAMINATED` -> `PATH_CONTROL_FOR_Q=CONTAMINATED`. Sinon, si aucun
+n'est contaminé mais qu'au moins un est `CONTROL_SENSITIVE`,
+`PATH_CONTROL_NUMERICALLY_INCONCLUSIVE`, `MIXED_BASELINE`,
+`NO_DIRECT_BASELINE` ou `NO_ACTIVE_PATH_RESPONSE` ->
+`PATH_CONTROL_FOR_Q=NONCONFIRMATORY`. Aucune moyenne entre dépendances.
+
+À publier par domaine complet `(theta,Lambda,pq,event)` :
+
+```text
+P_0(theta), PATH_BASELINE_STATUS
+nu_*, A_D^2, A_S^2
+t_0, s_path
+L_Purity_origin, U_Purity_origin
+nombre de cellules/racines H_path sur [t_0,T], PATH_EXTREMUM_CERTIFICATION_STATUS
+L_Purity_min, U_Purity_min
+L_R, U_R
+PATH_EPSILON_PROFILE pour {1/32,1/16,1/8,1/4}
+PATH_CONTROL_STATUS
+PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE
+```
+
+Le contrôle `Lambda=2 -> 3` est obligatoire avec exactement la même grille
+`EPS_PATH_VALUES`. `ROBUST_CLEAN` aux deux cutoffs ne prouve pas que `P_0`
+lui-même est stable au cutoff, ce qui reste conditionnel à
+`TRUNCATION_COMPARISON_TOLERANCES` (`OPEN`). Aucun rééchelonnement d'`epsilon`
+par cutoff.
 
 Pour `d=3` :
 
@@ -958,7 +1096,13 @@ Pour `d=3` :
 ARRIVAL_INTERPRETATION = EXCLUDED
 ```
 
-même si les deux arcs sont séparables algébriquement.
+même si les deux arcs sont séparables algébriquement. Le profil complet reste
+publiable en `DIAGNOSTIC_ONLY`.
+
+```text
+EPS_PATH_CONTROL_DOMAIN_AND_GRID       = VALIDATED_FOR_FREEZE
+PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
+```
 
 ---
 
@@ -1292,7 +1436,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # threshold / interpretation
-EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 
@@ -1330,6 +1473,7 @@ STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
+EPS_PATH_CONTROL_DOMAIN_AND_GRID
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1350,6 +1494,16 @@ traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff ;
 protocole détaillé ci-dessus et `short-time-oracles.md` §10). Ne ferme ni
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
 qui restent `OPEN`.
+
+`EPS_PATH_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (grille
+`EPS_PATH_VALUES={1/32,1/16,1/8,1/4}`, trichotomie de ligne de base,
+certification continue de l'extremum `H_path`, fenêtre analytique d'origine,
+raccourci structurel exact, classification epsilon ; protocole détaillé
+ci-dessus, `path-purity-control.md` et `event-bandwidth-bracketing.md` §8).
+Ne ferme ni `GAMMA_CONTROL_DOMAIN_AND_GRID`, ni
+`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, ni
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, ni
+`TRUNCATION_COMPARISON_TOLERANCES`, qui restent tous `OPEN`.
 
 ---
 
