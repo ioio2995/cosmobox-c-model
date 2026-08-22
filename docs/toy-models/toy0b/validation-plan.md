@@ -943,6 +943,38 @@ STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES = {1/4, 1/2, 1, 2}
 
 Les points de signe négatif sont un contrôle numérique / oracle d'implémentation de la covariance exacte (`NEGATIVE_X_HALF_ROLE = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE`), non une évidence indépendante de collapse. `x=0` est un contrôle de normalisation/symétrie (`STATIC_X_ZERO_ROLE = NUMERICAL_CONTROL / NORMALIZATION_ORACLE`), non une évidence de collapse discriminante. Ni l'un ni l'autre ne peuvent inflater un futur décompte d'évidence de collapse agrégée ;
 
+Le critère numérique de conformité est `VALIDATED_FOR_FREEZE`
+(`STATIC_COLLAPSE_NUMERICAL_CRITERION = VALIDATED_FOR_FREEZE`,
+`STATIC_COLLAPSE_TOLERANCE = 0.10`). Les formules complètes sont dans
+`soft-loop-static-gate.md` §6 ; l'ordre exécutable de classification, repris
+tel quel, est :
+
+```text
+a) si un L > tau_static             -> SOFT_LOOP_STATIC_DEVIATES
+b) sinon si chevauchement précision/frontière
+                                     -> SOFT_LOOP_STATIC_NUMERICALLY_INCONCLUSIVE
+c) sinon si tous U <= tau_static ET X_max^(3) < 1
+                                     -> SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION
+d) sinon                            -> SOFT_LOOP_STATIC_SUPPORTED
+```
+
+où `L`/`U` sont les intervalles numériques de contrôle issus du doublement de
+précision `p/2p` sur les résidus signés (gap relatif, `Phi` absolu), évalués
+en norme ponctuelle `L_infinity` sur `{1/4,1/2,1,2}`, et où `X_max^(3)` est la
+magnitude maximale échantillonnée à `Lambda=3` sur les mêmes points physiques
+que `Lambda=2` (garde d'information `STATIC_LAMBDA3_INFORMATION_GUARD =
+REQUIRED`, `STATIC_LAMBDA3_MIN_DISCRIMINATING_MAGNITUDE = 1`).
+`SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION` est `NUMERICAL_CONTROL /
+NONCONFIRMATORY_FOR_CUTOFF_STABILITY` : elle ne bloque pas la publication des
+observables brutes `Lambda=3`, ne régénère pas la grille et ne modifie pas
+`tau_static`. Une revendication de mécanisme à deux niveaux stable au cutoff
+exige `SOFT_LOOP_STATIC_SUPPORTED` ordinaire à `Lambda=2` et à `Lambda=3` ;
+ce statut y compris `SOFT_LOOP_STATIC_SUPPORTED` reste provisoire pour
+l'interprétation confirmatoire finale de campagne tant que
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) n'est pas fermé et validé.
+Le diagnostic `±4` reste `EXTENDED_DIAGNOSTIC` et ne peut pas à lui seul
+modifier le statut de la porte statique ;
+
 4. seulement si la réduction est suffisamment supportée selon le critère préenregistré, utiliser :
 
 ```math
@@ -982,13 +1014,13 @@ Richardson n'est autorisé que selon une règle préenregistrée et ne remplace 
 Valeurs encore `OPEN` :
 
 ```text
-STATIC_COLLAPSE_NUMERICAL_CRITERION
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
 ```
 
-`STATIC_X_CONTROL_VALUES` est `VALIDATED_FOR_FREEZE` (cf. §17).
+`STATIC_X_CONTROL_VALUES` et `STATIC_COLLAPSE_NUMERICAL_CRITERION` sont
+`VALIDATED_FOR_FREEZE` (cf. §17).
 
 ---
 
@@ -1021,9 +1053,6 @@ TRUNCATION_COMPARISON_TOLERANCES = OPEN
 Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
-# soft-loop
-STATIC_COLLAPSE_NUMERICAL_CRITERION
-
 # threshold / interpretation
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
@@ -1062,6 +1091,7 @@ DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
 DEGENERATE_ROOT_CONTROL
 STATIC_X_CONTROL_VALUES
+STATIC_COLLAPSE_NUMERICAL_CRITERION
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1102,6 +1132,7 @@ CONTROL_SENSITIVE
 TIME_EVENT_CONTROL_SENSITIVE
 DERIVATIVE_CONTROL_SENSITIVE
 SOFT_LOOP_STATIC_SUPPORTED
+SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION
 SOFT_LOOP_STATIC_DEVIATES
 SOFT_LOOP_STATIC_NUMERICALLY_INCONCLUSIVE
 ```

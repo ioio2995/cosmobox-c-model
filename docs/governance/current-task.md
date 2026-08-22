@@ -186,6 +186,13 @@ STATIC_X_CONTROL_VALUES                 = VALIDATED_FOR_FREEZE
 STATIC_X_PRIMARY                        = {0, ±1/4, ±1/2, ±1, ±2}
 STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES  = {1/4, 1/2, 1, 2}
 STATIC_X_SATURATION_DIAGNOSTIC          = {±4}
+
+# SOFT-LOOP static collapse numerical criterion
+STATIC_COLLAPSE_NUMERICAL_CRITERION     = VALIDATED_FOR_FREEZE
+STATIC_COLLAPSE_TOLERANCE               = 0.10
+STATIC_COLLAPSE_NORM                    = POINTWISE_L_INFINITY
+STATIC_LAMBDA3_INFORMATION_GUARD        = REQUIRED
+STATIC_LAMBDA3_MIN_DISCRIMINATING_MAGNITUDE = 1
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -197,9 +204,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 ## Paramètres encore OPEN avant gel
 
 ```text
-# SOFT-LOOP
-STATIC_COLLAPSE_NUMERICAL_CRITERION
-
 # threshold / interpretation
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
@@ -282,11 +286,12 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : dix paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : onze paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
-DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES).
+DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
+STATIC_COLLAPSE_NUMERICAL_CRITERION).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.

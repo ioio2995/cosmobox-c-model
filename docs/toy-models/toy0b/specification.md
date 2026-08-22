@@ -1182,6 +1182,30 @@ STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES = {1/4, 1/2, 1, 2}
 
 `STATIC_X_SATURATION_DIAGNOSTIC` est `EXTENDED_DIAGNOSTIC`. Les points de signe négatif sont un contrôle numérique / oracle d'implémentation de la covariance exacte `R H(g,mu,delta) R^dagger = H(g,mu,-delta)`, pas une évidence indépendante de collapse (`NEGATIVE_X_HALF_ROLE = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE`). `x=0` est un contrôle de normalisation/symétrie, pas une évidence de collapse discriminante (`STATIC_X_ZERO_ROLE = NUMERICAL_CONTROL / NORMALIZATION_ORACLE`). Le détail de ces rôles et de la classification `EXTENDED_DIAGNOSTIC` est porté par `soft-loop-static-gate.md`.
 
+Le critère numérique de conformité de la porte statique est `VALIDATED_FOR_FREEZE` :
+
+```text
+STATIC_COLLAPSE_NUMERICAL_CRITERION = VALIDATED_FOR_FREEZE
+STATIC_COLLAPSE_TOLERANCE           = 0.10
+```
+
+La classification est faite en norme `POINTWISE_L_INFINITY` sur les magnitudes
+informatives `{1/4,1/2,1,2}`, avec résidu de gap relatif et résidu de
+polarisation absolu. À `Lambda=3`, la garde d'information exige que la
+magnitude maximale échantillonnée sur ces points, `X_max^(3)`, atteigne le
+croisement `|x|=1` (`STATIC_LAMBDA3_INFORMATION_GUARD = REQUIRED`,
+`STATIC_LAMBDA3_MIN_DISCRIMINATING_MAGNITUDE = 1`) ; sinon un résultat
+`SUPPORTED` ordinaire est requalifié `SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION`
+(`NUMERICAL_CONTROL / NONCONFIRMATORY_FOR_CUTOFF_STABILITY`). Une
+revendication de mécanisme à deux niveaux stable au cutoff exige
+`SOFT_LOOP_STATIC_SUPPORTED` ordinaire à la fois à `Lambda=2` et à `Lambda=3` ;
+`SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION` ne qualifie pas. Le statut
+`SOFT_LOOP_STATIC_SUPPORTED` autorise l'exécution du protocole dynamique mais
+reste provisoire pour l'interprétation confirmatoire finale de campagne tant
+que `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) n'est pas fermé et
+validé. Les formules complètes, les intervalles numériques et l'ordre de
+classification sont définis intégralement dans `soft-loop-static-gate.md`.
+
 Le modèle effectif motive l'échelle analytique :
 
 ```math
@@ -1319,9 +1343,7 @@ contrôle fail-closed des racines dégénérées ou quasi-dégénérées est por
 
 ### SOFT-LOOP
 
-```text
-STATIC_COLLAPSE_NUMERICAL_CRITERION
-```
+Aucun paramètre encore `OPEN` dans cette catégorie.
 
 Les éléments suivants sont `VALIDATED_FOR_FREEZE` :
 
@@ -1330,6 +1352,7 @@ STATIC_X_CONTROL_VALUES
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
+STATIC_COLLAPSE_NUMERICAL_CRITERION
 ```
 
 ### Interprétation temporelle
@@ -1363,7 +1386,8 @@ seuil `NEAR_CROSSING`, traitement du canal `m=0`, facteur de bande global
 des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
-`ARGMAX_TOLERANCES` et `DEGENERATE_ROOT_CONTROL`.
+`ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL` et
+`STATIC_COLLAPSE_NUMERICAL_CRITERION`.
 
 ---
 
