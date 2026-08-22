@@ -709,6 +709,55 @@ Sur le premier lobe, avec signe `s` de `chi`, résoudre :
 
 `T_down(eta)` est le premier croisement descendant du même niveau après `T_peak` dans le premier lobe.
 
+Grille `eta` préenregistrée et domaine admissible (définitions normatives complètes : `temporal-event-solver.md` §27, `short-time-oracles.md` §9) :
+
+```math
+\lambda_\eta=2\sqrt\eta.
+```
+
+```text
+LAMBDA_ETA_VALUES = {2^-2,2^-4,2^-6,2^-8,2^-10,2^-12,2^-14,2^-16}
+ETA_VALUES         = {2^-6,2^-10,2^-14,2^-18,2^-22,2^-26,2^-30,2^-34}
+ETA_GRID_TYPE       = ABSOLUTE_F_LEVELS
+```
+
+Ces niveaux sont des niveaux de réponse absolus communs. `ETA_ABSOLUTE_LEVELS_FOR_CEFF_THR = MANDATORY` ; `ETA_PEAK_NORMALIZED_PER_STATE = REJECTED` : ceci préserve la relation asymptotique déjà validée `T_thr ~ (eta/B)^(1/(2nu))` entre `C_eff^thr` et `C_short`. Aucune substitution post-hoc, interpolation vers un `eta` voisin ou ajout de niveau après inspection des résultats n'est autorisée.
+
+Borne structurelle globale, avec `Var(n_i)<=1/4` et Cauchy-Schwarz :
+
+```math
+F_{pq}(t)\le Var(n_p)Var(n_q)\le\frac1{16}.
+```
+
+```text
+THRESHOLD_GLOBAL_F_BOUND = STRUCTURAL_ANALYTIC
+THRESHOLD_GLOBAL_F_MAX   = 1/16
+```
+
+Ceci raffine, sans le contredire, l'oracle générique déjà validé `0<=F<=1`.
+
+Éligibilité de domaine, stricte et pré-pic (pas le maximum sur tout le premier lobe) :
+
+```math
+ETA\_PREPEAK\_RANGE\_ELIGIBLE \iff 0<\eta<F(T_{peak}).
+```
+
+La qualification montante de `T_thr` exige `s chi'(T_thr)>0` ; une dégénérescence exacte établie par oracle `STRUCTURAL_ANALYTIC` exclut tout `T_thr` qualifiant à ce niveau, et une positivité stricte non certifiable numériquement renvoie aux contrôles fail-closed de racine simple/dégénérée déjà validés.
+
+Garde de précision relative profonde, réutilisant le budget d'incertitude déjà validé `e_u` en coordonnée d'événement `u_thr=Omega_safe T_thr/pi` (`s_thr=1`) :
+
+```math
+r_{thr,time}=\frac{e_u}{u_{thr}}\le\tau_{event},
+\qquad
+\tau_{event}=10^{-10}.
+```
+
+Aucune tolérance nouvelle n'est introduite.
+
+Fermeture de dépendance commune : pour toute quantité ou verdict dérivé comparant, combinant ou testant en stabilité des temps de seuil, le domaine `eta` commun est l'intersection, sur la fermeture complète de dépendance, des niveaux préenregistrés numériquement admissibles pour chaque série de réponse élémentaire concernée. Aucune substitution post-hoc d'un niveau `eta` n'est autorisée. Chaque niveau publie ses diagnostics associés ; seul `e_u/u_thr` est la porte normative de précision, les autres rapports sont diagnostiques.
+
+La plage dynamique potentielle complète (`2^14` en `lambda_eta`, soit `~6.96` en temps de seuil pour `nu=5`) est potentielle seulement ; l'admissibilité commune peut la réduire. `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` reste `OPEN`.
+
 Une seule famille de raffinement :
 
 ```math
@@ -1357,8 +1406,9 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 ### Interprétation temporelle
 
+`ETA_GRID_AND_ADMISSIBLE_DOMAIN` est `VALIDATED_FOR_FREEZE` ; la grille absolue, la borne structurelle `1/16`, l'éligibilité pré-pic et la garde de précision relative sont définies dans `temporal-event-solver.md` §27 et `short-time-oracles.md` §9.
+
 ```text
-ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
@@ -1386,8 +1436,8 @@ seuil `NEAR_CROSSING`, traitement du canal `m=0`, facteur de bande global
 des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SIMPLE_ROOT_CONTROL`, `DELTA1_PROPAGATED_ERROR_BUDGET`, `A_DELTA_VALUES`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
-`ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL` et
-`STATIC_COLLAPSE_NUMERICAL_CRITERION`.
+`ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
+`STATIC_COLLAPSE_NUMERICAL_CRITERION` et `ETA_GRID_AND_ADMISSIBLE_DOMAIN`.
 
 ---
 

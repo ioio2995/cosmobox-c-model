@@ -193,6 +193,13 @@ STATIC_COLLAPSE_TOLERANCE               = 0.10
 STATIC_COLLAPSE_NORM                    = POINTWISE_L_INFINITY
 STATIC_LAMBDA3_INFORMATION_GUARD        = REQUIRED
 STATIC_LAMBDA3_MIN_DISCRIMINATING_MAGNITUDE = 1
+
+# threshold eta grid and admissibility
+ETA_GRID_AND_ADMISSIBLE_DOMAIN          = VALIDATED_FOR_FREEZE
+THRESHOLD_GLOBAL_F_MAX                  = 1/16
+LAMBDA_ETA_VALUES                       = {2^-2,2^-4,2^-6,2^-8,2^-10,2^-12,2^-14,2^-16}
+ETA_VALUES                              = {2^-6,2^-10,2^-14,2^-18,2^-22,2^-26,2^-30,2^-34}
+THRESHOLD_RELATIVE_TIME_GUARD           = REQUIRED
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -205,7 +212,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 
 ```text
 # threshold / interpretation
-ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
@@ -286,12 +292,12 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : onze paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : douze paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
 DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
-STATIC_COLLAPSE_NUMERICAL_CRITERION).
+STATIC_COLLAPSE_NUMERICAL_CRITERION, ETA_GRID_AND_ADMISSIBLE_DOMAIN).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.

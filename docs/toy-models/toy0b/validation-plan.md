@@ -501,6 +501,104 @@ Sur le premier lobe, avec signe `s` de `chi`, résoudre :
 
 `T_thr` est le premier croisement montant avant `T_peak`; `T_down` le premier croisement descendant suivant dans le même lobe.
 
+### Grille eta et admissibilité pré-pic des seuils
+
+Grille absolue préenregistrée, paramétrée par `lambda_eta=2 sqrt(eta)` :
+
+```text
+LAMBDA_ETA_VALUES = {2^-2,2^-4,2^-6,2^-8,2^-10,2^-12,2^-14,2^-16}
+ETA_VALUES         = {2^-6,2^-10,2^-14,2^-18,2^-22,2^-26,2^-30,2^-34}
+ETA_GRID_TYPE       = ABSOLUTE_F_LEVELS
+```
+
+Ces niveaux sont des niveaux de réponse absolus communs. Interdit : `eta`
+choisi comme fraction de `F_peak` par état, rééchelonnement par cutoff,
+rééchelonnement par état, substitution post-hoc, interpolation vers un `eta`
+voisin, ajout de `eta` plus petit après inspection des résultats.
+
+`ETA_ABSOLUTE_LEVELS_FOR_CEFF_THR = MANDATORY` ; `ETA_PEAK_NORMALIZED_PER_STATE = REJECTED`
+(préserve la relation asymptotique `T_thr ~ (eta/B)^(1/(2nu))` entre `C_eff^thr`
+et `C_short`, cf. `short-time-oracles.md` §8).
+
+Éligibilité de domaine pour une série de réponse élémentaire `a` :
+
+```math
+ETA\_PREPEAK\_RANGE\_ELIGIBLE(a) \iff 0<\eta<F_{peak,a}.
+```
+
+L'égalité stricte est exclue. Si `eta>=F_peak,a` est certifié :
+
+```text
+THRESHOLD_LEVEL_NOT_ADMISSIBLE_PREPEAK
+```
+
+Cette formulation, fondée sur le domaine pré-pic, remplace toute formulation
+antérieure au maximum du premier lobe entier (`..._NOT_ADMISSIBLE_FIRST_LOBE`).
+Aucun rebond après `T_peak` ne rend un niveau admissible.
+
+Qualification stricte de l'événement montant : le croisement pré-pic unique
+n'est `T_thr` que si `s chi'(T_thr)>0`. Une dégénérescence exacte établie par
+oracle `STRUCTURAL_ANALYTIC` exclut tout `T_thr` qualifiant à ce niveau
+(`NO_QUALIFYING_PREPEAK_THRESHOLD_EVENT`). Une positivité stricte non
+certifiable numériquement retombe sur `SIMPLE_ROOT_CONTROL` /
+`DEGENERATE_ROOT_CONTROL` déjà validés et retourne
+`DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED`.
+
+`T_down(eta)` reste un auxiliaire obligatoire (horizon de la garde de
+récurrence, §12) ; un `T_down` non résolu rend le niveau
+`THRESHOLD_LEVEL_ADMISSIBILITY_UNRESOLVED`.
+
+Garde de précision relative profonde, réutilisant le budget `e_u` déjà validé
+(`temporal-event-solver.md` §22-23) en coordonnée `u_thr=Omega_safe T_thr/pi` :
+
+```math
+r_{thr,time}=e_u/u_{thr}\le\tau_{event}=10^{-10}.
+```
+
+Aucune tolérance nouvelle. Conséquence diagnostique nécessaire seulement :
+`u_thr>=tau_root/tau_event=1e-2` ; la porte normative reste le test complet
+ci-dessus.
+
+Triage complet d'admissibilité par niveau et série :
+`THRESHOLD_LEVEL_NUMERICALLY_ADMISSIBLE` exige (A) `T_peak` confirmatoire,
+(B) `0<eta<F(T_peak)` certifié, (C) qualification montante stricte certifiée,
+(D) `T_down(eta)` certifié, (E) garde de précision relative satisfaite.
+Sinon : `THRESHOLD_LEVEL_ADMISSIBILITY_UNRESOLVED`, niveau `NONCONFIRMATORY`.
+Formules complètes : `temporal-event-solver.md` §27.
+
+Fermeture de dépendance complète : pour toute quantité ou verdict dérivé `Q`
+(un `C_eff^thr`, `Delta1^thr`, une valeur de dérivée centrale à un `h`, un
+verdict de stabilité de dérivée, une comparaison `Lambda=2 -> 3`), le domaine
+commun `E_eta^common(Q)` est l'intersection, sur la fermeture complète de
+dépendance `D(Q)` de toutes les séries de réponse élémentaires
+comparées/combinées/testées, des `eta` préenregistrés numériquement
+admissibles pour chaque membre. Aucune comparaison de stabilité ne compare
+des valeurs de seuil évaluées sur des sous-ensembles `eta` différents.
+
+Si aucun `eta` ne survit :
+
+```text
+THRESHOLD_ESTIMATOR = NOT_APPLICABLE_NO_COMMON_ETA
+```
+
+Si un `eta` commun survit mais qu'un statut d'événement/admissibilité requis
+reste non résolu, la quantité/le verdict dérivé est `NUMERICALLY_INCONCLUSIVE`
+selon la propagation de statut déjà existante.
+
+Publication par niveau et par série (diagnostic sauf `e_u/u_thr`, qui est la
+porte normative) : `eta, lambda_eta, F_peak, eta/F_peak, T_peak, T_thr(eta),
+T_thr(eta)/T_peak, u_thr, e_u, e_u/u_thr, T_down(eta)`, statut
+d'admissibilité, motif d'exclusion/non-résolution. Publier séparément par
+`Lambda=2` et `Lambda=3`.
+
+Borne structurelle globale (`short-time-oracles.md` §9) :
+`F<=Var(n_p)Var(n_q)<=1/16` (`THRESHOLD_GLOBAL_F_BOUND=STRUCTURAL_ANALYTIC`,
+`THRESHOLD_GLOBAL_F_MAX=1/16`), raffinement de l'oracle générique déjà validé
+`0<=F<=1`.
+
+La densification de la grille au-delà des valeurs préenregistrées ci-dessus
+est `NON_BLOCKING_BACKLOG` pour ce lot et n'est pas appliquée.
+
 ### `T_grow`
 
 ```math
@@ -1054,7 +1152,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # threshold / interpretation
-ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
@@ -1092,11 +1189,18 @@ RICHARDSON_USAGE_RULE
 DEGENERATE_ROOT_CONTROL
 STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
+ETA_GRID_AND_ADMISSIBLE_DOMAIN
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
 `DEGENERATE_ROOT_NEW_TOLERANCE = NONE` (protocole détaillé :
 `temporal-event-solver.md` §26).
+
+`ETA_GRID_AND_ADMISSIBLE_DOMAIN` est `VALIDATED_FOR_FREEZE` (grille absolue,
+borne structurelle `1/16`, éligibilité pré-pic, qualification montante
+stricte, garde de précision relative et fermeture de dépendance commune ;
+protocole détaillé : `temporal-event-solver.md` §27, `short-time-oracles.md`
+§9).
 
 ---
 

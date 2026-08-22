@@ -1346,3 +1346,161 @@ DEGENERATE_ROOT_NEW_TOLERANCE     = NONE
 CELL_ROOT_UNIQUENESS_CERTIFICATE  = STRICT_MONOTONICITY
 SUBDIVISION_EXHAUSTION_RULE       = DERIVED_FROM_BETA_AND_TAU_ROOT
 ```
+
+## 27. Admissibilité numérique de `T_thr(eta)` et `T_down(eta)`
+
+Cette section ajoute une condition d'admissibilité spécifique aux seuils. Elle
+ne réécrit pas le protocole générique d'événement des §21-23 ; elle le
+complète.
+
+### 27.1 Éligibilité de domaine pré-pic
+
+Pour un niveau `eta` et une série de réponse élémentaire
+`a=(theta,Lambda,p,q)`, avec :
+
+```math
+F_{peak,a}=F_a(T_{peak,a}),
+```
+
+le niveau est `ETA_PREPEAK_RANGE_ELIGIBLE` si et seulement si :
+
+```math
+0<\eta<F_{peak,a}.
+```
+
+L'égalité stricte est exclue.
+
+Si `eta >= F_peak,a` est certifié :
+
+```text
+THRESHOLD_LEVEL_NOT_ADMISSIBLE_PREPEAK
+```
+
+est publié. Cette dénomination fondée sur le domaine pré-pic remplace
+définitivement toute formulation antérieure au maximum du premier lobe entier
+(`..._NOT_ADMISSIBLE_FIRST_LOBE`) : la frontière normative est le domaine
+pré-pic, pas le maximum sur tout le premier lobe. Aucun rebond ou maximum
+postérieur à `T_peak` ne peut rendre un niveau admissible pré-pic.
+
+### 27.2 Qualification stricte de la racine montante
+
+Sur un premier lobe actif, tout niveau `0<lambda_eta<|chi(T_peak)|`, avec
+`lambda_eta=2 sqrt(eta)`, possède exactement un croisement pré-pic `t_*` (§4-§5).
+
+Ce croisement n'est `T_thr` que si :
+
+```math
+s\,\chi'(t_*)>0.
+```
+
+Si un oracle `STRUCTURAL_ANALYTIC` exact établit `s chi'(t_*)=0`, ce niveau
+n'a pas de seuil pré-pic qualifiant :
+
+```text
+NO_QUALIFYING_PREPEAK_THRESHOLD_EVENT
+```
+
+Si la stricte positivité ne peut pas être certifiée numériquement :
+
+- le croisement n'est pas accepté ;
+- la multiplicité exacte n'est jamais inférée d'une pente numériquement
+  petite ;
+- les contrôles existants `SIMPLE_ROOT_CONTROL` / `DEGENERATE_ROOT_CONTROL`
+  (§26) s'appliquent ;
+- le niveau retourne `DEGENERATE_OR_NEAR_DEGENERATE_ROOT_UNRESOLVED`.
+
+Aucune structure postérieure à `T_peak` ne redéfinit `T_thr`.
+
+### 27.3 Dépendance à `T_peak` et `T_down`
+
+Si `T_peak` est `NONCONFIRMATORY`, alors `T_thr` et `T_down` sont
+`NONCONFIRMATORY` (§26.8).
+
+`T_down(eta)` est un événement requis, utilisé comme horizon de la garde de
+récurrence des seuils (spécification §12). Un `T_down` non résolu rend le
+niveau `THRESHOLD_LEVEL_ADMISSIBILITY_UNRESOLVED`.
+
+### 27.4 Garde de précision relative profonde
+
+La coordonnée d'événement existante (§21), avec `s_thr=1` :
+
+```math
+u_{thr}=\frac{\Omega_{safe}T_{thr}}{\pi}.
+```
+
+Le budget d'incertitude complet déjà validé (§22-23) :
+
+```math
+e_u
+=
+\epsilon_{u,solver}
++
+\max\bigl(\epsilon_{u,spec},\,|u_{thr}^{(2p)}-u_{thr}^{(p)}|\bigr)
+```
+
+est réutilisé sans modification. Admissibilité quantitative additionnelle du
+seuil :
+
+```math
+r_{thr,time}=\frac{e_u}{u_{thr}}\le\tau_{event},
+\qquad
+\tau_{event}=10^{-10}
+```
+
+déjà gelé (§23). Cette porte est strictement plus forte que la vérification
+de la seule composante `(epsilon_u_solver+epsilon_u_spec)/u_thr` et
+n'introduit aucune tolérance nouvelle.
+
+Comme `epsilon_u_solver >= tau_root` pour `u_thr<1`, avec `tau_root=1e-12`
+déjà gelé (§22), une conséquence diagnostique nécessaire est :
+
+```math
+u_{thr}\ge\frac{\tau_{root}}{\tau_{event}}=10^{-2}.
+```
+
+Cette borne est nécessaire seulement, pas suffisante ; la porte normative
+reste le test complet `e_u/u_thr <= tau_event` ci-dessus.
+
+### 27.5 Statut d'admissibilité numérique du niveau
+
+`THRESHOLD_LEVEL_NUMERICALLY_ADMISSIBLE` exige toutes les conditions
+suivantes :
+
+```text
+A. T_peak lui-même est confirmatoire/certifié.
+B. 0 < eta < F(T_peak) est certifié.
+C. le croisement pré-pic unique existe et qualifie comme T_thr montant,
+   avec s chi'(T_thr) > 0, sous les contrôles racine simple/dégénérée
+   existants.
+D. T_down(eta), horizon de récurrence requis, est certifié sous les
+   contrôles d'événement existants.
+E. la garde de précision relative de §27.4 est satisfaite.
+```
+
+Si `eta >= F(T_peak)` est certifié :
+
+```text
+THRESHOLD_LEVEL_NOT_ADMISSIBLE_PREPEAK
+```
+
+Sinon, si `T_peak` est non confirmatoire, si l'ordre `eta` vs `F(T_peak)` ne
+peut être établi strictement, si la qualification montante stricte ne peut
+être résolue, si `T_thr` est non résolu (racine/conditionnement), ou si
+`T_down` est non résolu :
+
+```text
+THRESHOLD_LEVEL_ADMISSIBILITY_UNRESOLVED
+```
+
+et le niveau est `NONCONFIRMATORY`.
+
+Aucune tolérance scalaire nouvelle n'est introduite.
+
+### 27.6 Statut
+
+```text
+THRESHOLD_LEVEL_ADMISSIBILITY            = VALIDATED_FOR_FREEZE
+THRESHOLD_RELATIVE_TIME_GUARD            = REQUIRED
+THRESHOLD_RELATIVE_TIME_NEW_TOLERANCE    = NONE
+THRESHOLD_RELATIVE_TIME_NECESSARY_U_MIN  = 1e-2
+```

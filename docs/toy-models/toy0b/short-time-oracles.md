@@ -287,3 +287,77 @@ Donc la sensibilité logarithmique au seuil est :
 Les canaux `nu=3` sont ainsi moins sensibles fractionnellement à `eta` que les canaux `nu=1`. Leur temps absolu de franchissement n'est toutefois pas ordonné par cette seule loi, car le coefficient `B` dépend du canal et du fond.
 
 Le protocole devra donc définir des domaines admissibles de `eta` et des validations de fenêtre séparés par classe de relation / exposant, tout en utilisant un domaine commun par intersection lorsque plusieurs courbes sont comparées dans un même contraste.
+
+### Grille eta préenregistrée (référence)
+
+Le protocole 0B utilise la grille absolue préenregistrée, paramétrée par
+`lambda_eta=2 sqrt(eta)` :
+
+```text
+LAMBDA_ETA_VALUES = {2^-2,2^-4,2^-6,2^-8,2^-10,2^-12,2^-14,2^-16}
+ETA_VALUES         = {2^-6,2^-10,2^-14,2^-18,2^-22,2^-26,2^-30,2^-34}
+ETA_GRID_TYPE       = ABSOLUTE_F_LEVELS
+ETA_AMPLITUDE_GRID   = DYADIC_IN_2SQRTETA
+ETA_AMPLITUDE_RATIO  = 4
+```
+
+Ces niveaux sont des niveaux de réponse absolus communs (§18 de
+`specification.md`, §27 de `temporal-event-solver.md` pour l'admissibilité
+détaillée).
+
+Pour `nu=5`, la plage lambda complète donne une plage de temps de seuil
+potentielle :
+
+```math
+2^{14/5}\approx6.96.
+```
+
+Cette plage (`ETA_POTENTIAL_LAMBDA_DYNAMIC_RANGE = 2^14`) est **potentielle
+seulement** : elle n'est pas garantie de survivre à l'admissibilité commune
+(intersection sur la fermeture de dépendance complète de §27 de
+`temporal-event-solver.md`). `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` reste
+`OPEN`. Une plage insuffisante doit être signalée après exécution
+confirmatoire, jamais réparée post hoc par ajout ou substitution de niveaux.
+
+## 9. Borne structurelle globale sur l'amplitude de réponse
+
+Pour `n_i` à valeurs de projecteur :
+
+```math
+Var(n_i)\le\frac14.
+```
+
+Avec :
+
+```math
+\chi_{pq}(t)=-2\,Im\langle\delta n_p\,\delta n_q(t)\rangle,
+```
+
+Cauchy-Schwarz donne :
+
+```math
+|\chi_{pq}(t)|\le2\sqrt{Var(n_p)Var(n_q)}\le\frac12.
+```
+
+Donc :
+
+```math
+F_{pq}(t)=\frac{\chi_{pq}(t)^2}{4}
+```
+
+satisfait :
+
+```math
+\boxed{
+F_{pq}(t)\le Var(n_p)Var(n_q)\le\frac1{16}.
+}
+```
+
+```text
+THRESHOLD_GLOBAL_F_BOUND = STRUCTURAL_ANALYTIC
+THRESHOLD_GLOBAL_F_MAX   = 1/16
+```
+
+Ceci **raffine**, sans le contredire ni le remplacer, l'oracle générique déjà
+validé `0<=F<=1` (`specification.md` §8-9, `validation-plan.md` §7). Il ne
+rouvre aucun bloc gelé.
