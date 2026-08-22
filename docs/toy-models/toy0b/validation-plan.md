@@ -911,7 +911,14 @@ mu = {-1.25, -1.5, -2}
 À chaque fond :
 
 1. diagonaliser à `delta=0` et publier `d_GS`, `gap_0` ;
-2. générer un petit ensemble préenregistré de coordonnées `x` ;
+2. évaluer la grille de coordonnées `x` préenregistrée :
+
+```text
+STATIC_X_PRIMARY = {0, ±1/4, ±1/2, ±1, ±2}
+STATIC_X_SATURATION_DIAGNOSTIC = {±4}
+```
+
+`STATIC_X_SATURATION_DIAGNOSTIC` est `EXTENDED_DIAGNOSTIC` (sonde du régime de grand `|x|` / saturation) et ne peut pas à lui seul faire échouer la porte statique obligatoire ;
 3. tester statiquement :
 
 ```math
@@ -927,6 +934,14 @@ avec :
 ```math
 x=6g\delta/gap_0;
 ```
+
+L'ensemble discriminant pour un futur critère de collapse agrégé est :
+
+```text
+STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES = {1/4, 1/2, 1, 2}
+```
+
+Les points de signe négatif sont un contrôle numérique / oracle d'implémentation de la covariance exacte (`NEGATIVE_X_HALF_ROLE = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE`), non une évidence indépendante de collapse. `x=0` est un contrôle de normalisation/symétrie (`STATIC_X_ZERO_ROLE = NUMERICAL_CONTROL / NORMALIZATION_ORACLE`), non une évidence de collapse discriminante. Ni l'un ni l'autre ne peuvent inflater un futur décompte d'évidence de collapse agrégée ;
 
 4. seulement si la réduction est suffisamment supportée selon le critère préenregistré, utiliser :
 
@@ -967,12 +982,13 @@ Richardson n'est autorisé que selon une règle préenregistrée et ne remplace 
 Valeurs encore `OPEN` :
 
 ```text
-STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
 ```
+
+`STATIC_X_CONTROL_VALUES` est `VALIDATED_FOR_FREEZE` (cf. §17).
 
 ---
 
@@ -1006,7 +1022,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # soft-loop
-STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 # threshold / interpretation
@@ -1046,6 +1061,7 @@ A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE
 DEGENERATE_ROOT_CONTROL
+STATIC_X_CONTROL_VALUES
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec

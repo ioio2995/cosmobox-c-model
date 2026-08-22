@@ -1160,12 +1160,27 @@ les deux prédictions statiques sont :
 ```
 
 ```math
-2\langle\Phi\rangle\simeq-\frac{x}{\sqrt{1+x^2}}
+2\langle\Phi\rangle\simeq-\frac{x}{\sqrt{1+x^2}}.
 ```
 
-à convention de signe près.
+Le signe est fixé : pour `delta>0` (`x>0`), l'état central de flux `e=0` est énergétiquement favorisé, avec `Phi -> -1/2` dans la limite de forte polarisation.
 
 Ces collapses constituent la porte statique de SOFT-LOOP et doivent être testés avant toute interprétation dynamique fondée sur `delta_c`.
+
+La grille physique préenregistrée de la porte statique est :
+
+```text
+STATIC_X_PRIMARY = {0, ±1/4, ±1/2, ±1, ±2}
+STATIC_X_SATURATION_DIAGNOSTIC = {±4}
+```
+
+L'ensemble discriminant pour un futur critère de collapse agrégé est :
+
+```text
+STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES = {1/4, 1/2, 1, 2}
+```
+
+`STATIC_X_SATURATION_DIAGNOSTIC` est `EXTENDED_DIAGNOSTIC`. Les points de signe négatif sont un contrôle numérique / oracle d'implémentation de la covariance exacte `R H(g,mu,delta) R^dagger = H(g,mu,-delta)`, pas une évidence indépendante de collapse (`NEGATIVE_X_HALF_ROLE = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE`). `x=0` est un contrôle de normalisation/symétrie, pas une évidence de collapse discriminante (`STATIC_X_ZERO_ROLE = NUMERICAL_CONTROL / NORMALIZATION_ORACLE`). Le détail de ces rôles et de la classification `EXTENDED_DIAGNOSTIC` est porté par `soft-loop-static-gate.md`.
 
 Le modèle effectif motive l'échelle analytique :
 
@@ -1305,13 +1320,13 @@ contrôle fail-closed des racines dégénérées ou quasi-dégénérées est por
 ### SOFT-LOOP
 
 ```text
-STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 ```
 
 Les éléments suivants sont `VALIDATED_FOR_FREEZE` :
 
 ```text
+STATIC_X_CONTROL_VALUES
 A_DELTA_VALUES
 DERIVATIVE_STABILITY_CRITERION
 RICHARDSON_USAGE_RULE

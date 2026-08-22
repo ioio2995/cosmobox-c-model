@@ -277,12 +277,14 @@ Au premier ordre du modèle à deux niveaux :
 
 ### Polarisation cyclique
 
-Comme `2Phi -> sigma_z` dans le doublet central, l'état fondamental effectif donne, à convention de signe près :
+Comme `2Phi -> sigma_z` dans le doublet central, l'état fondamental effectif donne :
 
 ```math
 2\langle\Phi\rangle
 =-\frac{x}{\sqrt{1+x^2}}.
 ```
+
+Le signe est fixé : pour `delta>0` (`x>0`), l'état central de flux `e=0` est énergétiquement favorisé, et cet état a `Phi=-1/2`.
 
 Ces deux collapses sont les tests directs de la réduction à deux niveaux. Dans le modèle complet, ils sont des **prédictions asymptotiques de modèle effectif**, pas des identités exactes à `mu` fini.
 

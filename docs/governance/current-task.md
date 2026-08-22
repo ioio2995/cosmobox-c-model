@@ -180,6 +180,12 @@ RICHARDSON_USAGE_RULE                   = VALIDATED_FOR_FREEZE
 # degenerate root fail-closed control
 DEGENERATE_ROOT_CONTROL                 = VALIDATED_FOR_FREEZE
 DEGENERATE_ROOT_NEW_TOLERANCE           = NONE
+
+# SOFT-LOOP static x grid
+STATIC_X_CONTROL_VALUES                 = VALIDATED_FOR_FREEZE
+STATIC_X_PRIMARY                        = {0, ±1/4, ±1/2, ±1, ±2}
+STATIC_COLLAPSE_INFORMATIVE_MAGNITUDES  = {1/4, 1/2, 1, 2}
+STATIC_X_SATURATION_DIAGNOSTIC          = {±4}
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -192,7 +198,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 
 ```text
 # SOFT-LOOP
-STATIC_X_CONTROL_VALUES
 STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 # threshold / interpretation
@@ -277,11 +282,11 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : neuf paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : dix paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
-DEGENERATE_ROOT_CONTROL).
+DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.
