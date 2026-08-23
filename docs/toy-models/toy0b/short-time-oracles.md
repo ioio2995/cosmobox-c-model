@@ -210,7 +210,20 @@ EDGE_SHORT_ORACLE = NOT_APPLICABLE
 
 et non `FAIL`. Le protocole dynamique peut rester actif ; il doit déterminer le nouvel exposant et appliquer les règles générales de comparaison des exposants.
 
-La notion de zéro numérique et les tolérances restent `OPEN` jusqu'au gel des tolérances numériques.
+Ce routage `EDGE_SHORT_ORACLE = NOT_APPLICABLE` suppose `<X>=0` établi par
+règle structurelle/certificat exact. La notion de zéro numérique et les
+tolérances sont désormais fixées par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+= VALIDATED_FOR_FREEZE` (définition normative complète :
+`numerical-zero-symmetry-control.md`) : `NUMERICAL_ZERO_BRANCH_IS_CERTIFIED
+= NO`, donc si `<X>` est seulement `NUMERICALLY_ZERO_COMPATIBLE` (sans
+certificat structurel/exact), il n'établit ni `<X>=0` ni `nu_state>=3` de
+façon confirmatoire :
+
+```text
+NUMERICALLY_ZERO_COMPATIBLE -> EDGE_SHORT_ORACLE = NUMERICALLY_INCONCLUSIVE_FOR_CERTIFIED_EXPONENT
+```
+
+Un `<X>` `ROBUST_NONZERO` reste couvert par l'oracle régulier de §4-5.
 
 ## 7. Hiérarchie scientifique des quantités Delta1
 
@@ -458,8 +471,26 @@ SHORT_TIME_CONVERGENCE_RANGE_NOT_PREREGISTERED
 
 Ces trois cas sont `NONCONFIRMATORY`.
 
-Les classifications de zéro/non-zéro numérique restent conditionnées à
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+Les classifications de zéro/non-zéro numérique sont désormais routées par
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition
+normative complète : `numerical-zero-symmetry-control.md`).
+`NUMERICAL_ZERO_BRANCH_IS_CERTIFIED = NO` :
+`CERTIFIED_EXPONENT_PRECEDING_ZERO_REQUIREMENT =
+STRUCTURAL_OR_EXACT_CERTIFICATE_ONLY`. Un `nu=r` confirmatoire exige que
+chaque ordre autorisé inférieur soit nul par certificat structurel/exact et
+que le coefficient courant soit `ROBUST_NONZERO`. Si un coefficient
+autorisé inférieur est seulement `NUMERICALLY_ZERO_COMPATIBLE` (une moment
+numériquement compatible avec zéro ne certifie jamais le saut d'exposant) :
+
+```text
+SHORT_TIME_EXPONENT = NUMERICALLY_INCONCLUSIVE
+```
+
+pour tout consommateur confirmatoire (`SHORT_TIME_CONVERGENCE_EXPONENT_UNRESOLVED`
+au sens opérationnel de ce document). Un exposant candidat diagnostique peut
+être publié séparément mais ne peut entrer dans la convergence à temps
+court, `nu_*` de pureté de chemin, ni aucune interprétation confirmatoire
+d'événement.
 
 ### 10.3 Budget de résidu numérique
 
@@ -944,7 +975,9 @@ SUPPORTED_FLOOR_AFTER_CONTRACTION
 
 SHORT_TIME_CONVERGENCE_NEW_SCALAR_TOLERANCE = NONE
 
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+NUMERICAL_ZERO_BRANCH_IS_CERTIFIED = NO
+CERTIFIED_EXPONENT_PRECEDING_ZERO_REQUIREMENT = STRUCTURAL_OR_EXACT_CERTIFICATE_ONLY
 TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 ```
 

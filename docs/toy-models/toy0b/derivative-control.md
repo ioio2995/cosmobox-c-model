@@ -355,6 +355,29 @@ est testée avant d'utiliser ces valeurs dans l'estimateur de dérivée.
 
 Les mêmes coefficients `alpha_k` sont utilisés pour les deux signes.
 
+### 9.1 Routage numérique (`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`)
+
+Définition normative complète : `numerical-zero-symmetry-control.md` §D,
+§F3, §P.
+
+```text
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+```
+
+Chaque paire explicite `+h/-h` de `Delta1` DOIT passer l'oracle exact
+d'imparité (résidu signé F3, `R=x_minus+x_plus`, `S=1`, routé sous la règle
+d'oracle exact §D) AVANT d'être utilisée dans la paire `Xi1`
+(`SOFT_LOOP_DYNAMIC_DELTA1_ODDNESS`). Aucune règle de pas de dérivée n'est
+modifiée par ce routage.
+
+`Xi1=0` (numériquement zéro-compatible sous la classification zéro/non-zéro
+opérationnelle, §E de `numerical-zero-symmetry-control.md`) n'est PAS un
+`FAIL` : c'est uniquement une publication de classification zéro/non-zéro
+numérique (`ROBUST_NONZERO`/`NUMERICALLY_ZERO_COMPATIBLE`/`ZERO_CONTROL_SENSITIVE`),
+distincte des statuts `DERIVATIVE_STABLE_QUADRATIC`/`DERIVATIVE_NUMERICAL_FLOOR`/
+`DERIVATIVE_CONTROL_SENSITIVE`/`DERIVATIVE_NOT_APPLICABLE` déjà définis
+ci-dessus (§6), qui restent inchangés.
+
 ## 10. Statut
 
 ```text
@@ -375,4 +398,8 @@ SMALL_GAP_PHYSICAL_THRESHOLD        = NOT_REQUIRED
 H_DELTA_VALUES                      = OPEN
 DERIVATIVE_STABILITY_CRITERION      = VALIDATED_FOR_FREEZE
 CONTROL_FAMILY_COMMON_PRINCIPLE     = VALIDATED_FOR_FREEZE
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+SOFT_LOOP_DYNAMIC_DELTA1_ODDNESS    = MANDATORY
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`.

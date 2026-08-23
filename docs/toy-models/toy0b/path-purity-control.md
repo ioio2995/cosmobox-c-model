@@ -283,11 +283,81 @@ NO_ACTIVE_PATH_RESPONSE
 
 Aucun seuil scalaire sur `P_0` n'est introduit.
 
-Toute classification de zéro/non-zéro numérique non établie structurellement reste conditionnelle à :
+### 6.1 Routage numérique fail-closed de la trichotomie (`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`)
+
+Définition normative complète : `numerical-zero-symmetry-control.md` §F12,
+§H. Ce routage numérique implémente la trichotomie EXACTE ci-dessus (§6) ;
+il ne la modifie pas.
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN.
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+La trichotomie de ligne de base n'est évaluée qu'après :
+
+- que `nu_*` certifié soit disponible (règle de certification d'exposant,
+  `numerical-zero-symmetry-control.md` §I) ;
+- qu'au moins un canal actif à `nu_*` soit `ROBUST_NONZERO` / structurellement
+  actif.
+
+L'objet de test numérique n'est pas le carré des amplitudes mais leurs
+NORMES :
+
+```math
+A_D=\sqrt{A_D^2},\qquad
+A_N=\sqrt{\sum_{\alpha\in NON\_DIRECT,\,\nu_\alpha=\nu_*}c_\alpha^2},\qquad
+A_S=\sqrt{A_D^2+A_N^2}.
+```
+
+```text
+PATH_BASELINE_ZERO_TEST_OBJECT = AMPLITUDE_NORMS_A_D_A_N_AND_A_S_NOT_SQUARED_AMPLITUDES
+```
+
+Pour chaque `c_alpha`, utiliser son majorant spectral absolu brut `B_alpha`
+(§F11) et les échelles agrégées `S_AD`, `S_AN`, `S_AS` (§F12) pour classifier
+`A_D` et `A_N` sous la famille zéro/non-zéro (§E de
+`numerical-zero-symmetry-control.md`).
+
+Routage final Z1 :
+
+```text
+DIRECT_DOMINANT_BASELINE
+    iff A_D est ROBUST_NONZERO
+    ET le sous-ensemble non direct à nu_* est nul par certificat
+    STRUCTURAL_ANALYTIC / exact.
+
+NO_DIRECT_BASELINE
+    iff A_N est ROBUST_NONZERO
+    ET le sous-ensemble direct à nu_* est nul par certificat
+    STRUCTURAL_ANALYTIC / exact.
+
+MIXED_BASELINE
+    iff A_D est ROBUST_NONZERO ET A_N est ROBUST_NONZERO.
+```
+
+Un `A_D` ou `A_N` seulement `NUMERICALLY_ZERO_COMPATIBLE`,
+`ZERO_CONTROL_SENSITIVE` ou `NUMERICALLY_INCONCLUSIVE`, sans théorème de zéro
+structurel résolvant cette branche, donne :
+
+```text
+PATH_BASELINE_STATUS = PATH_CONTROL_NUMERICALLY_INCONCLUSIVE
+```
+
+Ne JAMAIS émettre `DIRECT_DOMINANT`/`NO_DIRECT` à partir d'une seule
+petitesse numérique :
+
+```text
+PATH_DIRECT_DOMINANCE_NUMERICAL_SMALLNESS_AS_EXACT_ZERO = REJECTED
+```
+
+`NO_ACTIVE_PATH_RESPONSE` reste utilisable uniquement sous sa sémantique
+exacte/structurelle déjà gelée (§6 ci-dessus), jamais à partir d'une
+petitesse numérique finie seule.
+
+Toute autre classification de zéro/non-zéro numérique non établie
+structurellement (y compris `Purity_direct`, `R_path`, `H_path` lorsqu'un
+diagnostic mappé continu est requis) reste routée par la même politique
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`.
 
 ## 7. Le statut de pureté n'est pas le statut d'arrivée propre
 
@@ -922,8 +992,12 @@ PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
 
 TRUNCATION_CONTROL = MANDATORY
 
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+PATH_BASELINE_ZERO_TEST_OBJECT = AMPLITUDE_NORMS_A_D_A_N_AND_A_S_NOT_SQUARED_AMPLITUDES
+PATH_DIRECT_DOMINANCE_NUMERICAL_SMALLNESS_AS_EXACT_ZERO = REJECTED
 TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 GAMMA_CONTROL_DOMAIN_AND_GRID          = VALIDATED_FOR_FREEZE
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète : `numerical-zero-symmetry-control.md`.

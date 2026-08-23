@@ -115,11 +115,40 @@ L'énoncé est plus fort que « l'exposant direct saute de 3 à 5 » : aucun ord
 
 Dès qu'un terme diagonal actif est réintroduit (`g`, `g*delta`, `mu`), la composante `TARGET_DIRECT` peut réapparaître au premier ordre physique `r=3` selon la structure déjà consignée dans `d2-asymptotic-structure.md`.
 
-## 6. Statut
+## 6. Validation numérique (famille M — `D2_FREE_HOPPING_NUMERICAL_ORACLE`)
+
+Ce paragraphe exécute numériquement le théorème exact ci-dessus (§1-5) ; il
+ne le modifie pas. Définition normative complète :
+`numerical-zero-symmetry-control.md` §X.
+
+```text
+D2_FREE_HOPPING_NUMERICAL_ORACLE = MANDATORY_AT_LAMBDA2_AND_LAMBDA3
+```
+
+À `g=0`, `mu=0`, `delta=0`, `Lambda=2` et `Lambda=3`, un représentant `d=2`.
+La machinerie générique sectorielle/de chemin DOIT être exécutée SANS
+imposer le résultat d'inactivité bipartite pour compter comme évidence
+indépendante (`ORACLE_POINT_EVIDENCE_MODE = INDEPENDENT_RECOMPUTATION`).
+
+Vérifier `D2_TARGET_TRANSITION_RESPONSE = INACTIVE` ; si la réponse totale
+est active, vérifier `P_direct=0` et `P_0=0` sous la règle d'oracle exact
+(§D de `numerical-zero-symmetry-control.md`, forme F12 pour les amplitudes
+de ligne de base). Si la réponse totale est structurellement inactive :
+utiliser le routage figé `INACTIVE`/`NOT_DEFINED` (§4 ci-dessus).
+
+Coder en dur `TARGET_DIRECT` inactif directement à partir du théorème
+donne `ORACLE_POINT_EVIDENCE_MODE = SATISFIED_BY_CONSTRUCTION`, qui ne
+compte pas comme évidence indépendante de non-vacuité.
+
+## 7. Statut
 
 ```text
 D2_FREE_HOPPING_TARGET_RESPONSE = INACTIVE_EXACT
 D2_FREE_HOPPING_P0             = 0_IF_TOTAL_RESPONSE_ACTIVE
 D2_DIRECT_ORDER5_REACTIVATION  = REJECTED
 D2_NON_TARGET_RESPONSE         = ALLOWED
+D2_FREE_HOPPING_NUMERICAL_ORACLE = MANDATORY_AT_LAMBDA2_AND_LAMBDA3
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`.

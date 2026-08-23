@@ -30,12 +30,20 @@ MODEL0B_SPECTRAL_TIME_STRUCTURE    = VALIDÉ POUR GEL EN PRINCIPE
 MODEL0B_SOFT_LOOP_STRUCTURE        = VALIDÉ POUR GEL
 MODEL0B_PARAMETER_CAMPAIGN_SHAPE   = VALIDÉ POUR GEL
 
-MODEL0B_NUMERICAL_CONTROL_VALUES   = OUVERT
+MODEL0B_NUMERICAL_CONTROL_VALUES   = VALIDÉ POUR GEL
 MODEL0B_FINAL_ACCEPTANCE_RULES     = OUVERT
 IMPLEMENTATION_0B                  = NON AUTORISÉE
 ```
 
 `VALIDÉ POUR GEL` signifie que le contenu conceptuel peut être soumis au gel. Seule une validation explicite de Lionel ORCIL permettra de passer à `FROZEN`.
+
+`MODEL0B_NUMERICAL_CONTROL_VALUES = VALIDÉ POUR GEL` signifie que les vingt-et-un
+paramètres numériques majeurs préenregistrés de 0B, y compris le dernier,
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition
+normative complète : `numerical-zero-symmetry-control.md`), sont désormais
+fermés (`OPEN_MAJOR_CONTROLS = 0`). Ceci ne vaut ni gel du modèle, ni
+autorisation d'implémentation ; `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste
+`OPEN_PENDING_SYMMETRY_DERIVATION` et hors de ce décompte.
 
 Principe de clôture : le challenge scientifique reste permanent, mais un bloc stabilisé n'est rouvert que par une contradiction, une erreur, une impossibilité d'exécution ou un défaut susceptible d'affecter un verdict scientifique. Les améliorations non nécessaires à la validité de 0B sont différées au backlog.
 
@@ -455,6 +463,16 @@ En cas de `STATIC FAIL`, tester le sous-espace de Krylov :
 
 `DYNAMIC PASS` autorise l'étude de la réponse temporelle ; il ne valide pas automatiquement `C_eff`.
 
+Le routage numérique fail-closed de ce test de rang/noyau (SVD `p/2p`,
+classification `ROBUST_NONZERO`/`NUMERICALLY_ZERO_COMPATIBLE`/`CONTROL_SENSITIVE`,
+`STATIC = NUMERICALLY_INCONCLUSIVE` tant que l'injectivité requise n'est pas
+robuste-non-nulle, `STATIC = FAIL` uniquement sur certificat structurel/exact
+de noyau) est fixé par `STATIC_DYNAMIC_NUMERICAL_RANK_RULE =
+ROBUST_NONZERO_FOR_INJECTIVITY_EXACT_CERTIFICATE_FOR_KERNEL` (définition
+normative complète : `numerical-zero-symmetry-control.md` §F16, §G). Une
+valeur singulière numériquement petite ne crée jamais `STATIC FAIL` ni
+`DYNAMIC FAIL`.
+
 ---
 
 ## 7. Symétries déclarées et relations exactes
@@ -520,6 +538,18 @@ Oracles exacts :
 ```
 
 pour toute la famille.
+
+Ces oracles restent des théorèmes exacts, indépendants de toute exécution
+numérique. Le contrôle numérique zéro/symétrie (`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+= VALIDATED_FOR_FREEZE` ; définition normative complète :
+`numerical-zero-symmetry-control.md`) distingue strictement ce rôle
+(`ZERO_SYMMETRY_EXACT_ORACLE_ROLE = IMPLEMENTATION_AND_NUMERICAL_CONSISTENCY_TEST_OF_ANALYTIC_IDENTITY`)
+du cas d'une grandeur sans théorème de zéro exact, pour laquelle une
+classification `NUMERICALLY_ZERO_COMPATIBLE` reste une classification de
+précision finie et ne devient jamais `EXACT_ZERO`/`STRUCTURAL_ZERO`/`CERTIFIED_ZERO`
+(`NUMERICALLY_ZERO_COMPATIBLE_IS_EXACT_ZERO = NO`). Un `ROBUST_ORACLE_FAIL`
+sur `Delta1(delta=0)=0` ou `Delta2=0` signalerait une incohérence
+numérique/de pipeline, jamais une falsification du théorème analytique.
 
 ---
 
@@ -977,7 +1007,21 @@ EPS_PATH_STRICT      = 1/32
 EPS_PATH_PERMISSIVE  = 1/4
 ```
 
-Trichotomie de ligne de base, distincte du statut de dégradation : `DIRECT_DOMINANT_BASELINE` (`P_0=1`), `MIXED_BASELINE` (`0<P_0<1`), `NO_DIRECT_BASELINE` (`P_0=0`), `NO_ACTIVE_PATH_RESPONSE`. `PATH_CONTROL_STATUS` (`ROBUST_CLEAN`/`CONTROL_SENSITIVE`/`ROBUST_CONTAMINATED`) mesure uniquement la dégradation relative à cette ligne de base ; `ROBUST_CLEAN` seul ne signifie jamais une arrivée directe propre. Une interprétation confirmatoire d'arrivée propre côté chemin exige :
+Trichotomie de ligne de base, distincte du statut de dégradation : `DIRECT_DOMINANT_BASELINE` (`P_0=1`), `MIXED_BASELINE` (`0<P_0<1`), `NO_DIRECT_BASELINE` (`P_0=0`), `NO_ACTIVE_PATH_RESPONSE`. `PATH_CONTROL_STATUS` (`ROBUST_CLEAN`/`CONTROL_SENSITIVE`/`ROBUST_CONTAMINATED`) mesure uniquement la dégradation relative à cette ligne de base ; `ROBUST_CLEAN` seul ne signifie jamais une arrivée directe propre.
+
+Le routage numérique de cette trichotomie exige désormais explicitement les
+amplitudes `A_D`, `A_N` et `A_S` (normes, pas carrés d'amplitude ;
+`PATH_BASELINE_ZERO_TEST_OBJECT = AMPLITUDE_NORMS_A_D_A_N_AND_A_S_NOT_SQUARED_AMPLITUDES`).
+`DIRECT_DOMINANT_BASELINE`/`NO_DIRECT_BASELINE` exigent que le côté dominant
+soit `ROBUST_NONZERO` ET que le côté opposé soit nul par certificat
+`STRUCTURAL_ANALYTIC`/exact ; un côté seulement `NUMERICALLY_ZERO_COMPATIBLE`
+est insuffisant et ne peut jamais produire `DIRECT_DOMINANT`/`NO_DIRECT` par
+seule petitesse numérique
+(`PATH_DIRECT_DOMINANCE_NUMERICAL_SMALLNESS_AS_EXACT_ZERO = REJECTED`).
+Sinon : `PATH_CONTROL_NUMERICALLY_INCONCLUSIVE`. Définition normative
+complète : `numerical-zero-symmetry-control.md` §F12, §H.
+
+Une interprétation confirmatoire d'arrivée propre côté chemin exige :
 
 ```text
 PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE =
@@ -1135,7 +1179,7 @@ GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
 - `CERTIFIED_NO_RETURN` fondé sur complétude continue (`RECURRENCE_CERTIFIED_NO_RETURN_MODE = CONTINUOUS_COMPLETENESS_BASED`), via `NO_EXIT_BEFORE_EVENT` certifié ou `EXIT_NO_RETURN_BEFORE_EVENT` certifié ; toute ambiguïté reste `RECURRENCE_HORIZON_UNRESOLVED` ou `RECURRENCE_FIXED_HORIZON_NUMERICALLY_INCONCLUSIVE`, jamais promue silencieusement ;
 - une règle d'incertitude d'horizon fixe/incertain (`RECURRENCE_HORIZON_UNCERTAINTY_RULE = EARLIEST_HORIZON_FOR_RETURN_LATEST_HORIZON_FOR_NO_RETURN`) ; `RECURRENCE_TGROW_PRIMARY_HORIZON = T_peak` instancie opérationnellement, pour la campagne primaire préenregistrée, l'énoncé scientifique déjà validé « au moins jusqu'à `T_peak` » (§6), sans le redéfinir ; `RECURRENCE_TTHR_PRIMARY_HORIZON = T_down(eta)` est inchangé ;
 - une agrégation par site fail-closed et un verdict robuste `Gamma` évalué aux deux bornes, avec contrôle croisé de la monotonie exacte déjà démontrée (§4) : toute contradiction donne `RECURRENCE_GAMMA_MONOTONICITY_VIOLATION` et `RECURRENCE_STATUS = NUMERICALLY_INCONCLUSIVE`, sans arbitrage par sélection d'un seul calcul ;
-- la variance locale nulle reste non confirmatoire (`RECURRENCE_DIAGNOSTIC = NOT_APPLICABLE_ZERO_LOCAL_VARIANCE`), sans identification silencieuse à `CERTIFIED_NO_RETURN` ; ceci reste conditionné à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) ;
+- la variance locale nulle reste non confirmatoire (`RECURRENCE_DIAGNOSTIC = NOT_APPLICABLE_ZERO_LOCAL_VARIANCE`), sans identification silencieuse à `CERTIFIED_NO_RETURN` ; ceci reste conditionné à la politique désormais fermée `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition normative complète : `numerical-zero-symmetry-control.md`) ;
 - `RECURRENCE_CONTROL_ACCEPTABLE` n'est établi que pour `RECURRENCE_STATUS = ROBUST_CLEAN` avec dépendances confirmatoires.
 
 ```text
@@ -1169,7 +1213,7 @@ C_{eff}^{thr}(\eta)
 =\frac{T_{thr}^{ref}(\eta)}{T_{thr}^{state}(\eta)}.
 ```
 
-Ces deux estimateurs ne sont pas forcés à être égaux en magnitude (`ESTIMATOR_MAGNITUDE_EQUALITY_GATE = REJECTED`). L'objet générique de cohérence n'est pas leur égalité numérique mais la robustesse de l'ordre relationnel primaire encodé par `Delta1` (`ESTIMATOR_COHERENCE_OBJECT = DELTA1_RELATIONAL_ORDERING`) sur la famille complète des estimateurs de seuil `eta` requis, avec éligibilité scientifique locale évaluée en premier ; une asymétrie d'éligibilité entre familles d'estimateurs est une limitation de couverture non confirmatoire, pas un contre-exemple d'ordre résolu, tandis qu'un ordre opposé résolu entre estimateurs éligibles reste sensible au contrôle. Toute revendication finale d'ordre non nul reste conditionnée à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`). Définition normative complète : `ESTIMATOR_COHERENCE_CRITERION = VALIDATED_FOR_FREEZE`, `estimator-coherence-control.md`.
+Ces deux estimateurs ne sont pas forcés à être égaux en magnitude (`ESTIMATOR_MAGNITUDE_EQUALITY_GATE = REJECTED`). L'objet générique de cohérence n'est pas leur égalité numérique mais la robustesse de l'ordre relationnel primaire encodé par `Delta1` (`ESTIMATOR_COHERENCE_OBJECT = DELTA1_RELATIONAL_ORDERING`) sur la famille complète des estimateurs de seuil `eta` requis, avec éligibilité scientifique locale évaluée en premier ; une asymétrie d'éligibilité entre familles d'estimateurs est une limitation de couverture non confirmatoire, pas un contre-exemple d'ordre résolu, tandis qu'un ordre opposé résolu entre estimateurs éligibles reste sensible au contrôle. Toute revendication finale d'ordre non nul reste conditionnée au routage zéro/non-zéro de `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`, qui fournit désormais cette dépendance finale (`ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = SATISFIED_BY_THIS_CONTROL`). Définition normative complète : `ESTIMATOR_COHERENCE_CRITERION = VALIDATED_FOR_FREEZE`, `estimator-coherence-control.md` ; `numerical-zero-symmetry-control.md`.
 
 Le rééchelonnement `H_s=sH_ref` impose exactement :
 
@@ -1236,7 +1280,7 @@ g=0.10       -> stress faible-g hors nominal
 delta=0.9    -> qualification / stress hors nominal
 ```
 
-La covariance `delta<->-delta` doit être exercée sur un sous-ensemble négatif préenregistré. Ce sous-ensemble est `VALIDATED_FOR_FREEZE` (`NEGATIVE_DELTA_ORACLE_SUBSET`, définition normative complète : `parameter-campaign-structure.md` §11) : il combine une base géométrique fixe de 17 points (`NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`) avec une extension déterministe de couverture de branches sélectionnée UNIQUEMENT depuis les statuts catégoriels d'exécution `+delta` déjà requis, avant toute exécution `-delta` (`NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SOURCE=POSITIVE_MAIN_STATUSES_ONLY`, `NEGATIVE_DELTA_RESULTS_AFFECT_SUBSET_SELECTION=FORBIDDEN`), pour une taille totale dérivée bornée entre 17 et 120 points (`NEGATIVE_DELTA_ORACLE_TOTAL_SIZE=DERIVED_BOUNDED_17_TO_120`). Chaque point `-delta` requis DOIT être recalculé indépendamment par le pipeline générique (`NEGATIVE_DELTA_ORACLE_INDEPENDENT_RECOMPUTATION=REQUIRED`) : toute construction sign-dérivée depuis le côté `+delta` (par exemple `H_minus:=R H_plus R^dagger` ou `Delta_1(-d):=-Delta_1(+d)`) rend le point `DELTA_COVARIANCE_ORACLE_POINT=INVALID_BY_CONSTRUCTION` et fait échouer l'oracle (`NEGATIVE_DELTA_ORACLE_CONTROL=FAIL`), jamais `NOT_APPLICABLE`. La comparaison utilise une fermeture de dépendance mappée complète (`NEGATIVE_DELTA_ORACLE_COMPARISON_LEVEL=FULL_MAPPED_DEPENDENCY_CLOSURE`), séparée en une couche discrète catégorielle sans nouvelle tolérance et une couche continue dont les seuils restent conditionnés à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`). Les points négatifs ne fournissent aucune évidence physique indépendante (`NEGATIVE_DELTA_ORACLE_POINT_ROLE=NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`) et ne servent à régler aucun autre paramètre. Le cutoff primaire est `Lambda=2` ; `Lambda=3` utilise l'intersection avec les points de stress de troncature ou, si elle est vide, l'ancre de repli fixe `(1,0,+/-2/5)` (`NEGATIVE_DELTA_ORACLE_LAMBDA3_RULE=TRUNCATION_INTERSECTION_OR_FIXED_ANCHOR_FALLBACK`). Cet oracle porte exclusivement sur MAIN à `delta` fini (`NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE=MAIN_FINITE_DELTA_ONLY`) et ne s'applique ni à SOFT-LOOP (déjà couvert par ses deux signes explicites) ni aux points de stress `g=0.10`/`|delta|=0.9` (`NEGATIVE_DELTA_ORACLE_EXCLUDED_STRESS_POINTS`).
+La covariance `delta<->-delta` doit être exercée sur un sous-ensemble négatif préenregistré. Ce sous-ensemble est `VALIDATED_FOR_FREEZE` (`NEGATIVE_DELTA_ORACLE_SUBSET`, définition normative complète : `parameter-campaign-structure.md` §11) : il combine une base géométrique fixe de 17 points (`NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`) avec une extension déterministe de couverture de branches sélectionnée UNIQUEMENT depuis les statuts catégoriels d'exécution `+delta` déjà requis, avant toute exécution `-delta` (`NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SOURCE=POSITIVE_MAIN_STATUSES_ONLY`, `NEGATIVE_DELTA_RESULTS_AFFECT_SUBSET_SELECTION=FORBIDDEN`), pour une taille totale dérivée bornée entre 17 et 120 points (`NEGATIVE_DELTA_ORACLE_TOTAL_SIZE=DERIVED_BOUNDED_17_TO_120`). Chaque point `-delta` requis DOIT être recalculé indépendamment par le pipeline générique (`NEGATIVE_DELTA_ORACLE_INDEPENDENT_RECOMPUTATION=REQUIRED`) : toute construction sign-dérivée depuis le côté `+delta` (par exemple `H_minus:=R H_plus R^dagger` ou `Delta_1(-d):=-Delta_1(+d)`) rend le point `DELTA_COVARIANCE_ORACLE_POINT=INVALID_BY_CONSTRUCTION` et fait échouer l'oracle (`NEGATIVE_DELTA_ORACLE_CONTROL=FAIL`), jamais `NOT_APPLICABLE`. La comparaison utilise une fermeture de dépendance mappée complète (`NEGATIVE_DELTA_ORACLE_COMPARISON_LEVEL=FULL_MAPPED_DEPENDENCY_CLOSURE`), séparée en une couche discrète catégorielle sans nouvelle tolérance et une couche continue dont les seuils sont désormais fournis par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (`NEGATIVE_DELTA_ORACLE_CONTINUOUS_TOLERANCE_SOURCE = NUMERICAL_ZERO_AND_SYMMETRY_CONTROL` ; définition normative complète : `numerical-zero-symmetry-control.md`). Les points négatifs ne fournissent aucune évidence physique indépendante (`NEGATIVE_DELTA_ORACLE_POINT_ROLE=NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`) et ne servent à régler aucun autre paramètre. Le cutoff primaire est `Lambda=2` ; `Lambda=3` utilise l'intersection avec les points de stress de troncature ou, si elle est vide, l'ancre de repli fixe `(1,0,+/-2/5)` (`NEGATIVE_DELTA_ORACLE_LAMBDA3_RULE=TRUNCATION_INTERSECTION_OR_FIXED_ANCHOR_FALLBACK`). Cet oracle porte exclusivement sur MAIN à `delta` fini (`NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE=MAIN_FINITE_DELTA_ONLY`) et ne s'applique ni à SOFT-LOOP (déjà couvert par ses deux signes explicites) ni aux points de stress `g=0.10`/`|delta|=0.9` (`NEGATIVE_DELTA_ORACLE_EXCLUDED_STRESS_POINTS`).
 
 ---
 
@@ -1260,7 +1304,7 @@ Le contrôle scientifique `Lambda=2 -> 3` doit comparer les mêmes observables e
 
 Pour les harmoniques : appariement principal à `k` fixe ; appariement à `j=2Lambda-k` comme diagnostic relatif au bord.
 
-Le sous-ensemble exact des points de stress `Lambda=3` est désormais préenregistré et fixe (`TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE`, définition normative complète : `truncation-design-qualification.md` §8, résumé opérationnel : `parameter-campaign-structure.md` §5). Il comprend 18 points fixes (`TRUNCATION_STRESS_POINT_SUBSET_SIZE=18` ; `TRUNCATION_STRESS_MAIN_POINT_COUNT=16` ; `TRUNCATION_STRESS_OUTER_POINT_COUNT=2` ; `TRUNCATION_STRESS_POINT_DESIGN=THREE_AXIS_STRESS_CROSS_PLUS_CONDITIONING_INTERIOR_AND_OUTER_ANCHORS`), plus une ancre de référence obligatoire `Lambda=3` distincte et non comptée dans ce total (`TRUNCATION_REFERENCE_ANCHOR=(1,0,0)`, `TRUNCATION_REFERENCE_ANCHOR_ROLE=MANDATORY_REFERENCE_NOT_STRESS`). Chaque point sélectionné est comparé sur la fermeture de dépendance scientifique complète requise (`TRUNCATION_STRESS_OBSERVABLE_SCOPE=FULL_REQUIRED_SCIENTIFIC_DEPENDENCY_CLOSURE`), avec la fermeture `eta` commune déjà gelée aux deux cutoffs, sans rétrécissement différencié (`TRUNCATION_THRESHOLD_DOMAIN_RULE=EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`). Le sous-ensemble porte exclusivement sur `delta` non négatif ; `delta` négatif n'apporte aucune évidence de troncature physique indépendante et reste un oracle d'implémentation de signe déjà couvert par `NEGATIVE_DELTA_ORACLE_SUBSET` (`TRUNCATION_NEGATIVE_DELTA_ROLE=IMPLEMENTATION_ORACLE_ONLY`). Aucune extension adaptative n'est autorisée après inspection des résultats `Lambda=3` (`TRUNCATION_STRESS_ADAPTIVE_EXTENSION=REJECTED_FOR_PRIMARY_PREREGISTERED_SUBSET`, `TRUNCATION_STRESS_POSTHOC_SUBSTITUTION=FORBIDDEN`). Un contrôle réussi sur ce sous-ensemble clairsemé ne supporte qu'une absence d'instabilité de cutoff détectée sur ce sous-ensemble préenregistré, jamais une convergence uniforme sur tout le domaine MAIN (`TRUNCATION_STRESS_CLAIM_SCOPE=PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM`) ; tout point MAIN non sélectionné reste non certifié par ce protocole (`TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT=NOT_CERTIFIED_BY_STRESS_SUBSET`). COMMENT ces deux cutoffs sont comparés sur ce sous-ensemble est également fixé (`TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE`, définition normative complète : `truncation-comparison-control.md`) : famille opérationnelle de sensibilité `TRUNCATION_TOLERANCE_VALUES={0.01,0.02,0.05}` dimensionnée par la qualification de design préalable (`TRUNCATION_TOLERANCE_DIMENSIONING=DESIGN_QUALIFICATION_INFORMED_PREREGISTRATION`) ; distance de trace pour la métrique d'état (`TRUNCATION_STATE_METRIC=TRACE_DISTANCE_UNDER_NATURAL_EMBEDDING`) ; métriques log-ratio pour les quantités positives ; garde double absolue + relative-symétrique obligatoire pour `Delta1` fini (`TRUNCATION_DELTA1_DUAL_METRIC=REQUIRED_FOR_FINITE_DELTA_PRIMARY_SIGNAL`), `Delta1` structurel à `delta=0` restant `NOT_APPLICABLE_STRUCTURAL_ZERO` et conditionné à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) ; comparaison d'admissibilité `eta` AVANT intersection commune (`TRUNCATION_ETA_ADMISSIBILITY_COMPARISON_STAGE=BEFORE_COMMON_INTERSECTION`) ; porte de référence robuste-stable obligatoire (`TRUNCATION_REFERENCE_GATE=ROBUST_STABLE_REQUIRED`) ; agrégation ponctuelle fail-closed sans moyennage, MAIN séparé de l'extérieur (`TRUNCATION_MAIN_AGGREGATION=POINTWISE_FAIL_CLOSED_NO_AVERAGING`). Ceci ne ferme pas `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+Le sous-ensemble exact des points de stress `Lambda=3` est désormais préenregistré et fixe (`TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE`, définition normative complète : `truncation-design-qualification.md` §8, résumé opérationnel : `parameter-campaign-structure.md` §5). Il comprend 18 points fixes (`TRUNCATION_STRESS_POINT_SUBSET_SIZE=18` ; `TRUNCATION_STRESS_MAIN_POINT_COUNT=16` ; `TRUNCATION_STRESS_OUTER_POINT_COUNT=2` ; `TRUNCATION_STRESS_POINT_DESIGN=THREE_AXIS_STRESS_CROSS_PLUS_CONDITIONING_INTERIOR_AND_OUTER_ANCHORS`), plus une ancre de référence obligatoire `Lambda=3` distincte et non comptée dans ce total (`TRUNCATION_REFERENCE_ANCHOR=(1,0,0)`, `TRUNCATION_REFERENCE_ANCHOR_ROLE=MANDATORY_REFERENCE_NOT_STRESS`). Chaque point sélectionné est comparé sur la fermeture de dépendance scientifique complète requise (`TRUNCATION_STRESS_OBSERVABLE_SCOPE=FULL_REQUIRED_SCIENTIFIC_DEPENDENCY_CLOSURE`), avec la fermeture `eta` commune déjà gelée aux deux cutoffs, sans rétrécissement différencié (`TRUNCATION_THRESHOLD_DOMAIN_RULE=EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`). Le sous-ensemble porte exclusivement sur `delta` non négatif ; `delta` négatif n'apporte aucune évidence de troncature physique indépendante et reste un oracle d'implémentation de signe déjà couvert par `NEGATIVE_DELTA_ORACLE_SUBSET` (`TRUNCATION_NEGATIVE_DELTA_ROLE=IMPLEMENTATION_ORACLE_ONLY`). Aucune extension adaptative n'est autorisée après inspection des résultats `Lambda=3` (`TRUNCATION_STRESS_ADAPTIVE_EXTENSION=REJECTED_FOR_PRIMARY_PREREGISTERED_SUBSET`, `TRUNCATION_STRESS_POSTHOC_SUBSTITUTION=FORBIDDEN`). Un contrôle réussi sur ce sous-ensemble clairsemé ne supporte qu'une absence d'instabilité de cutoff détectée sur ce sous-ensemble préenregistré, jamais une convergence uniforme sur tout le domaine MAIN (`TRUNCATION_STRESS_CLAIM_SCOPE=PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM`) ; tout point MAIN non sélectionné reste non certifié par ce protocole (`TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT=NOT_CERTIFIED_BY_STRESS_SUBSET`). COMMENT ces deux cutoffs sont comparés sur ce sous-ensemble est également fixé (`TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE`, définition normative complète : `truncation-comparison-control.md`) : famille opérationnelle de sensibilité `TRUNCATION_TOLERANCE_VALUES={0.01,0.02,0.05}` dimensionnée par la qualification de design préalable (`TRUNCATION_TOLERANCE_DIMENSIONING=DESIGN_QUALIFICATION_INFORMED_PREREGISTRATION`) ; distance de trace pour la métrique d'état (`TRUNCATION_STATE_METRIC=TRACE_DISTANCE_UNDER_NATURAL_EMBEDDING`) ; métriques log-ratio pour les quantités positives ; garde double absolue + relative-symétrique obligatoire pour `Delta1` fini (`TRUNCATION_DELTA1_DUAL_METRIC=REQUIRED_FOR_FINITE_DELTA_PRIMARY_SIGNAL`), `Delta1` structurel à `delta=0` restant `NOT_APPLICABLE_STRUCTURAL_ZERO` et conditionné à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition normative complète : `numerical-zero-symmetry-control.md`) ; comparaison d'admissibilité `eta` AVANT intersection commune (`TRUNCATION_ETA_ADMISSIBILITY_COMPARISON_STAGE=BEFORE_COMMON_INTERSECTION`) ; porte de référence robuste-stable obligatoire (`TRUNCATION_REFERENCE_GATE=ROBUST_STABLE_REQUIRED`) ; agrégation ponctuelle fail-closed sans moyennage, MAIN séparé de l'extérieur (`TRUNCATION_MAIN_AGGREGATION=POINTWISE_FAIL_CLOSED_NO_AVERAGING`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément (`VALIDATED_FOR_FREEZE`, définition normative complète : `numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 ---
 
@@ -1351,10 +1395,13 @@ revendication de mécanisme à deux niveaux stable au cutoff exige
 `SOFT_LOOP_STATIC_SUPPORTED` ordinaire à la fois à `Lambda=2` et à `Lambda=3` ;
 `SOFT_LOOP_STATIC_SUPPORTED_LOW_INFORMATION` ne qualifie pas. Le statut
 `SOFT_LOOP_STATIC_SUPPORTED` autorise l'exécution du protocole dynamique mais
-reste provisoire pour l'interprétation confirmatoire finale de campagne tant
-que `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) n'est pas fermé et
-validé. Les formules complètes, les intervalles numériques et l'ordre de
-classification sont définis intégralement dans `soft-loop-static-gate.md`.
+reste provisoire pour l'interprétation confirmatoire finale de campagne, sous
+la politique désormais fermée `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES =
+VALIDATED_FOR_FREEZE` (définition normative complète :
+`numerical-zero-symmetry-control.md`), jusqu'à son application effective en
+exécution confirmatoire. Les formules complètes, les intervalles numériques
+et l'ordre de classification sont définis intégralement dans
+`soft-loop-static-gate.md`.
 
 Le modèle effectif motive l'échelle analytique :
 
@@ -1519,19 +1566,25 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 ### Campagne / troncature
 
-`NEGATIVE_DELTA_ORACLE_SUBSET` est également `VALIDATED_FOR_FREEZE` ; la base géométrique fixe à 17 points, l'extension déterministe de couverture de branches fondée uniquement sur les statuts catégoriels `+delta`, la taille totale dérivée bornée `17..120`, le recalcul indépendant obligatoire du côté `-delta`, la fermeture de dépendance mappée complète à deux couches (discrète/continue) et la règle de cutoff `Lambda=2`/`Lambda=3` sont définis dans `parameter-campaign-structure.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+`NEGATIVE_DELTA_ORACLE_SUBSET` est également `VALIDATED_FOR_FREEZE` ; la base géométrique fixe à 17 points, l'extension déterministe de couverture de branches fondée uniquement sur les statuts catégoriels `+delta`, la taille totale dérivée bornée `17..120`, le recalcul indépendant obligatoire du côté `-delta`, la fermeture de dépendance mappée complète à deux couches (discrète/continue) et la règle de cutoff `Lambda=2`/`Lambda=3` sont définis dans `parameter-campaign-structure.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément (`VALIDATED_FOR_FREEZE`, définition normative complète : `numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 `TRUNCATION_STRESS_POINT_SUBSET` est `VALIDATED_FOR_FREEZE` ; le sous-ensemble fixe de 18 points de stress préenregistrés (16 points MAIN + 2 points de stress extérieurs déjà divulgués), l'ancre de référence obligatoire non comptée `(1,0,0)`, l'ancre de conditionnement `(1,-1,0)`, la fermeture de dépendance scientifique complète requise, la règle `eta` commune déjà existante, l'absence d'extension adaptative et la portée de revendication restreinte au soutien préenregistré sont définis dans `truncation-design-qualification.md` §8 et résumés dans `parameter-campaign-structure.md` §5. Aucune nouvelle tolérance scalaire n'est introduite (`TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE=NONE`).
 
-`TRUNCATION_COMPARISON_TOLERANCES` est `VALIDATED_FOR_FREEZE` ; la famille opérationnelle préenregistrée `TRUNCATION_TOLERANCE_VALUES={0.01,0.02,0.05}` (dimensionnée par la qualification de design préalable), la marge numérique générique `p/2p` + budget propagé, la couche catégorielle, la métrique d'état par distance de trace, les métriques log-ratio positives, la garde double absolue + relative-symétrique obligatoire pour `Delta1` fini, l'exclusion `NOT_APPLICABLE_STRUCTURAL_ZERO` de `Delta1` à `delta=0`, la comparaison d'admissibilité `eta` avant intersection commune, la porte de référence robuste-stable obligatoire et l'agrégation ponctuelle fail-closed sans moyennage (MAIN séparé de l'extérieur) sont définies dans `truncation-comparison-control.md`. Aucune nouvelle tolérance de virgule flottante n'est introduite (`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). Ne ferme pas `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+`TRUNCATION_COMPARISON_TOLERANCES` est `VALIDATED_FOR_FREEZE` ; la famille opérationnelle préenregistrée `TRUNCATION_TOLERANCE_VALUES={0.01,0.02,0.05}` (dimensionnée par la qualification de design préalable), la marge numérique générique `p/2p` + budget propagé, la couche catégorielle, la métrique d'état par distance de trace, les métriques log-ratio positives, la garde double absolue + relative-symétrique obligatoire pour `Delta1` fini, l'exclusion `NOT_APPLICABLE_STRUCTURAL_ZERO` de `Delta1` à `delta=0`, la comparaison d'admissibilité `eta` avant intersection commune, la porte de référence robuste-stable obligatoire et l'agrégation ponctuelle fail-closed sans moyennage (MAIN séparé de l'extérieur) sont définies dans `truncation-comparison-control.md`. Aucune nouvelle tolérance de virgule flottante n'est introduite (`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément (`VALIDATED_FOR_FREEZE`, définition normative complète : `numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
-`ESTIMATOR_COHERENCE_CRITERION` est `VALIDATED_FOR_FREEZE` ; la portée `MAIN_FINITE_DELTA_PRIMARY_SIGNAL`, l'objet de cohérence par ordre relationnel `Delta1` (`ESTIMATOR_COHERENCE_OBJECT=DELTA1_RELATIONAL_ORDERING`), le rejet de la porte d'égalité de magnitude (`ESTIMATOR_MAGNITUDE_EQUALITY_GATE=REJECTED`), la famille complète de seuils `eta` sans sélection a posteriori (`ESTIMATOR_COHERENCE_THRESHOLD_DOMAIN=EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`, `ESTIMATOR_COHERENCE_POSTHOC_ETA_SELECTION=FORBIDDEN`), l'éligibilité scientifique locale évaluée en premier, la correction de blocage distinguant l'asymétrie d'éligibilité (limitation de couverture non confirmatoire) d'un contre-exemple d'ordre résolu (`ESTIMATOR_ELIGIBILITY_CONFLICT_AS_ORDERING_COUNTEREXAMPLE=REJECTED`), les diagnostics obligatoires de cardinalité effective (`ESTIMATOR_COHERENCE_CARDINALITY_DIAGNOSTICS=MANDATORY_PUBLICATION`), l'agrégation MAIN ponctuelle sans moyennage où seul un ordre en conflit résolu domine (`ESTIMATOR_COHERENCE_MAIN_AGGREGATION=POINTWISE_NO_AVERAGING_ORDERING_CONFLICT_ONLY_DOMINATES_AS_PROTOCOL_DEPENDENCE`), et la conditionnalité de toute revendication finale d'ordre non nul au contrôle zéro/symétrie (`ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL=YES`) sont définies dans `estimator-coherence-control.md`. L'oracle exact de rééchelonnement temporel reste un contrôle d'implémentation obligatoire dont la paramétrisation numérique est différée au contrôle zéro/symétrie (`ESTIMATOR_RESCALING_ORACLE_ROLE=MANDATORY_IMPLEMENTATION_CONTROL`, `ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION=DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL`). Aucune nouvelle tolérance scalaire n'est introduite (`ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+`ESTIMATOR_COHERENCE_CRITERION` est `VALIDATED_FOR_FREEZE` ; la portée `MAIN_FINITE_DELTA_PRIMARY_SIGNAL`, l'objet de cohérence par ordre relationnel `Delta1` (`ESTIMATOR_COHERENCE_OBJECT=DELTA1_RELATIONAL_ORDERING`), le rejet de la porte d'égalité de magnitude (`ESTIMATOR_MAGNITUDE_EQUALITY_GATE=REJECTED`), la famille complète de seuils `eta` sans sélection a posteriori (`ESTIMATOR_COHERENCE_THRESHOLD_DOMAIN=EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`, `ESTIMATOR_COHERENCE_POSTHOC_ETA_SELECTION=FORBIDDEN`), l'éligibilité scientifique locale évaluée en premier, la correction de blocage distinguant l'asymétrie d'éligibilité (limitation de couverture non confirmatoire) d'un contre-exemple d'ordre résolu (`ESTIMATOR_ELIGIBILITY_CONFLICT_AS_ORDERING_COUNTEREXAMPLE=REJECTED`), les diagnostics obligatoires de cardinalité effective (`ESTIMATOR_COHERENCE_CARDINALITY_DIAGNOSTICS=MANDATORY_PUBLICATION`), l'agrégation MAIN ponctuelle sans moyennage où seul un ordre en conflit résolu domine (`ESTIMATOR_COHERENCE_MAIN_AGGREGATION=POINTWISE_NO_AVERAGING_ORDERING_CONFLICT_ONLY_DOMINATES_AS_PROTOCOL_DEPENDENCE`), et la conditionnalité de toute revendication finale d'ordre non nul au contrôle zéro/symétrie (`ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL=YES`) sont définies dans `estimator-coherence-control.md`. L'oracle exact de rééchelonnement temporel reste un contrôle d'implémentation obligatoire dont la paramétrisation numérique est différée au contrôle zéro/symétrie (`ESTIMATOR_RESCALING_ORACLE_ROLE=MANDATORY_IMPLEMENTATION_CONTROL`, `ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION=DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL`). Aucune nouvelle tolérance scalaire n'est introduite (`ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément (`VALIDATED_FOR_FREEZE`, définition normative complète : `numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 ### Verdicts
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+(aucun paramètre numérique majeur préenregistré encore OPEN)
 ```
+
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est désormais `VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md`),
+dernier des vingt-et-un paramètres numériques majeurs préenregistrés de
+0B. `GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION`
+reste `OPEN` et hors de ce décompte des contrôles numériques majeurs.
 
 Ne sont notamment plus ouverts : orientation source-récepteur, grille MAIN
 `(g,mu,delta)`, choix interpolation vs solveur, différences finies temporelles,
@@ -1544,7 +1597,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID`,
 `GAMMA_CONTROL_DOMAIN_AND_GRID`, `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`,
 `NEGATIVE_DELTA_ORACLE_SUBSET`, `TRUNCATION_STRESS_POINT_SUBSET`,
-`TRUNCATION_COMPARISON_TOLERANCES` et `ESTIMATOR_COHERENCE_CRITERION`.
+`TRUNCATION_COMPARISON_TOLERANCES`, `ESTIMATOR_COHERENCE_CRITERION` et
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`.
 
 ---
 

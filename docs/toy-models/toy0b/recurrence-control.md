@@ -632,7 +632,16 @@ RECURRENCE_NORMALIZATION_NUMERICALLY_INCONCLUSIVE
 
 Aucun `NO RETURN`/`ROBUST_CLEAN` confirmatoire ne peut être produit dans ce cas.
 
-Toute classification exact-zéro versus simplement-petit reste conditionnée à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`).
+Toute classification exact-zéro versus simplement-petit est désormais routée
+par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md` §E) :
+la branche exacte structurelle `V_j=0` (`STRUCTURAL_ANALYTIC`, §11.19)
+reste inchangée ; si `V_j` n'est établi ni exactement nul par théorème ni
+`ROBUST_NONZERO` sous cette classification, mais seulement
+`NUMERICALLY_ZERO_COMPATIBLE`, la branche est distincte et NON confirmatoire
+(`RECURRENCE_NORMALIZATION_NUMERICALLY_INCONCLUSIVE`) : elle ne peut jamais
+être promue silencieusement en `CERTIFIED_NO_RETURN`/`ROBUST_CLEAN` à partir
+d'une seule petitesse numérique.
 
 Normatif :
 
@@ -892,7 +901,15 @@ Pour l'agrégation au niveau relation : si l'autre extrémité certifie RETOUR, 
 RECURRENCE_RELATION_NONCONFIRMATORY_ZERO_LOCAL_VARIANCE
 ```
 
-Ceci est fail-closed. Aucune convention optionnelle `C_j==1` à `V_j=0` n'est introduite dans ce lot. La classification exact-zéro versus simplement-petit reste conditionnée à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`).
+Ceci est fail-closed. Aucune convention optionnelle `C_j==1` à `V_j=0` n'est introduite dans ce lot. La classification exact-zéro versus simplement-petit est
+routée par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md` §E) :
+`V_j=0` exact par théorème structurel garde exactement la branche existante
+ci-dessus ; `V_j` seulement `NUMERICALLY_ZERO_COMPATIBLE` reçoit une branche
+NUMÉRIQUE distincte et également non confirmatoire
+(`RECURRENCE_NORMALIZATION_NUMERICALLY_INCONCLUSIVE`, §11.4 ci-dessus) ; ni
+l'une ni l'autre branche ne peut jamais produire `CERTIFIED_NO_RETURN` à
+partir d'une seule petitesse numérique.
 
 ### 11.20 Agrégation par site
 
@@ -978,5 +995,7 @@ RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE = NONE
 
 RECURRENCE_DC_NO_EXIT_SHORTCUT = ALLOWED_DIAGNOSTIC_CERTIFICATE
 
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`. Ce lot ne modifie ni le domaine `Gamma` (§3), ni les bornes numériques d'hystérésis déjà fermées ci-dessus.

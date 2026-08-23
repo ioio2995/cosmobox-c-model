@@ -438,17 +438,30 @@ générale `{0.01,0.02,0.05}` du protocole MAIN ne remplace pas
 ### 6.11 Oracles signe négatif / `x=0` et provisionalité
 
 Le signe négatif de `x` et `x=0` restent hors de la norme de forme du modèle.
-Leurs tolérances quantitatives restent sous :
+Leurs tolérances quantitatives sont désormais fixées sous :
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète : `numerical-zero-symmetry-control.md`,
+familles D et E. La parité de gap `G(-x)=G(x)` (`GAP_DELTA_SIGN_EVENNESS =
+STRUCTURAL_ANALYTIC`, §1) est routée par la forme d'égalité positive stricte
+F1 (résidu `log(x/y)`, `S=1`) sous la règle d'oracle exact (§D de
+`numerical-zero-symmetry-control.md`) : `SOFT_LOOP_STATIC_GAP_EVENNESS`.
+L'imparité de `Phi`, `P(-x)=-P(x)` (`PHI_DELTA_SIGN_ODDNESS = ORACLE`), et le
+zéro de normalisation à `x=0` sont routés par la forme signée F3 (`R=x`
+pour le zéro, `R=x_minus+x_plus` pour l'imparité, `S=1`) :
+`SOFT_LOOP_STATIC_PHI_ODDNESS_AND_X0_ZERO`. Chaque paire explicite `+/-h_k`
+de `Delta1` dynamique (§9 de `derivative-control.md`) doit passer
+l'imparité F3 avant usage dans `Xi1` : `SOFT_LOOP_DYNAMIC_DELTA1_ODDNESS`.
 
 Par conséquent, `SOFT_LOOP_STATIC_SUPPORTED` autorise l'exécution du
 protocole dynamique mais reste PROVISOIRE pour l'interprétation confirmatoire
-finale de campagne tant que le contrôle d'oracle numérique zéro/symétrie
-n'est pas fermé et validé. Le statut de base n'est pas renommé pour cette
-seule provisionalité.
+finale de campagne, sous la politique désormais fermée
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`, jusqu'à son
+application effective en exécution confirmatoire. Le statut de base n'est
+pas renommé pour cette seule provisionalité.
 
 ```text
 STATIC_SUPPORTED_FINAL_CAMPAIGN_USE =
@@ -482,6 +495,9 @@ STATIC_X_SATURATION_DIAGNOSTIC         = {±4}
 SAME_PHYSICAL_DELTA_ACROSS_CUTOFFS     = MANDATORY
 DELTA1_COLLAPSE_PRIMARY_ORACLE         = REJECTED
 DELTA1_COLLAPSE_SECONDARY_HYPOTHESIS   = ALLOWED
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+SOFT_LOOP_STATIC_GAP_EVENNESS          = MANDATORY
+SOFT_LOOP_STATIC_PHI_ODDNESS_AND_X0_ZERO = MANDATORY
+SOFT_LOOP_DYNAMIC_DELTA1_ODDNESS       = MANDATORY
 TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 ```

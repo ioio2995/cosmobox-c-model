@@ -207,16 +207,25 @@ Toutes les revendications d'ordre du signal fini de ce lot restent donc conditio
 Normatif :
 
 ```text
-ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = YES
+ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = SATISFIED_BY_THIS_CONTROL
 ```
 
-Jusqu'à la fermeture de `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` :
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition
+normative complète : `numerical-zero-symmetry-control.md`) fournit désormais
+cette dépendance finale. Le routage interne de ce document (§1-§17) n'est
+pas modifié : `ROBUST_COHERENT_ORDERING` et `ESTIMATOR_ORDERING_CONFLICT`
+restent des statuts de cohérence d'ordre RÉSOLU sous l'intervalle propagé
+existant (§5-§6), distincts de la classification zéro/non-zéro finale.
 
-- `ROBUST_COHERENT_ORDERING` est un statut de cohérence d'estimateur provisoire ;
-- `ESTIMATOR_ORDERING_CONFLICT` est un conflit d'ordre résolu provisoire sous l'intervalle propagé existant ;
-- ni l'un ni l'autre n'est promu en revendication finale que `Delta1 != 0`.
-
-Ne PAS affaiblir le routage interne actuel. Ne PAS définir ici la future tolérance de zéro.
+Une revendication finale que `Delta1 != 0` pour le signal fini exige que
+`Delta1` (à la précision et à l'échelle du contrôle zéro/symétrie, forme F3
+`R=x`, `S=1`) soit classifié `ROBUST_NONZERO` sous
+`numerical-zero-symmetry-control.md` §E ; une classification seulement
+`NUMERICALLY_ZERO_COMPATIBLE` ou `ZERO_CONTROL_SENSITIVE` ne peut jamais
+être promue en revendication finale de non-nullité, même si
+`ROBUST_COHERENT_ORDERING` ou `ESTIMATOR_ORDERING_CONFLICT` sont établis au
+sens de ce document. Ne PAS affaiblir le routage interne actuel de ce
+document (`ESTIMATOR_ORDERING_SIGN_RESOLUTION` reste inchangé, §5).
 
 ## 8. Cohérence interne de la famille de seuils
 
@@ -540,17 +549,21 @@ L'oracle est scientifiquement précieux comme test d'implémentation de bout en 
 - niveaux `eta` absolus ;
 - assemblage `C_eff`.
 
-Cependant ce lot ne choisit PAS :
-
-- la grille numérique `s` ;
-- le seuil d'égalité/zéro flottant.
+Ce lot ne choisissait pas la grille numérique `s` ni le seuil d'égalité/zéro
+flottant ; ceux-ci sont désormais fixés par
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+(`RESCALING_S_VALUES = {1/2,2}`, `RESCALING_ORACLE_CUTOFF_SCOPE =
+{Lambda=2,Lambda=3}`, référence uniquement ; définition normative complète :
+`numerical-zero-symmetry-control.md` §J). La diagonalisation/réponse/
+recomputation d'événement générique reste obligatoire ; aucune substitution
+des sorties rééchelonnées n'est autorisée.
 
 Normatif :
 
 ```text
 ESTIMATOR_RESCALING_ORACLE_ROLE = MANDATORY_IMPLEMENTATION_CONTROL
-ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION = DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL
-ESTIMATOR_RESCALING_ORACLE_CONFIRMATORY_EXECUTION = PENDING_FINAL_ZERO_SYMMETRY_CONTROL
+ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION = SATISFIED_BY_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL
+ESTIMATOR_RESCALING_ORACLE_CONFIRMATORY_EXECUTION = PENDING_IMPLEMENTATION_AUTHORIZATION
 ```
 
 Ne PAS créer ici de nouvelle grille `s`. Ne PAS revendiquer que l'oracle a été validé numériquement.
@@ -585,10 +598,10 @@ Utiliser uniquement les contrôles déjà gelés :
 - budgets propagés d'événement ;
 - contrôles `eta`/chemin/récurrence.
 
-Résolution finale exacte de zéro/symétrie reste :
+Résolution finale exacte de zéro/symétrie est désormais fournie par (définition normative complète : `numerical-zero-symmetry-control.md`) :
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
 ## 22. Bloc de statut final
@@ -603,7 +616,7 @@ ESTIMATOR_MAGNITUDE_EQUALITY_GATE = REJECTED
 DELTA1_SHORT_ESTIMATOR_COHERENCE_ROLE = ASYMPTOTIC_ORACLE_DIAGNOSTIC_NOT_PRIMARY_ESTIMATOR
 ESTIMATOR_ORDERING_SIGN_RESOLUTION = EXISTING_PROPAGATED_INTERVAL_NO_NEW_ZERO_THRESHOLD
 ESTIMATOR_ORDERING_ORIENTATION = DELTA1_POSITIVE_MEANS_O1A_EARLIER_THAN_O1B
-ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = YES
+ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = SATISFIED_BY_THIS_CONTROL
 ESTIMATOR_ELIGIBILITY_ASYMMETRY_ROLE = NONCONFIRMATORY_COVERAGE_LIMITATION_NOT_ORDERING_CONFLICT
 ESTIMATOR_ELIGIBILITY_CONFLICT_AS_ORDERING_COUNTEREXAMPLE = REJECTED
 ESTIMATOR_COHERENCE_CARDINALITY_DIAGNOSTICS = MANDATORY_PUBLICATION
@@ -612,9 +625,9 @@ ESTIMATOR_COHERENCE_COVARIANCE_ROLE = IMPLEMENTATION_ORACLE_ONLY
 ESTIMATOR_COHERENCE_PRIMARY_CUTOFF = Lambda=2
 ESTIMATOR_COHERENCE_LAMBDA3_ROLE = DERIVED_STATUS_UNDER_EXISTING_TRUNCATION_CONTROL
 ESTIMATOR_RESCALING_ORACLE_ROLE = MANDATORY_IMPLEMENTATION_CONTROL
-ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION = DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL
-ESTIMATOR_RESCALING_ORACLE_CONFIRMATORY_EXECUTION = PENDING_FINAL_ZERO_SYMMETRY_CONTROL
+ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION = SATISFIED_BY_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL
+ESTIMATOR_RESCALING_ORACLE_CONFIRMATORY_EXECUTION = PENDING_IMPLEMENTATION_AUTHORIZATION
 SOFT_LOOP_XI1_ESTIMATOR_COHERENCE_ROLE = SEPARATE_DERIVATIVE_CONTROL_NOT_PART_OF_PRIMARY_FINITE_DELTA_COHERENCE
 ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE = NONE
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```

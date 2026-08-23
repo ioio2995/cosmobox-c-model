@@ -436,6 +436,48 @@ EVEN_SECTOR_MOMENTS = 0
 
 avec les tolérances numériques préenregistrées, sans remplacer les preuves analytiques correspondantes.
 
+### 8.1 Politique numérique exécutable (`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`)
+
+Les tolérances numériques préenregistrées ci-dessus sont désormais fixées
+par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md`,
+familles L et L2, §V-§W).
+
+Sous-ensemble fixe d'exécution : `theta_ref=(1,0,0)` et
+`theta_break=(1,0,2/5)` à `Lambda=2`, un représentant `d=1`, `d=2`, `d=3` à
+chacun.
+
+Ordres exécutés pour la famille L (crosscheck opérateur/spectral) :
+`r={1,3,5}`, CHAQUE ordre exécuté. CRITIQUE : pour `r<d(p,q)`, l'oracle n'est
+JAMAIS routé `NOT_APPLICABLE` (`MOMENT_CROSSCHECK_NOT_APPLICABLE_FOR_R_LT_D
+= FORBIDDEN`) ; ces moments structurellement nuls (§5-6 ci-dessus) sont des
+tests obligatoires de zéro spectral absolu par la voie
+`MOMENT_SPECTRAL_PATH`, sous l'échelle `S_a,r` sans plancher arbitraire
+(`SHORT_TIME_ZERO_SCALE_FLOOR = NONE`, §F11 de
+`numerical-zero-symmetry-control.md`)
+(`MOMENT_CROSSCHECK_STRUCTURAL_ZERO_ORDERS =
+MANDATORY_ABSOLUTE_SPECTRAL_ZERO_TEST`). Exemple : `M1` à `d=2` et `d=3` DOIT
+être calculé par la voie spectrale générique et testé contre zéro.
+
+Pour les ordres structurellement autorisés non nuls : comparer les deux
+voies indépendantes `MOMENT_OPERATOR_PATH`/`MOMENT_SPECTRAL_PATH` sous la
+règle d'oracle exact (§D de `numerical-zero-symmetry-control.md`).
+
+Ordres exécutés pour la famille L2 (zéro-grade / secteur pair) : même
+sous-ensemble de relations, `r={1,2,3,4,5}` ; zéro-grade attendu nul à
+chaque ordre applicable, secteur physique pair attendu nul à `r={2,4}`.
+L'implémentation d'exécution DOIT évaluer la grandeur générique
+sectoriellement projetée SANS coder en dur le théorème à zéro pour compter
+comme évidence indépendante ; une simplification structurelle exacte
+produit `SATISFIED_BY_CONSTRUCTION`, qui ne compte pas comme évidence de
+non-vacuité (`ZERO_SYMMETRY_INDEPENDENT_EVIDENCE_RULE =
+SATISFIED_BY_CONSTRUCTION_DOES_NOT_COUNT_AS_PASS_EVIDENCE`). Au moins une
+voie générique indépendante est requise pour que cette famille `PASS`
+globalement.
+
+Chaque point d'oracle publie `ORACLE_POINT_EVIDENCE_MODE =
+INDEPENDENT_RECOMPUTATION | SATISFIED_BY_CONSTRUCTION`.
+
 Aucun code 0B n'est autorisé par ce document.
 
 ## 9. Statut
@@ -460,4 +502,9 @@ SECTOR_EVEN_ORDER_CANCELLATION           = VALIDATED_FOR_FREEZE
 ZERO_GRADE_KUBO_CHANNEL                  = INACTIVE_EXACT
 NUMERICAL_BUDGET_BLOCK_SPLIT             = VALIDATED_FOR_FREEZE
 MOMENT_OPERATOR_SPECTRAL_CROSSCHECK      = MANDATORY_FUTURE_VALIDATION
+MOMENT_CROSSCHECK_STRUCTURAL_ZERO_ORDERS    = MANDATORY_ABSOLUTE_SPECTRAL_ZERO_TEST
+MOMENT_CROSSCHECK_NOT_APPLICABLE_FOR_R_LT_D = FORBIDDEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES      = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`.

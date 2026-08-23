@@ -12,12 +12,17 @@ Ce document est la source normative détaillée du protocole complet de comparai
 TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
-Ceci ferme COMMENT `Lambda=2` et `Lambda=3` sont comparés sur la portée de stress/référence déjà gelée (`TRUNCATION_STRESS_POINT_SUBSET`, `TRUNCATION_REFERENCE_ANCHOR`). Ceci NE prouve PAS la convergence uniforme sur les points MAIN non échantillonnés. Ceci NE ferme PAS :
+Ceci ferme COMMENT `Lambda=2` et `Lambda=3` sont comparés sur la portée de stress/référence déjà gelée (`TRUNCATION_STRESS_POINT_SUBSET`, `TRUNCATION_REFERENCE_ANCHOR`). Ceci NE prouve PAS la convergence uniforme sur les points MAIN non échantillonnés. Ceci NE ferme PAS, par ce contrôle lui-même :
 
 ```text
 ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
+
+`ESTIMATOR_COHERENCE_CRITERION` est fermé séparément par
+`estimator-coherence-control.md` ; `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`
+est fermé séparément par `numerical-zero-symmetry-control.md`
+(`VALIDATED_FOR_FREEZE`).
 
 ## 1. Famille de tolérance
 
@@ -266,13 +271,16 @@ Utiliser `p/2p` et le budget de précision propagé (§2). Appliquer la famille 
 
 Si un zéro/dégénérescence structurel rend la métrique log positive non applicable, utiliser la branche catégorielle (§4).
 
-Si une décision zéro/non-zéro requise n'est pas encore résolue sous la future politique zéro/symétrie :
+Si une décision zéro/non-zéro requise n'est pas résolue sous la politique
+désormais fermée `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES =
+VALIDATED_FOR_FREEZE` (définition normative complète :
+`numerical-zero-symmetry-control.md` §E) :
 
 ```text
 NUMERICALLY_INCONCLUSIVE
 ```
 
-Ne pas fermer `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`.
+Cette politique est fermée séparément par `numerical-zero-symmetry-control.md`, pas par ce contrôle lui-même.
 
 ## 8. Temps d'événements
 
@@ -505,13 +513,13 @@ TRUNCATION_DELTA1_RELATIVE_METRIC_AT_STRUCTURAL_ZERO = NOT_APPLICABLE_STRUCTURAL
 
 Ne pas laisser une comparaison de résidu absolu à `delta=0` produire `ROBUST_STABLE` par construction.
 
-La vérification numérique de l'oracle de zéro structurel à chaque cutoff reste conditionnée à :
+La vérification numérique de l'oracle de zéro structurel à chaque cutoff est désormais routée par :
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
-Un verdict confirmatoire final de cutoff pour une dépendance `delta=0` ne peut donc pas utiliser l'oracle de zéro `Delta1` comme résolu tant que ce contrôle ultérieur n'est pas fermé.
+(définition normative complète : `numerical-zero-symmetry-control.md` §D ; `Delta1(delta=0)=0` reste un théorème exact, le contrôle numérique n'en teste que la cohérence de pipeline, `ZERO_SYMMETRY_EXACT_ORACLE_ROLE = IMPLEMENTATION_AND_NUMERICAL_CONSISTENCY_TEST_OF_ANALYTIC_IDENTITY`). Un verdict confirmatoire final de cutoff pour une dépendance `delta=0` applique cette politique désormais fermée en exécution.
 
 ## 15. Delta1_short
 
@@ -843,21 +851,21 @@ Même référence + les 18 points robustes-stables ne prouve pas la convergence 
 
 ## 29. Dépendance zéro/symétrie
 
-Ce lot NE définit PAS de tolérance flottante de zéro exact ou de symétrie exacte.
+Ce lot NE définit PAS de tolérance flottante de zéro exact ou de symétrie exacte ; ce paramètre est fermé séparément par un contrôle dédié.
 
-Tout oracle numérique requis dont la résolution finale dépend de cette politique reste en attente/non conclusif jusqu'à ce que :
+Tout oracle numérique requis dont la résolution finale dépend de cette politique applique désormais :
 
 ```text
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
-soit fermé.
+(définition normative complète : `numerical-zero-symmetry-control.md`).
 
 Normatif :
 
 ```text
 TRUNCATION_NEW_FLOATING_POINT_TOLERANCE = NONE
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
 ## 30. Bloc de statut final
@@ -897,5 +905,5 @@ TRUNCATION_EGS_CUTOFF_ROLE = DIAGNOSTIC_ONLY
 TRUNCATION_FPEAK_CUTOFF_ROLE = DIAGNOSTIC_ONLY
 
 TRUNCATION_NEW_FLOATING_POINT_TOLERANCE = NONE
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```

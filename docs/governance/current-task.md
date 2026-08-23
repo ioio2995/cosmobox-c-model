@@ -26,7 +26,7 @@ MODEL0B_VALIDATION_PLAN         = CONSOLIDATED / ERRATA INTEGRATED
 MODEL0B_CLOSURE_AUDIT_ORIGINAL  = BLOCKED (5 consolidation defects)
 MODEL0B_CLOSURE_ERRATA          = INTEGRATED 5/5 @ d00d146
 MODEL0B_ERRATA_DIFF_REVIEW      = PASS 5/5
-MODEL0B_NUMERICAL_CONTROLS      = CLOSURE_IN_PROGRESS
+MODEL0B_NUMERICAL_CONTROLS      = CLOSED
 MODEL0B_FINAL_ACCEPTANCE_RULES  = OPEN
 IMPLEMENTATION_0B               = NOT_AUTHORIZED
 
@@ -262,7 +262,41 @@ ESTIMATOR_MAGNITUDE_EQUALITY_GATE             = REJECTED
 ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL = YES
 ESTIMATOR_COHERENCE_CARDINALITY_DIAGNOSTICS   = MANDATORY_PUBLICATION
 ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE      = NONE
+
+# numerical zero and symmetry tolerances (last major numerical control)
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES        = VALIDATED_FOR_FREEZE
+ZERO_SYMMETRY_TOLERANCE_VALUES                = {1e-9,3e-9,1e-8}
+ZERO_SYMMETRY_RESIDUAL_FORM_REGISTRY          = REQUIRED_AND_DETERMINISTIC_BEFORE_EXECUTION
+NUMERICAL_ZERO_BRANCH_IS_CERTIFIED            = NO
+NUMERICAL_ZERO_SINGULAR_VALUE_CREATES_EXACT_KERNEL = NO
+ZERO_SYMMETRY_INDEPENDENT_EVIDENCE_RULE       = SATISFIED_BY_CONSTRUCTION_DOES_NOT_COUNT_AS_PASS_EVIDENCE
+ZERO_SYMMETRY_ORACLE_FAMILY_NONVACUITY_RULE   = AT_LEAST_ONE_APPLICABLE_INDEPENDENT_ROBUST_PASS_REQUIRED
 ```
+
+Définition normative complète : `docs/toy-models/toy0b/numerical-zero-symmetry-control.md`.
+
+---
+
+## Clôture des contrôles numériques majeurs
+
+```text
+CLOSED_MAJOR_CONTROLS = 21
+OPEN_MAJOR_CONTROLS   = 0
+```
+
+`OPEN_MAJOR_CONTROLS = 0` signifie que tous les paramètres numériques majeurs
+préenregistrés de Toy Model 0B sont fermés. Cela ne signifie PAS que le
+modèle est gelé (`MODEL0B_CLOSURE_REVIEW = PENDING` ci-dessous), ni que tous
+les statuts spécialisés/backlog du dépôt sont clos.
+
+```text
+GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
+OUTSIDE_MAJOR_CONTROL_COUNT     = YES
+```
+
+Ce paramètre reste explicitement `OPEN` et hors du décompte des contrôles
+numériques majeurs ; il devra être surfacé lors du futur audit de clôture du
+modèle.
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
 documentairement. Ils ne sont pas encore `FROZEN` : seule une décision explicite
@@ -274,8 +308,14 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 
 ```text
 # verdicts
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+(aucun paramètre numérique majeur préenregistré encore OPEN)
 ```
+
+Tous les paramètres numériques majeurs préenregistrés de Toy Model 0B sont
+désormais `VALIDATED_FOR_FREEZE` (`OPEN_MAJOR_CONTROLS = 0`, cf.
+« Clôture des contrôles numériques majeurs » ci-dessus). Ceci n'inclut pas
+`GROUPED_SPECTRAL_SUPPORT_ORACLE`, qui reste `OPEN_PENDING_SYMMETRY_DERIVATION`
+et hors de ce décompte, ni `MODEL0B_FINAL_ACCEPTANCE_RULES`.
 
 ---
 
@@ -338,12 +378,14 @@ Une objection `BLOCKING` peut arrêter le lot. Un élément `NON_BLOCKING_BACKLO
 ```text
 CURRENT_LOT = Toy Model 0B numerical preregistration closure
 PHASE       = CLOSE_ONE_NUMERICAL_CONTROL_AT_A_TIME
-CURRENT_PARAMETER = PENDING_NEXT_SELECTION
+CURRENT_PARAMETER = NONE_ALL_PREREGISTERED_MAJOR_CONTROLS_CLOSED
+OPEN_MAJOR_CONTROLS = 0
+MODEL0B_CLOSURE_REVIEW = PENDING
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : vingt paramètres numériques majeurs viennent d'être fermés et intégrés
-documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
+**État** : vingt-et-un paramètres numériques majeurs sont désormais fermés et
+intégrés documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
 DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
@@ -351,7 +393,13 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION, ETA_GRID_AND_ADMISSIBLE_DOMAIN,
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE, EPS_PATH_CONTROL_DOMAIN_AND_GRID,
 GAMMA_CONTROL_DOMAIN_AND_GRID, RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS,
 NEGATIVE_DELTA_ORACLE_SUBSET, TRUNCATION_STRESS_POINT_SUBSET,
-TRUNCATION_COMPARISON_TOLERANCES, ESTIMATOR_COHERENCE_CRITERION).
+TRUNCATION_COMPARISON_TOLERANCES, ESTIMATOR_COHERENCE_CRITERION,
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES).
 
-**Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
-paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.
+`OPEN_MAJOR_CONTROLS = 0` ne vaut pas gel du modèle : `GROUPED_SPECTRAL_SUPPORT_ORACLE`
+reste `OPEN_PENDING_SYMMETRY_DERIVATION` (hors décompte des contrôles majeurs)
+et `MODEL0B_FINAL_ACCEPTANCE_RULES` reste `OPEN`.
+
+**Prochaine action** : `MODEL0B_CLOSURE_REVIEW = PENDING`. Revue de clôture du
+modèle 0B par ChatGPT / Lionel ORCIL ; aucune sélection de paramètre numérique
+majeur supplémentaire n'est requise. Aucune autorisation autonome d'implémentation.

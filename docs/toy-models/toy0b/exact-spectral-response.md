@@ -208,6 +208,35 @@ Il constitue un oracle end-to-end très fort avant toute extraction d'événemen
 
 La qualification indépendante au point de référence a reproduit cette identité à environ `1e-15` sur l'arête `(0,1)` à une convention de signe temporaire des coefficients près.
 
+### 5.1 Oracle numérique de règle de somme spectrale de bord (famille K)
+
+Définition normative complète : `numerical-zero-symmetry-control.md` §U.
+Ceci exécute le sum rule exact ci-dessus ; il ne modifie aucune formule
+spectrale.
+
+Ensemble fixe : `Lambda=2` et `Lambda=3`. À chaque cutoff : référence
+`(1,0,0)`, une arête représentative ; `(1,0,2/5)`, une arête `O1A` ; `(1,0,2/5)`,
+une arête `O1B`. Total : 6 points.
+
+Chemins indépendants comparés : moment spectral `sum_{omega>0} C(omega) omega`
+vs espérance d'opérateur statique `J<X_i>`.
+
+Échelle de résidu :
+
+```math
+S_{M1}=\sum_{\omega>0}|C(\omega)|\,\omega,
+\qquad
+S_{edge}=\max\bigl(S_{M1},\,J\|X_i\|_2\bigr)
+```
+
+avec `||.||_2` la norme spectrale d'opérateur. Normaliser la différence
+`sum_{omega>0} C(omega) omega - J<X_i>` par `S_edge` et router sous la
+règle d'oracle exact (§D de `numerical-zero-symmetry-control.md`).
+
+```text
+EDGE_SPECTRAL_SUM_RULE_NUMERICAL_ORACLE = MANDATORY
+```
+
 ## 6. Réponse sectorielle
 
 Toute projection linéaire préenregistrée de la réponse sur un secteur opératoriel fini reste une somme finie de phases spectrales.
@@ -224,6 +253,20 @@ avec coefficients réels après regroupement approprié.
 L'imparité sectorielle déjà démontrée est donc visible directement dans la représentation spectrale : aucun cosinus physique n'est requis.
 
 Les moments spectraux sectoriels fournissent les coefficients `c_alpha` utilisés dans la limite de pureté de chemin sans dérivation numérique en temps.
+
+### 6.1 Correspondance de cluster avant comparaison de poids signés
+
+Définition normative complète : `numerical-zero-symmetry-control.md` §F13.
+Avant toute comparaison numérique de poids spectraux signés mappés (par
+exemple entre côtés `+delta`/`-delta` de l'oracle de covariance négative, ou
+entre canaux sectoriels mappés), la correspondance catégorielle du nombre de
+clusters, de la multiplicité et de l'identité spectrale mappée du cluster
+doit être établie EN PREMIER. Le résidu continu de poids n'est évalué
+qu'ensuite, avec l'échelle de côté `S_{C,side}=sum_clusters |C_cluster,side|`
+et l'échelle partagée `S_C=max(S_C,left,S_C,right)`, sans plancher
+arbitraire. Si les deux côtés sont structurellement inactifs : branche
+structurelle / non applicable. Une correspondance de cluster non résolue
+donne `NUMERICALLY_INCONCLUSIVE`.
 
 ## 7. Intégrales sectorielles exactes
 
@@ -446,4 +489,9 @@ SPECTRAL_DERIVATIVE_BOUNDS             = VALIDATED_IN_PRINCIPLE
 RAW_NONZERO_EIGENVECTOR_COUNT_ORACLE   = REJECTED
 GROUPED_SPECTRAL_SUPPORT_ORACLE         = OPEN_PENDING_SYMMETRY_DERIVATION
 MACHINE_EPSILON_GLOBAL_ERROR_ASSUMPTION= REJECTED
+
+EDGE_SPECTRAL_SUM_RULE_NUMERICAL_ORACLE = MANDATORY
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES  = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`. `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste `OPEN_PENDING_SYMMETRY_DERIVATION` et est hors du périmètre de ce contrôle.

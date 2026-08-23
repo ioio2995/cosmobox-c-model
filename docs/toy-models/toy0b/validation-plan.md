@@ -357,6 +357,20 @@ Un `DYNAMIC PASS` autorise l'étude temporelle ; il ne valide pas les temps cara
 
 Les rangs doivent être recalculés à chaque point où ils interviennent ; aucun `rank S_n=5` ou `dim S_E=6` n'est transporté depuis la référence.
 
+Le routage NUMÉRIQUE fail-closed de ces verdicts mathématiques (inchangés
+ci-dessus) est fixé par `STATIC_DYNAMIC_NUMERICAL_RANK_RULE =
+ROBUST_NONZERO_FOR_INJECTIVITY_EXACT_CERTIFICATE_FOR_KERNEL` (définition
+normative complète : `numerical-zero-symmetry-control.md` §F16, §G) :
+`STATIC`/`DYNAMIC = PASS` numériquement établi exige que toutes les
+directions singulières requises de la restriction soient `ROBUST_NONZERO`
+sous la règle SVD `p/2p` ; une direction seulement `NUMERICALLY_ZERO_COMPATIBLE`,
+`CONTROL_SENSITIVE` ou `NUMERICALLY_INCONCLUSIVE` donne
+`STATIC`/`DYNAMIC = NUMERICALLY_INCONCLUSIVE` ; `FAIL` numériquement établi
+exige un certificat structurel/exact de noyau non trivial
+(`STATIC_DYNAMIC_NUMERICAL_ZERO_KERNEL_PROMOTION = REJECTED`). Aucune étude
+temporelle n'est débloquée par une porte d'identifiabilité numériquement
+inconclusive.
+
 ---
 
 ## 7. Représentation de Kubo et contrôle spectral
@@ -609,8 +623,12 @@ nuls. Sinon `SHORT_TIME_CONVERGENCE_NOT_APPLICABLE`
 (`SHORT_TIME_COMPARISON=NOT_APPLICABLE`, `D_THR=NOT_DEFINED`) ; exposant non
 résolu -> `SHORT_TIME_CONVERGENCE_EXPONENT_UNRESOLVED` ; `nu>5` ->
 `SHORT_TIME_CONVERGENCE_RANGE_NOT_PREREGISTERED`. Ces trois statuts sont
-`NONCONFIRMATORY`. `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` reste `OPEN` et
-conditionne les classifications de zéro numérique.
+`NONCONFIRMATORY`. `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+conditionne désormais les classifications de zéro numérique sous une
+politique fermée (définition normative complète :
+`numerical-zero-symmetry-control.md`) ; `NUMERICAL_ZERO_BRANCH_IS_CERTIFIED =
+NO` : une branche numériquement zéro-compatible ne certifie jamais un
+exposant confirmatoire.
 
 **Construction de la queue commune.** Utiliser le domaine `eta` commun
 admissible déjà validé (§27 de `temporal-event-solver.md`). Sélectionner
@@ -961,7 +979,16 @@ NO_DIRECT_BASELINE        iff A_D^2=0<A_S^2 iff P_0=0
 NO_ACTIVE_PATH_RESPONSE   si aucune réponse de chemin active à aucun ordre certifié
 ```
 
-Aucun seuil scalaire sur `P_0`. Les classifications de zéro/non-zéro non structurelles restent conditionnelles à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`).
+Aucun seuil scalaire sur `P_0`. Les classifications de zéro/non-zéro non
+structurelles sont désormais routées par la politique fermée
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition
+normative complète : `numerical-zero-symmetry-control.md` §F12, §H) :
+`DIRECT_DOMINANT_BASELINE`/`NO_DIRECT_BASELINE` exigent que le côté dominant
+(`A_D` ou `A_N`, en normes, pas en carrés) soit `ROBUST_NONZERO` ET que le
+côté opposé soit nul par certificat `STRUCTURAL_ANALYTIC`/exact ; un côté
+seulement `NUMERICALLY_ZERO_COMPATIBLE` ne suffit jamais
+(`PATH_DIRECT_DOMINANCE_NUMERICAL_SMALLNESS_AS_EXACT_ZERO = REJECTED`), et
+donne `PATH_CONTROL_NUMERICALLY_INCONCLUSIVE`.
 
 Une interprétation confirmatoire d'arrivée propre côté chemin exige :
 
@@ -1485,8 +1512,10 @@ observables brutes `Lambda=3`, ne régénère pas la grille et ne modifie pas
 `tau_static`. Une revendication de mécanisme à deux niveaux stable au cutoff
 exige `SOFT_LOOP_STATIC_SUPPORTED` ordinaire à `Lambda=2` et à `Lambda=3` ;
 ce statut y compris `SOFT_LOOP_STATIC_SUPPORTED` reste provisoire pour
-l'interprétation confirmatoire finale de campagne tant que
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) n'est pas fermé et validé.
+l'interprétation confirmatoire finale de campagne, sous la politique
+désormais fermée `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md`),
+jusqu'à son application effective en exécution confirmatoire.
 Le diagnostic `±4` reste `EXTENDED_DIAGNOSTIC` et ne peut pas à lui seul
 modifier le statut de la porte statique ;
 
@@ -1696,14 +1725,123 @@ ESTIMATOR_COHERENCE_CRITERION = VALIDATED_FOR_FREEZE
 
 ---
 
+### 16.3 Ordre opérationnel du contrôle numérique des zéros, symétries et rangs `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`
+
+Définition normative complète : `numerical-zero-symmetry-control.md`. Ce
+contrôle ferme le DERNIER paramètre numérique majeur préenregistré de 0B ; il
+ne ferme pas `GROUPED_SPECTRAL_SUPPORT_ORACLE`, qui reste
+`OPEN_PENDING_SYMMETRY_DERIVATION`.
+
+Ordre exécutable, appliqué à chaque quantité numérique dont le verdict
+dépend d'un zéro, d'une symétrie exacte, ou d'un rang/noyau :
+
+```text
+1. déterminer si la quantité relève d'un oracle analytique exact déjà
+   théorème (voie A) ou d'une classification zéro/non-zéro opérationnelle
+   sans théorème de zéro exact (voie B) ; ne jamais confondre les deux rôles
+2. sélectionner la forme de résidu déterministe correspondante dans le
+   registre fixe F1-F16 ; aucune forme choisie par l'exécutant
+3. calculer le résidu et son échelle aux précisions p et 2p ; combiner au
+   budget propagé existant lorsqu'il existe
+4. router :
+   - voie A (oracle exact) : ROBUST_ORACLE_PASS / ROBUST_ORACLE_FAIL /
+     ORACLE_CONTROL_SENSITIVE aux seuils {1e-9,3e-9,1e-8} ; un
+     ROBUST_ORACLE_FAIL signale une incohérence numérique/de pipeline,
+     jamais une falsification du théorème analytique
+   - voie B (zéro/non-zéro opérationnel) : ROBUST_NONZERO /
+     NUMERICALLY_ZERO_COMPATIBLE / ZERO_CONTROL_SENSITIVE aux mêmes seuils ;
+     NUMERICALLY_ZERO_COMPATIBLE n'est jamais promu EXACT_ZERO/
+     STRUCTURAL_ZERO/CERTIFIED_ZERO
+5. pour tout rang/noyau entrant dans un verdict scientifique (matrice de
+   Gram/base tangente, M_F|S_resp, application dynamique restreinte, rang de
+   décalage de boucle) : appliquer la règle SVD p/2p F16 ; STATIC/DYNAMIC =
+   PASS exige l'injectivité robuste-non-nulle de toutes les directions
+   singulières requises ; STATIC/DYNAMIC = FAIL exige un certificat
+   structurel/exact de noyau ; une valeur singulière petite/non résolue
+   donne NUMERICALLY_INCONCLUSIVE, jamais FAIL
+6. pour la ligne de base de chemin : exiger A_D/A_N/A_S (normes, pas carrés)
+   avant toute classification DIRECT_DOMINANT/NO_DIRECT/MIXED ; un côté
+   seulement NUMERICALLY_ZERO_COMPATIBLE est insuffisant
+7. pour un exposant court-terme confirmatoire : exiger que tout ordre
+   inférieur autorisé soit nul par certificat structurel/exact et que le
+   coefficient courant soit ROBUST_NONZERO ; sinon SHORT_TIME_EXPONENT =
+   NUMERICALLY_INCONCLUSIVE pour tout consommateur confirmatoire
+8. publier ORACLE_POINT_EVIDENCE_MODE = INDEPENDENT_RECOMPUTATION |
+   SATISFIED_BY_CONSTRUCTION pour chaque point d'oracle ; SATISFIED_BY_
+   CONSTRUCTION ne compte jamais comme évidence de non-vacuité
+9. exécuter le registre obligatoire des familles d'oracle A-O (§ ci-dessous)
+   et publier par famille les décomptes requis/applicable/pass indépendant/
+   satisfied-by-construction/fail/inconclusive/invalid/not-applicable
+10. agréger chaque famille : FAIL si un point requis est ROBUST_ORACLE_FAIL
+    ou INVALID_BY_CONSTRUCTION ; sinon NUMERICALLY_INCONCLUSIVE si un point
+    requis est CONTROL_SENSITIVE ou NUMERICALLY_INCONCLUSIVE ; sinon PASS
+    uniquement si au moins un point est un PASS indépendant ET tout le
+    reste est PASS/NOT_APPLICABLE/SATISFIED_BY_CONSTRUCTION
+11. agréger la campagne exécutée : FAIL si une famille obligatoire FAIL ;
+    sinon NUMERICALLY_INCONCLUSIVE si une famille est inconclusive/sans
+    passage indépendant, ou si une dépendance de rang/noyau ou une branche
+    zéro/non-zéro requise pour une revendication confirmatoire n'est pas
+    résolue ; sinon PASS
+```
+
+Registre obligatoire des familles d'oracle (définition normative complète :
+`numerical-zero-symmetry-control.md` §M-Z) :
+
+```text
+A. DELTA1_DELTA0_MAPPED_ORACLE
+B. DELTA2_MAPPED_ORACLE
+C. NEGATIVE_DELTA_FULL_MAPPED_ORACLE_CONTINUOUS_LAYER
+D. SOFT_LOOP_STATIC_GAP_EVENNESS
+E. SOFT_LOOP_STATIC_PHI_ODDNESS_AND_X0_ZERO
+F. SOFT_LOOP_DYNAMIC_DELTA1_ODDNESS
+G. SHORT_TIME_DELTA1_ZERO_ODDNESS_WHERE_APPLICABLE
+H. SYNTHETIC_GLOBAL_RESCALING_ORACLE
+I. SOURCE_RECEIVER_REVERSED_RELATION_SUBSET
+J. HAMILTONIAN_REFLECTION_COVARIANCE_ORACLE
+K. EDGE_SPECTRAL_SUM_RULE_NUMERICAL_ORACLE
+L. MOMENT_OPERATOR_SPECTRAL_CROSSCHECK
+L2. ZERO_GRADE_AND_EVEN_SECTOR_MOMENT_ORACLES
+M. D2_FREE_HOPPING_NUMERICAL_ORACLE
+N. CYCLIC_TANGENT_ORTHOGONALITY_ORACLE
+O. TRUNCATED_LOOP_SHIFT_RANK_ORACLE
+```
+
+Famille O réutilise exactement la table analytique exacte déjà validée en
+A03 ci-dessus (`r_Lambda(L^k) = sum_n max(0,j+1-spread(n))`, table
+`j:0..5 -> rang:1,18,38,58,78,98`) comme rang ATTENDU ; le rang OBSERVÉ
+provient de la SVD `p/2p` (F16) de la matrice assemblée `L^k`, à `Lambda=2`
+(`k=1..4`) et `Lambda=3` (`k=1..6`). Le rang observé ne doit jamais être
+dérivé en recomptant le même support utilisé pour construire la formule
+attendue.
+
+Rejeté explicitement : sélection de tolérance a posteriori
+(`ZERO_SYMMETRY_POSTHOC_TOLERANCE_SELECTION = FORBIDDEN`) ; promotion d'une
+valeur singulière numériquement zéro-compatible en noyau exact
+(`NUMERICAL_ZERO_SINGULAR_VALUE_CREATES_EXACT_KERNEL = NO`) ; construction
+d'un partenaire par symétrie/orthogonalisation préalable comptant comme
+évidence indépendante (`ZERO_SYMMETRY_INDEPENDENT_EVIDENCE_RULE =
+SATISFIED_BY_CONSTRUCTION_DOES_NOT_COUNT_AS_PASS_EVIDENCE`).
+
+```text
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
+```
+
+---
+
 ## 17. Paramètres numériques réellement OPEN
 
 Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
 # verdicts
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
+(aucun paramètre numérique majeur préenregistré encore OPEN)
 ```
+
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est désormais `VALIDATED_FOR_FREEZE`
+(définition normative complète : `numerical-zero-symmetry-control.md`),
+dernier des vingt-et-un paramètres numériques majeurs préenregistrés
+(`OPEN_MAJOR_CONTROLS = 0`). `GROUPED_SPECTRAL_SUPPORT_ORACLE =
+OPEN_PENDING_SYMMETRY_DERIVATION` reste `OPEN` et hors de ce décompte.
 
 Ne sont plus `OPEN` (clôturés ou `VALIDATED_FOR_FREEZE`) :
 
@@ -1736,6 +1874,7 @@ NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
 ESTIMATOR_COHERENCE_CRITERION
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1753,16 +1892,20 @@ protocole détaillé : `temporal-event-solver.md` §27, `short-time-oracles.md`
 queue commune à trois niveaux minimum, branchement information-monotone,
 statuts forts `SUPPORTED_RESOLVED_TREND`/`SUPPORTED_FLOOR_AFTER_CONTRACTION`,
 traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff ;
-protocole détaillé ci-dessus et `short-time-oracles.md` §10). Ne ferme pas
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+protocole détaillé ci-dessus et `short-time-oracles.md` §10).
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément
+(`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 `EPS_PATH_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (grille
 `EPS_PATH_VALUES={1/32,1/16,1/8,1/4}`, trichotomie de ligne de base,
 certification continue de l'extremum `H_path`, fenêtre analytique d'origine,
 raccourci structurel exact, classification epsilon ; protocole détaillé
 ci-dessus, `path-purity-control.md` et `event-bandwidth-bracketing.md` §8).
-Ne ferme ni `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, ni
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+Ne ferme pas `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` (fermé séparément
+ci-dessous). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est également fermé
+séparément (`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`).
 
 `GAMMA_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (borne structurelle
 d'autocorrélation sous stationnarité `RECURRENCE_AUTOCORRELATION_RANGE_VALUES=[-1,1]`,
@@ -1783,8 +1926,9 @@ instanciation opérationnelle de l'énoncé scientifique déjà validé « au mo
 jusqu'à `T_peak` », contrôle croisé de monotonie `Gamma`, variance locale
 nulle non confirmatoire ; protocole détaillé : `recurrence-control.md` §11,
 séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
-(`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+(`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément
+(`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 `NEGATIVE_DELTA_ORACLE_SUBSET` est `VALIDATED_FOR_FREEZE` (base géométrique
 fixe à 17 points `NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`, extension déterministe
@@ -1803,8 +1947,9 @@ NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`), règle de cutoff `Lambda=2`/
 `Lambda=3` par intersection de troncature ou ancre de repli fixe
 `(1,0,+/-2/5)` ; protocole détaillé : `parameter-campaign-structure.md` §11,
 séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
-(`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+(`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément
+(`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 `TRUNCATION_STRESS_POINT_SUBSET` est `VALIDATED_FOR_FREEZE` (sous-ensemble
 fixe à 18 points préenregistrés `TRUNCATION_STRESS_POINT_SUBSET_SIZE=18`,
@@ -1848,8 +1993,9 @@ MAIN séparé de l'extérieur (`TRUNCATION_MAIN_AGGREGATION=
 POINTWISE_FAIL_CLOSED_NO_AVERAGING`) ; protocole détaillé :
 `truncation-comparison-control.md`, séquence exécutable ci-dessus §16.1).
 Aucune nouvelle tolérance de virgule flottante
-(`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). Ne ferme pas
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+(`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément
+(`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 `ESTIMATOR_COHERENCE_CRITERION` est `VALIDATED_FOR_FREEZE` (portée
 `MAIN_FINITE_DELTA_PRIMARY_SIGNAL`, objet de cohérence par ordre relationnel
@@ -1877,8 +2023,9 @@ différée au contrôle zéro/symétrie (`ESTIMATOR_RESCALING_ORACLE_ROLE=
 MANDATORY_IMPLEMENTATION_CONTROL`,
 `ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION=
 DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL`). Aucune nouvelle tolérance
-scalaire (`ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+scalaire (`ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE=NONE`). `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est fermé séparément
+(`VALIDATED_FOR_FREEZE`, définition normative complète :
+`numerical-zero-symmetry-control.md`), pas par ce contrôle lui-même.
 
 ---
 

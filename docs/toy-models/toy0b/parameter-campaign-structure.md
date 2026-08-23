@@ -195,12 +195,12 @@ TRUNCATION_TOLERANCE_VALUES = {0.01,0.02,0.05}
 TRUNCATION_TOLERANCE_DIMENSIONING = DESIGN_QUALIFICATION_INFORMED_PREREGISTRATION
 ```
 
-Résumé de la sémantique d'agrégation : chaque point sélectionné reçoit un `TRUNCATION_POINT_STATUS` fail-closed (`ROBUST_UNSTABLE > NUMERICALLY_INCONCLUSIVE > CONTROL_SENSITIVE > ROBUST_STABLE`, sans moyennage) combinant couche catégorielle, métrique d'état, métriques log positives, métrique double de `Delta_1` (absolue + relative symétrique) et admissibilité `eta` évaluée AVANT intersection commune. L'ancre de référence `(1,0,0)` doit être `ROBUST_STABLE` pour toute revendication MAIN robuste-stable ; les 16 points MAIN et les 2 points extérieurs sont agrégés séparément (`TRUNCATION_MAIN_AGGREGATION = POINTWISE_FAIL_CLOSED_NO_AVERAGING`, `TRUNCATION_OUTER_STRESS_ROLE = SEPARATE_DIAGNOSTIC_OUTSIDE_MAIN`). `B2`, l'écart `E_GS` et `F_peak` restent `DIAGNOSTIC_ONLY`. Ce contrôle ne ferme ni `ESTIMATOR_COHERENCE_CRITERION` ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, et ne prouve toujours pas la convergence uniforme sur MAIN non échantillonné :
+Résumé de la sémantique d'agrégation : chaque point sélectionné reçoit un `TRUNCATION_POINT_STATUS` fail-closed (`ROBUST_UNSTABLE > NUMERICALLY_INCONCLUSIVE > CONTROL_SENSITIVE > ROBUST_STABLE`, sans moyennage) combinant couche catégorielle, métrique d'état, métriques log positives, métrique double de `Delta_1` (absolue + relative symétrique) et admissibilité `eta` évaluée AVANT intersection commune. L'ancre de référence `(1,0,0)` doit être `ROBUST_STABLE` pour toute revendication MAIN robuste-stable ; les 16 points MAIN et les 2 points extérieurs sont agrégés séparément (`TRUNCATION_MAIN_AGGREGATION = POINTWISE_FAIL_CLOSED_NO_AVERAGING`, `TRUNCATION_OUTER_STRESS_ROLE = SEPARATE_DIAGNOSTIC_OUTSIDE_MAIN`). `B2`, l'écart `E_GS` et `F_peak` restent `DIAGNOSTIC_ONLY`. Ce contrôle ne ferme pas `ESTIMATOR_COHERENCE_CRITERION` (fermé séparément par `estimator-coherence-control.md`) ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (fermé séparément par `numerical-zero-symmetry-control.md`), et ne prouve toujours pas la convergence uniforme sur MAIN non échantillonné :
 
 ```text
 TRUNCATION_STRESS_CLAIM_SCOPE = PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM
 TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT = NOT_CERTIFIED_BY_STRESS_SUBSET
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
 ## 6. Limite de pur hopping et scaling d=2
@@ -634,7 +634,7 @@ DELTA_COVARIANCE_ORACLE_CONTINUOUS_LAYER
 
 La couche discrète compare les correspondances catégorielles/de statut, sans nouvelle tolérance d'égalité flottante ; `PASS` uniquement si les deux côtés sont individuellement résolus et leurs branches catégorielles symétriquement cohérentes ; un côté non résolu donne `NUMERICALLY_INCONCLUSIVE`.
 
-La couche continue compare `E_GS`, gap, temps d'événement, diagnostics continus de chemin/récurrence, `C_eff`, `Delta_1`, etc. ; ses seuils `PASS`/`FAIL` restent conditionnés à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN`. Ce lot ne définit pas cette tolérance.
+La couche continue compare `E_GS`, gap, temps d'événement, diagnostics continus de chemin/récurrence, `C_eff`, `Delta_1`, etc. ; ses seuils `PASS`/`FAIL` sont désormais fournis par `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (`NEGATIVE_DELTA_ORACLE_CONTINUOUS_TOLERANCE_SOURCE = NUMERICAL_ZERO_AND_SYMMETRY_CONTROL` ; définition normative complète : `numerical-zero-symmetry-control.md`). Ce lot ne redéfinit ni le sous-ensemble, ni la grille, ni la logique de branche de l'oracle de covariance négative ci-dessus.
 
 **Diagnostic d'asymétrie de résolution.** Pour chaque paire `+/-` requise, enregistrer si un signe est résolu alors que le partenaire mappé est numériquement non résolu. Publier :
 
@@ -751,6 +751,8 @@ NEGATIVE_DELTA_ORACLE_LAMBDA3_RULE  = TRUNCATION_INTERSECTION_OR_FIXED_ANCHOR_FA
 NEGATIVE_DELTA_ORACLE_LAMBDA3_FALLBACK = (1,0,+/-2/5)
 NEGATIVE_DELTA_ORACLE_POINT_ROLE    = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE
 NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE = NONE
+NEGATIVE_DELTA_ORACLE_CONTINUOUS_TOLERANCE_SOURCE = NUMERICAL_ZERO_AND_SYMMETRY_CONTROL
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 DELTA1_ODDNESS_ONLY_AS_END_TO_END_ORACLE = REJECTED_AS_INSUFFICIENT_FOR_MAIN
 TRUNCATION_STRESS_POINT_SUBSET      = VALIDATED_FOR_FREEZE
 TRUNCATION_STRESS_POINT_SUBSET_SIZE = 18

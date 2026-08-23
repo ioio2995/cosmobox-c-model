@@ -249,7 +249,56 @@ n'est pas transportable hors de `delta=0`.
 
 Les rangs et sous-espaces tangents doivent être recalculés à chaque point de campagne.
 
-## 7. Statut
+## 7. Oracle numérique d'orthogonalité (`CYCLIC_TANGENT_ORTHOGONALITY_ORACLE`)
+
+Ce paragraphe exécute numériquement le théorème exact de la §3 ; il ne le
+modifie pas. Définition normative complète :
+`numerical-zero-symmetry-control.md` §F14, §F15, §Y.
+
+```text
+CYCLIC_TANGENT_ORTHOGONALITY_ORACLE = MANDATORY
+```
+
+**Portée.** Tous les points nominaux MAIN `delta=0` à `Lambda=2` où le bloc
+tangent/statique est déjà évalué. À `Lambda=3` : uniquement les points où ce
+bloc est déjà requis par les dépendances de troncature/référence existantes
+(§5 de `parameter-campaign-structure.md`) ; aucune nouvelle campagne
+`Lambda=3` n'est créée par ce contrôle.
+
+**Activité tangente (F14).** Pour `D_A=-i[A,rho]`, utiliser
+`S_D(A)=2 ||A||_2 ||rho||_HS` (norme spectrale d'opérateur, norme de
+Hilbert-Schmidt de `rho`) et classifier `||D_A||_HS / S_D(A)` sous la
+famille zéro/non-zéro (§E de `numerical-zero-symmetry-control.md`). Une
+tangente numériquement zéro-compatible n'est PAS un générateur
+structurellement inactif.
+
+**Oracle d'orthogonalité normalisé (F15).** Calculer `D_Phi` et `D_{n_p}` à
+partir de commutateurs génériques SANS les orthogonaliser/projeter avant le
+contrôle. Si les deux normes de tangente sont `ROBUST_NONZERO` :
+
+```text
+TANGENT_ORTHOGONALITY_RESIDUAL = NORMALIZED_HILBERT_SCHMIDT_INNER_PRODUCT
+```
+
+avec `R_HS=<D_A,D_B>_HS`, `S_HS=||D_A||_HS ||D_B||_HS`, routé sous la règle
+d'oracle exact (§D de `numerical-zero-symmetry-control.md`). Si une tangente
+est structurellement nulle : relation triviale, aucun comptage d'évidence
+indépendante. Si une tangente est seulement `NUMERICALLY_ZERO_COMPATIBLE` :
+`NUMERICALLY_INCONCLUSIVE`.
+
+**Mode d'évidence.** Chaque point publie `ORACLE_POINT_EVIDENCE_MODE =
+INDEPENDENT_RECOMPUTATION | SATISFIED_BY_CONSTRUCTION`. Un `D_Phi`/`D_{n_p}`
+pré-orthogonalisé ou reconstruit à partir du théorème donne
+`SATISFIED_BY_CONSTRUCTION`, qui ne compte jamais comme évidence de
+non-vacuité.
+
+**Rang/noyau.** Le recalcul de rang à chaque point de campagne (§6
+ci-dessus) applique la règle SVD `p/2p` F16 de `numerical-zero-symmetry-control.md` :
+`RANK_RECOMPUTE_EACH_CAMPAIGN_PT = MANDATORY` reste inchangé ; une valeur
+singulière numériquement zéro-compatible n'établit jamais un noyau exact
+(`NUMERICAL_ZERO_SINGULAR_VALUE_CREATES_EXACT_KERNEL = NO`).
+
+## 8. Statut
 
 ```text
 D_PHI_SN_ORTHOGONAL_DELTA0       = VALIDATED_FOR_FREEZE
@@ -261,4 +310,8 @@ DIM_S_E_EQUALS_6_GLOBAL_DELTA0    = REJECTED
 DIM_S_E_EQUALS_6_REFERENCE        = ESTABLISHED_NONCONFIRMATORY
 OFF_DELTA0_ORTHOGONALITY          = NOT_ESTABLISHED
 RANK_RECOMPUTE_EACH_CAMPAIGN_PT   = MANDATORY
+CYCLIC_TANGENT_ORTHOGONALITY_ORACLE = MANDATORY
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`.
