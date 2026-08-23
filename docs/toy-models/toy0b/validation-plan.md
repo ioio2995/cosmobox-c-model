@@ -1,12 +1,18 @@
 # Toy Model 0B — plan de validation consolidé
 
-Statut : **revue de clôture pré-gel**
+Statut : **FROZEN — protocole de validation gelé**
 Spécification scientifique : `docs/toy-models/toy0b/specification.md`
 Contrôles numériques : `docs/toy-models/toy0b/temporal-event-solver.md` (sections 15-24)
 
+```text
+MODEL0B_STATUS             = FROZEN
+MODEL0B_FREEZE_BASE_COMMIT = d796c65d2538eaba2be7882647ba91db5cf93a32
+IMPLEMENTATION_0B           = NOT_AUTHORIZED
+```
+
 Ce document décrit le protocole de validation de 0B sous une forme compacte. Les preuves détaillées restent dans les supports analytiques du dossier `toy0b/`. Les tolérances numériques spectrales et la règle de précision sont fixées dans le document normatif `temporal-event-solver.md`.
 
-Aucune exécution confirmatoire 0B ni implémentation n'est autorisée tant que les paramètres marqués `OPEN` ne sont pas fermés et que le lot n'est pas explicitement autorisé dans `docs/governance/current-task.md`.
+Tous les contrôles numériques majeurs préenregistrés sont désormais fermés et le protocole est gelé par décision explicite de Lionel ORCIL (cf. `docs/toy-models/toy0b/freeze-record.md`). L'exécution confirmatoire 0B et l'implémentation restent NON AUTORISÉES tant qu'une autorisation de gouvernance distincte n'apparaît pas dans `docs/governance/current-task.md`. Le backlog du support spectral groupé (`GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION`) reste non bloquant et n'est pas un prérequis de campagne.
 
 ---
 
@@ -2228,8 +2234,11 @@ Cet oracle reste `OPEN` et n'est ni dérivé ni fermé par ce lot.
 ```text
 MODEL0B_CLOSURE_REVIEW         = PASS
 MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE
-MODEL0B_FREEZE_READINESS       = READY_FOR_LIONEL_DECISION
-MODEL0B_STATUS                 = NOT_FROZEN_PENDING_LIONEL_DECISION
+MODEL0B_FREEZE_READINESS       = COMPLETED_BY_EXPLICIT_FREEZE_DECISION
+MODEL0B_STATUS                 = FROZEN
+MODEL0B_FREEZE_DECISION        = EXPLICITLY_APPROVED
+MODEL0B_FREEZE_DECISION_DATE   = 2026-08-24
+MODEL0B_FREEZE_BASE_COMMIT     = d796c65d2538eaba2be7882647ba91db5cf93a32
 IMPLEMENTATION_0B               = NOT_AUTHORIZED
 XI1_CONFIRMATORY_SCOPE          = SOFT_LOOP_ONLY
 ```

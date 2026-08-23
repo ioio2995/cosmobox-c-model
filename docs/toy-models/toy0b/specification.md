@@ -1,9 +1,10 @@
 # Toy Model 0B — spécification scientifique consolidée
 
-Statut : **revue de clôture pré-gel**  
+Statut : **FROZEN — spécification scientifique gelée**  
 Projet : `ioio2995/cosmobox-c-model`  
 Branche documentaire : `documentation/model0b-foundation`  
 Base canonique : `master @ 08d5ca506ff05e15dd9bc084ea121c3d0a19b662`
+Base de gel : `d796c65d2538eaba2be7882647ba91db5cf93a32`
 
 Ce document est la source scientifique principale consolidée du Toy Model 0B. Les documents spécialisés du même dossier conservent les démonstrations et qualifications détaillées ; ils ne doivent plus être chargés systématiquement dans les prompts lorsque le présent document suffit.
 
@@ -32,29 +33,44 @@ MODEL0B_PARAMETER_CAMPAIGN_SHAPE   = VALIDÉ POUR GEL
 
 MODEL0B_NUMERICAL_CONTROL_VALUES   = VALIDÉ POUR GEL
 MODEL0B_FINAL_ACCEPTANCE_RULES     = VALIDÉ POUR GEL
-MODEL0B_FREEZE_READINESS           = READY_FOR_LIONEL_DECISION
-MODEL0B_STATUS                     = NOT_FROZEN_PENDING_LIONEL_DECISION
+MODEL0B_FREEZE_READINESS           = COMPLETED_BY_EXPLICIT_FREEZE_DECISION
+MODEL0B_STATUS                     = FROZEN
+MODEL0B_FREEZE_DECISION            = EXPLICITLY_APPROVED
+MODEL0B_FREEZE_DECISION_DATE       = 2026-08-24
+MODEL0B_FREEZE_BASE_COMMIT         = d796c65d2538eaba2be7882647ba91db5cf93a32
 IMPLEMENTATION_0B                  = NON AUTORISÉE
 ```
 
-`VALIDÉ POUR GEL` signifie que le contenu conceptuel peut être soumis au gel. Seule une validation explicite de Lionel ORCIL permettra de passer à `FROZEN`.
+Lionel ORCIL a donné la décision explicite de gel. Le contenu
+scientifique/protocolaire figé à la base de gel ci-dessus est désormais
+verrouillé (`FROZEN`). Une réouverture d'un bloc gelé n'est possible que dans
+les conditions de gouvernance bloquantes déjà définies : contradiction
+avérée, erreur affectant la validité, définition inexécutable ou défaut
+susceptible de changer un verdict. Les améliorations, extensions,
+généralisations, estimateurs alternatifs ou nouvelles questions de recherche
+vont au backlog ou à un niveau de modèle ultérieur. L'implémentation reste
+séparément non autorisée (`IMPLEMENTATION_0B = NON AUTORISÉE`) : le gel ne
+l'autorise pas. Enregistrement normatif complet :
+`docs/toy-models/toy0b/freeze-record.md`.
 
 `MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDÉ POUR GEL` ferme le mode
 d'acceptation finale des revendications scientifiques de 0B (statuts de
 méta-routage fail-closed, deux rangs explicites de revendication `Delta1`,
 sémantique existence/absence-de-signal, coupe-feu échec/non-confirmation).
 Définition normative complète : `final-acceptance-rules.md`.
-`MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION` est une préparation
-documentaire/protocolaire uniquement ; elle ne signifie ni que la campagne
-confirmatoire a été exécutée, ni un gel du modèle.
+`MODEL0B_FREEZE_READINESS = COMPLETED_BY_EXPLICIT_FREEZE_DECISION` : la
+préparation documentaire/protocolaire est désormais close par la décision
+explicite de gel de Lionel ORCIL ; cela ne signifie pas que la campagne
+confirmatoire a été exécutée.
 
 `MODEL0B_NUMERICAL_CONTROL_VALUES = VALIDÉ POUR GEL` signifie que les vingt-et-un
 paramètres numériques majeurs préenregistrés de 0B, y compris le dernier,
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE` (définition
 normative complète : `numerical-zero-symmetry-control.md`), sont désormais
-fermés (`OPEN_MAJOR_CONTROLS = 0`). Ceci ne vaut ni gel du modèle, ni
-autorisation d'implémentation ; `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste
-`OPEN_PENDING_SYMMETRY_DERIVATION` et hors de ce décompte.
+fermés (`OPEN_MAJOR_CONTROLS = 0`) et gelés avec le reste du modèle. Ceci ne
+vaut pas autorisation d'implémentation ; `GROUPED_SPECTRAL_SUPPORT_ORACLE`
+reste `OPEN_PENDING_SYMMETRY_DERIVATION` et hors de ce décompte, comme
+backlog analytique non bloquant.
 
 Principe de clôture : le challenge scientifique reste permanent, mais un bloc stabilisé n'est rouvert que par une contradiction, une erreur, une impossibilité d'exécution ou un défaut susceptible d'affecter un verdict scientifique. Les améliorations non nécessaires à la validité de 0B sont différées au backlog.
 

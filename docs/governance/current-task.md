@@ -29,8 +29,13 @@ MODEL0B_ERRATA_DIFF_REVIEW      = PASS 5/5
 MODEL0B_NUMERICAL_CONTROLS      = CLOSED
 MODEL0B_FINAL_ACCEPTANCE_RULES  = VALIDATED_FOR_FREEZE
 MODEL0B_CLOSURE_REVIEW          = PASS
-MODEL0B_FREEZE_READINESS        = READY_FOR_LIONEL_DECISION
-MODEL0B_STATUS                  = NOT_FROZEN_PENDING_LIONEL_DECISION
+MODEL0B_FREEZE_READINESS        = COMPLETED_BY_EXPLICIT_FREEZE_DECISION
+MODEL0B_STATUS                  = FROZEN
+MODEL0B_FREEZE_DECISION         = EXPLICITLY_APPROVED
+MODEL0B_FREEZE_DECISION_DATE    = 2026-08-24
+MODEL0B_FREEZE_BASE_COMMIT      = d796c65d2538eaba2be7882647ba91db5cf93a32
+MODEL0B_FREEZE_RECORD           = docs/toy-models/toy0b/freeze-record.md
+MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES
 IMPLEMENTATION_0B               = NOT_AUTHORIZED
 
 SCIENTIFIC_METHOD_GOVERNANCE    = DRAFT_IN_FEATURES
@@ -318,9 +323,10 @@ OPEN_MAJOR_CONTROLS   = 0
 ```
 
 `OPEN_MAJOR_CONTROLS = 0` signifie que tous les paramètres numériques majeurs
-préenregistrés de Toy Model 0B sont fermés. Cela ne signifie PAS que le
-modèle est gelé (`MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION`
-ci-dessous), ni que tous les statuts spécialisés/backlog du dépôt sont clos.
+préenregistrés de Toy Model 0B sont fermés. Le modèle est désormais gelé par
+décision explicite de Lionel ORCIL (`MODEL0B_STATUS = FROZEN` ci-dessous),
+mais cela ne signifie pas que tous les statuts spécialisés/backlog du dépôt
+sont clos.
 
 ```text
 GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
@@ -334,9 +340,10 @@ numériques majeurs ; il ne bloque pas la préparation au gel
 (`final-acceptance-rules.md` §11) et devra être surfacé lors du futur audit
 de clôture du modèle.
 
-Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
-documentairement. Ils ne sont pas encore `FROZEN` : seule une décision explicite
-de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
+Tous ces éléments ont été validés scientifiquement et intégrés
+documentairement. Le modèle est désormais `FROZEN` par décision explicite de
+Lionel ORCIL (`MODEL0B_FREEZE_DECISION_DATE = 2026-08-24`), cf.
+`docs/toy-models/toy0b/freeze-record.md`.
 
 ---
 
@@ -412,21 +419,27 @@ Une objection `BLOCKING` peut arrêter le lot. Un élément `NON_BLOCKING_BACKLO
 ## Lot courant
 
 ```text
-CURRENT_LOT = Toy Model 0B final acceptance rules closure
-PHASE       = MODEL0B_CLOSURE_REVIEW_INTEGRATED
-CURRENT_PARAMETER = NONE_ALL_PREREGISTERED_MAJOR_CONTROLS_CLOSED
+CURRENT_LOT = Toy Model 0B freeze record
+PHASE       = MODEL0B_FROZEN
+CURRENT_PARAMETER = NONE_MODEL_FROZEN
 OPEN_MAJOR_CONTROLS = 0
 CLOSED_MAJOR_CONTROLS = 21
 MODEL0B_CLOSURE_REVIEW = PASS
 MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE
 MODEL0B_FINAL_ACCEPTANCE_MODE = CLAIM_SCOPED_FAIL_CLOSED_DEPENDENCY_CLOSURE
-MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION
-MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION
+MODEL0B_FREEZE_READINESS = COMPLETED_BY_EXPLICIT_FREEZE_DECISION
+MODEL0B_STATUS = FROZEN
+MODEL0B_FREEZE_DECISION = EXPLICITLY_APPROVED
+MODEL0B_FREEZE_DECISION_DATE = 2026-08-24
+MODEL0B_FREEZE_BASE_COMMIT = d796c65d2538eaba2be7882647ba91db5cf93a32
+MODEL0B_FREEZE_RECORD = docs/toy-models/toy0b/freeze-record.md
+MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES
 GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
 GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
 GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
 XI1_CONFIRMATORY_SCOPE = SOFT_LOOP_ONLY
 IMPLEMENTATION_0B = NOT_AUTHORIZED
+NEXT_REQUIRED_GOVERNANCE_ACTION = SEPARATE_IMPLEMENTATION_AUTHORIZATION_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -446,13 +459,15 @@ suite à l'arbitrage ChatGPT `ACCEPTED` des trois blocages `BL1`/`BL2`/`BL3` de
 la dernière revue de clôture Opus (`MODEL0B_CLOSURE_REVIEW = PASS`, cf.
 « Clôture finale d'acceptation — arbitrage Opus » ci-dessus).
 
-`OPEN_MAJOR_CONTROLS = 0` ne vaut pas gel du modèle : `GROUPED_SPECTRAL_SUPPORT_ORACLE`
+Le modèle est désormais `FROZEN` par décision explicite de Lionel ORCIL
+(`MODEL0B_FREEZE_DECISION = EXPLICITLY_APPROVED`,
+`MODEL0B_FREEZE_DECISION_DATE = 2026-08-24`,
+`MODEL0B_FREEZE_BASE_COMMIT = d796c65d2538eaba2be7882647ba91db5cf93a32`),
+cf. `docs/toy-models/toy0b/freeze-record.md`. `GROUPED_SPECTRAL_SUPPORT_ORACLE`
 reste `OPEN_PENDING_SYMMETRY_DERIVATION` (hors décompte des contrôles majeurs,
-`GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG`).
-`MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION` : le modèle n'est PAS
-gelé ; `MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION` est une
-préparation documentaire/protocolaire uniquement, pas une exécution
-confirmatoire réussie.
+`GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG`) : le gel
+n'implique ni exécution de la campagne confirmatoire, ni autorisation
+d'implémentation (`MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES`).
 
-**Prochaine action** : `LIONEL_EXPLICIT_FREEZE_DECISION`. Décision explicite
-de gel par Lionel ORCIL. Aucune autorisation autonome d'implémentation.
+**Prochaine action** : `SEPARATE_IMPLEMENTATION_AUTHORIZATION_DECISION`.
+Aucune autorisation autonome d'implémentation n'est créée par ce lot de gel.
