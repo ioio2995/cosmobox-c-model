@@ -105,6 +105,13 @@ Cette largeur minimale n'est donc pas supprimée par le passage d'un rectangle c
 
 Une valeur plus petite de `h_min` rend le détecteur plus sensible aux recroisements faibles et tend à détecter plus facilement un retour ; une valeur plus grande tend à favoriser `ROBUST_CLEAN`. Le paramètre `h_min` doit donc être publié avec les bornes de `Gamma`.
 
+Le couple permissif validé pour gel étant `GAMMA_PERMISSIVE=(3/8,5/8)` (`recurrence-control.md`), la largeur minimale ainsi définie vaut désormais exactement une valeur connue, dérivée directement du domaine `Gamma` déjà validé, sans rouvrir ce domaine :
+
+```text
+GAMMA_PERMISSIVE           = (3/8,5/8)
+HYSTERESIS_MIN_WIDTH_VALUE = 1/4
+```
+
 ## 7. Pas de diagnostic séparé h -> 0+
 
 La frontière complète de la région :
@@ -132,5 +139,6 @@ INTERMEDIATE_SITE_VETO            = REJECTED
 SOURCE_CONDITIONED_PATH_REPLAY     = NOT_INFERRED_FROM_LOCAL_AUTOCORR
 HYSTERESIS_MIN_WIDTH              = EXPLICIT_AT_GAMMA_PERM
 ZERO_WIDTH_LIMIT_SEPARATE_ITEM     = NOT_REQUIRED
-RECURRENCE_BOUND_VALUES            = OPEN
+RECURRENCE_BOUND_VALUES            = VALIDATED_FOR_FREEZE
+HYSTERESIS_MIN_WIDTH_VALUE         = 1/4
 ```

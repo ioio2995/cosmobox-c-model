@@ -822,7 +822,7 @@ TIME_EVENT_VALID
       AND RECURRENCE_CONTROL_ACCEPTABLE
 ```
 
-Les deux familles de contrôle (`EPS_PATH_VALUES` et `GAMMA_VALUES`) sont préenregistrées et leurs sensibilités doivent être publiées. Les valeurs de `Gamma` sont fixées par `GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE` ; seul `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` reste `OPEN` côté récurrence.
+Les deux familles de contrôle (`EPS_PATH_VALUES` et `GAMMA_VALUES`) sont préenregistrées et leurs sensibilités doivent être publiées. Les valeurs de `Gamma` sont fixées par `GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE`, et leur certification numérique hystérétique est fixée par `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE` (définition normative : `recurrence-control.md` §11).
 
 ## 25. Cas `d=3`
 
@@ -925,5 +925,5 @@ TRUNCATION_CONTROL = MANDATORY
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
 TRUNCATION_COMPARISON_TOLERANCES       = OPEN
 GAMMA_CONTROL_DOMAIN_AND_GRID          = VALIDATED_FOR_FREEZE
-RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = OPEN
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```

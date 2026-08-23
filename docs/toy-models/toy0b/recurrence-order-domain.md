@@ -163,7 +163,7 @@ Elle ne signifie pas à elle seule que le retour est « quasi complet » : ce qu
 
 ## 7. Statut
 
-Les valeurs numériques de `Gamma` sont normatives dans `recurrence-control.md` ; ce support enregistre les mêmes valeurs fermées et ne les redéfinit pas.
+Les valeurs numériques de `Gamma` sont normatives dans `recurrence-control.md` ; ce support enregistre les mêmes valeurs fermées et ne les redéfinit pas. La certification numérique de récurrence (porte de normalisation, marges de cellule, mode témoin/complétude, horizons, verdict robuste) est normative dans `recurrence-control.md` §11.
 
 ```text
 RECURRENCE_PARTIAL_ORDER          = VALIDATED_FOR_FREEZE
@@ -184,5 +184,5 @@ GAMMA_PERMISSIVE                  = (3/8,5/8)
 GAMMA_VALUES                      = {(1/8,7/8),(1/4,3/4),(3/8,5/8)}
 GAMMA_GRID_TYPE                   = THREE_POINT_ORDERED_CHAIN
 
-RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = OPEN
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```
