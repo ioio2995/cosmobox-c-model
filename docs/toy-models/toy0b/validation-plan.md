@@ -812,7 +812,7 @@ BETA_VALUES = {1, 1/2, 1/4, 1/8}
 
 `beta` contrôle uniquement le maillage initial de certification / bracketing, pas une tolérance sur le temps final (obtenu par le solveur spectral continu). `beta=1` correspond à une demi-période de la bande maximale de la fonction de certification ; raffinement dyadique imbriqué ; `beta=1/8` donne une phase maximale `pi/8` par cellule à la bande limite. Aucune finesse supplémentaire n'est requise comme garantie de complétude, celle-ci reposant sur l'exclusion certifiée des cellules, leur subdivision adaptative et le solveur continu.
 
-Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques (`OPEN`). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
+Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques désormais fermées (`ROOT_SOLVER_TOLERANCES`, `ARGMAX_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`, `DEGENERATE_ROOT_CONTROL`, toutes `VALIDATED_FOR_FREEZE` ; définition normative complète : `temporal-event-solver.md` §14, §20-27). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
 
 ---
 
@@ -1368,7 +1368,11 @@ séparément pour `grow` et pour chaque `eta` admissible.
 
 Une violation de `Delta2` au-delà de la tolérance est un défaut pipeline/symétrie, jamais un signal.
 
-La règle finale de cohérence entre `grow` et `thr` reste `OPEN`.
+La règle finale de cohérence entre `grow` et `thr` est désormais fermée par
+`ESTIMATOR_COHERENCE_CRITERION = VALIDATED_FOR_FREEZE` (définition normative
+complète : `estimator-coherence-control.md`), sous le rang de revendication
+relationnel `DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY` (`final-acceptance-rules.md`
+§4, §7).
 
 ---
 
@@ -1555,7 +1559,7 @@ Richardson n'est autorisé que selon une règle préenregistrée et ne remplace 
 
 `Delta1` n'a pas d'oracle de collapse universel en `x` ; un collapse dynamique éventuel est secondaire.
 
-Valeurs encore `OPEN` :
+Ces valeurs sont désormais fermées (`VALIDATED_FOR_FREEZE`, cf. §17) :
 
 ```text
 A_DELTA_VALUES
@@ -1564,7 +1568,10 @@ RICHARDSON_USAGE_RULE
 ```
 
 `STATIC_X_CONTROL_VALUES` et `STATIC_COLLAPSE_NUMERICAL_CRITERION` sont
-`VALIDATED_FOR_FREEZE` (cf. §17).
+également `VALIDATED_FOR_FREEZE` (cf. §17). La portée confirmatoire de cette
+sous-campagne dynamique reste exclusivement SOFT-LOOP
+(`XI1_CONFIRMATORY_SCOPE = SOFT_LOOP_ONLY` ; définition normative complète :
+`final-acceptance-rules.md` §10).
 
 ---
 
@@ -2116,3 +2123,113 @@ Aucune modification scientifique ne peut être faite silencieusement pendant l'a
 6. `docs/governance/current-task.md` n'autorise pas explicitement le lot d'implémentation.
 
 Après autorisation, Claude Code conserve son rôle critique : un défaut `BLOCKING` stoppe le lot et retourne à l'arbitrage ; un `NON_BLOCKING_BACKLOG` ne modifie pas le périmètre en cours.
+
+---
+
+## 21. Acceptation finale des revendications
+
+Ceci ferme `MODEL0B_FINAL_ACCEPTANCE_RULES`. Définition normative complète :
+`final-acceptance-rules.md`.
+
+```text
+MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE
+MODEL0B_FINAL_ACCEPTANCE_MODE  = CLAIM_SCOPED_FAIL_CLOSED_DEPENDENCY_CLOSURE
+```
+
+Ordre exécutable, appliqué APRÈS tous les contrôles de dépendance déjà
+définis dans les sections précédentes de ce plan :
+
+```text
+1.  déterminer le type/rang de revendication (relationnelle vs
+    arrivée-interprétée, §21.1) ;
+2.  déterminer l'applicabilité structurelle (ÉTAPE 0 du méta-statut,
+    NOT_APPLICABLE si une règle structurelle déjà gelée l'établit) ;
+3.  construire la fermeture de dépendance requise déjà gelée D(Q) ;
+4.  exiger NUMERICAL_ZERO_AND_SYMMETRY_CONTROL_STATUS = PASS partout où la
+    politique finale zéro/symétrie/rang est utilisée ;
+5.  appliquer l'échec de pipeline/oracle de plus haute précédence
+    (PIPELINE_OR_MANDATORY_ORACLE_FAILURE) ;
+6.  appliquer INVALID_BY_CONSTRUCTION ;
+7.  appliquer NUMERICALLY_INCONCLUSIVE ;
+8.  appliquer CONTROL_SENSITIVE ;
+9.  appliquer NONCONFIRMATORY_LOCAL_VETO ;
+10. sinon CONFIRMATORY_ELIGIBLE ;
+11. n'appliquer la formulation d'ordre indépendant de l'estimateur / de
+    stabilité de cutoff QUE lorsque ces dépendances supplémentaires
+    (cohérence d'estimateur, troncature) passent sous leur propre
+    protocole déjà gelé ;
+12. distinguer Delta1 relationnel (DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY)
+    de Delta1 interprété comme arrivée (DELTA1_ARRIVAL_INTERPRETED_CONFIRMATORY) ;
+13. agréger la revendication existentielle de campagne
+    (PRIMARY_RELATIONAL_NONUNIFORMITY_DETECTED_ON_PREREGISTERED_MAIN) ;
+14. publier le vecteur complet de statuts de revendication par point MAIN
+    (MODEL0B_MAIN_POINT_CLAIM_STATUS_VECTOR = MANDATORY_PUBLICATION) ;
+15. ne jamais inférer un théorème de nullité à partir de l'absence d'un
+    point confirmatoire non nul.
+```
+
+Aucun nouveau critère scalaire n'est introduit par cette section.
+
+### 21.1 Méta-statut de revendication
+
+```text
+MODEL0B_CLAIM_STATUS =
+    PIPELINE_OR_MANDATORY_ORACLE_FAILURE
+  | INVALID_BY_CONSTRUCTION
+  | NUMERICALLY_INCONCLUSIVE
+  | CONTROL_SENSITIVE
+  | NONCONFIRMATORY_LOCAL_VETO
+  | CONFIRMATORY_ELIGIBLE
+  | NOT_APPLICABLE
+```
+
+avec l'ordre de précédence et les définitions de `final-acceptance-rules.md`
+§2. Normatif :
+
+```text
+MODEL0B_PIPELINE_FAILURE_AS_NUMERICAL_LIMITATION = FORBIDDEN
+```
+
+### 21.2 Deux rangs de revendication `Delta1`
+
+```text
+DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY = CLAIM_RANK_PRIMARY
+DELTA1_ARRIVAL_INTERPRETED_CONFIRMATORY = CLAIM_RANK_STRONGER_OPTIONAL
+```
+
+Définitions complètes, fermeture de dépendance minimale et interdiction du
+vocabulaire d'arrivée pour le rang relationnel seul : `final-acceptance-rules.md`
+§4.
+
+### 21.3 Existence de campagne et absence de signal
+
+```text
+PRIMARY_RELATIONAL_NONUNIFORMITY_DETECTED_ON_PREREGISTERED_MAIN
+NO_CONFIRMATORY_NONZERO_RELATIONAL_DELTA1_DETECTED_ON_PREREGISTERED_MAIN
+MODEL0B_MAIN_POINT_CLAIM_STATUS_VECTOR = MANDATORY_PUBLICATION
+```
+
+Définitions complètes : `final-acceptance-rules.md` §5-§6. Jamais
+`DELTA1_IS_ZERO_ON_MAIN` ni `MODEL_PROVES_NO_NONUNIFORMITY`.
+
+### 21.4 Support spectral groupé (backlog non bloquant)
+
+```text
+GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
+GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
+GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
+```
+
+Définition et justification complètes : `final-acceptance-rules.md` §11.
+Cet oracle reste `OPEN` et n'est ni dérivé ni fermé par ce lot.
+
+### 21.5 Statut
+
+```text
+MODEL0B_CLOSURE_REVIEW         = PASS
+MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE
+MODEL0B_FREEZE_READINESS       = READY_FOR_LIONEL_DECISION
+MODEL0B_STATUS                 = NOT_FROZEN_PENDING_LIONEL_DECISION
+IMPLEMENTATION_0B               = NOT_AUTHORIZED
+XI1_CONFIRMATORY_SCOPE          = SOFT_LOOP_ONLY
+```

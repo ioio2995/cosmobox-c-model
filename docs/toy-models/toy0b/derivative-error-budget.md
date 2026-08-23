@@ -340,6 +340,28 @@ RICHARDSON_USAGE_RULE
 
 Il est interdit de choisir `alpha_min` avant d'avoir défini comment l'erreur sur les temps se propage vers `Delta_1`.
 
+### Fermeture du lot (BL3)
+
+Ce paquet est désormais fermé par ses contrôles composants déjà gelés
+individuellement, sans introduction d'aucune nouvelle valeur :
+
+```text
+TIME_BRACKETING / TIME_SAMPLING -> BETA_REFINEMENT_VALUES = VALIDATED_FOR_FREEZE,
+                                    BETA_VALUES = {1,1/2,1/4,1/8}
+EVENT_ROOT_SOLVER               -> ROOT_SOLVER_TOLERANCES = VALIDATED_FOR_FREEZE
+ARGMAX_LOCALIZATION             -> ARGMAX_TOLERANCES = VALIDATED_FOR_FREEZE,
+                                    ARGMAX_TOLERANCE = 1e-10
+EVENT_SOLVER_TOLERANCES         -> SPECTRAL_PRECISION_CONTROL = VALIDATED_FOR_FREEZE,
+                                    DEGENERATE_ROOT_CONTROL = VALIDATED_FOR_FREEZE
+DELTA1_ERROR_BUDGET             -> DELTA1_PROPAGATED_ERROR_BUDGET = VALIDATED_FOR_FREEZE
+A_DELTA_VALUES                  -> VALIDATED_FOR_FREEZE
+DERIVATIVE_STABILITY_CRITERION  -> VALIDATED_FOR_FREEZE
+RICHARDSON_USAGE_RULE           -> VALIDATED_FOR_FREEZE
+```
+
+Définitions normatives complètes : `temporal-event-solver.md` §14, §20-27 ;
+`event-bandwidth-bracketing.md` ; `derivative-control.md` §10.
+
 ## 8. Statut
 
 ```text
@@ -355,5 +377,5 @@ RICHARDSON_ROLE                        = SECONDARY_EXTRAPOLATION
 A_DELTA_VALUES                         = VALIDATED_FOR_FREEZE
 DELTA1_PROPAGATED_ERROR_BUDGET         = VALIDATED_FOR_FREEZE
 DERIVATIVE_STABILITY_CRITERION         = VALIDATED_FOR_FREEZE
-NUMERICAL_EVENT_LOT                    = OPEN
+NUMERICAL_EVENT_LOT                    = VALIDATED_FOR_FREEZE
 ```

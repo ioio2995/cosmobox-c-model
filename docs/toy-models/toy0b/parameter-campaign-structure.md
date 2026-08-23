@@ -107,7 +107,15 @@ Le régime positif nominal exige :
 
 À `|delta|=1`, un sous-réseau de liens perd tout coût électrique et le régime change qualitativement. Ces bords sont exclus de la campagne scientifique nominale.
 
-La borne numérique `delta_max<1` reste `OPEN`.
+La borne numérique `delta_max<1` est désormais fixée par la grille MAIN
+préenregistrée : le point le plus extrême de la campagne MAIN est
+`delta=4/5` (hors le point de stress disclosed `delta=9/10`, hors nominal).
+
+```text
+DELTA_NUMERICAL_BOUND = FIXED_BY_MAIN_DELTA_GRID_MAX_4_5
+```
+
+Définition normative complète : §12 ci-dessous et `specification.md` §14.
 
 ## 4. Structure de l'axe g
 
@@ -348,7 +356,12 @@ Il est donc incorrect de dire que `(1,0,0)` est nécessairement « le point le p
 
 La qualification de `d_GS` reste néanmoins utile parce que ce point sert de référence commune à tous les contrastes.
 
-## 9. Gap fondamental et croisements évités
+## 9. Gap fondamental et croisements évités — logique de conception historique
+
+Statut : **HISTORICAL DESIGN LOGIC — superseded for current execution**. Ce
+paragraphe documente le raisonnement de conception antérieur au gel de la
+campagne. Il n'est pas effacé, mais la fermeture normative actuelle est
+donnée en fin de section.
 
 La multiplicité exacte `d_GS` ne suffit pas à qualifier la régularité du fond. Un gap faible peut rendre le projecteur fondamental très sensible aux paramètres même si `d_GS=1`.
 
@@ -379,7 +392,7 @@ Un drapeau :
 NEAR_CROSSING
 ```
 
-est autorisé et doit être préenregistré avant la campagne sur la base d'un seuil de gap déclaré. Sa valeur numérique reste `OPEN` et doit être gelée avec les tolérances / règles de stabilité, jamais choisie après inspection des résultats.
+était initialement envisagé comme préenregistré avant la campagne sur la base d'un seuil de gap déclaré (raisonnement historique ci-dessus).
 
 `NEAR_CROSSING` est un diagnostic de conditionnement et de sensibilité, pas un échec physique automatique. Un petit gap peut représenter une vraie forte susceptibilité du fond.
 
@@ -391,13 +404,33 @@ En particulier, toute estimation de :
 
 à proximité d'un point `NEAR_CROSSING` doit être accompagnée d'un contrôle de stabilité de la dérivée. Une dégénérescence exacte ou une non-régularité du projecteur peut rendre la dérivée non applicable plutôt que simplement grande.
 
-## 10. Règle méthodologique pour la suite
+### Fermeture normative actuelle
+
+La campagne préenregistrée finale (§12 ci-dessous, `specification.md` §14)
+ne conditionne plus l'acceptation d'un point à un seuil scalaire de
+`NEAR_CROSSING` :
+
+```text
+NEAR_CROSSING_THRESHOLD = NOT_REQUIRED_FOR_PREREGISTERED_CAMPAIGN
+NEAR_CROSSING_FLAG_ROLE = DIAGNOSTIC_ONLY_NO_SCIENTIFIC_VETO
+```
+
+La campagne publie obligatoirement `d_GS` et `gap_GS` à chaque point (§9
+ci-dessus, inchangé). Aucun seuil scalaire `NEAR_CROSSING` ne peut rejeter un
+point ou sélectionner une branche.
+
+## 10. Règle méthodologique pour la suite — logique de conception historique
+
+Statut : **HISTORICAL DESIGN LOGIC — superseded for current execution**. La
+grille de campagne, autrefois « encore non figée », est désormais fixe et
+`VALIDATED_FOR_FREEZE` (§12). La séquence ci-dessous documente le
+raisonnement qui a présidé à son établissement ; elle n'est pas effacée.
 
 Il est autorisé de qualifier explicitement le point de référence avant le gel des bornes, à condition de traiter le résultat comme information de design divulguée.
 
 En revanche, une cartographie large de `d_GS`, du gap ou d'autres observables sur un domaine encore non figé constituerait une exploration pilote susceptible d'influencer les bornes. Elle devrait alors être déclarée comme telle avant utilisation.
 
-La séquence recommandée est donc :
+La séquence recommandée était donc :
 
 ```text
 1. qualifier le point de référence ;
@@ -406,6 +439,11 @@ La séquence recommandée est donc :
 4. préenregistrer le traitement des dérivées près des petits gaps ;
 5. seulement ensuite exécuter la cartographie confirmatoire et les observables.
 ```
+
+Étapes 1-2 sont désormais accomplies (§12). L'étape 3 est close par la
+fermeture normative actuelle ci-dessus (§9) : aucun seuil scalaire
+`NEAR_CROSSING` n'est préenregistré, `d_GS`/`gap_GS` restent publication
+obligatoire.
 
 ## 11. Oracle end-to-end de covariance en delta négatif (MAIN)
 
@@ -732,9 +770,11 @@ G_ZERO_DELTA_COLLAPSE               = VALIDATED_FOR_FREEZE
 MU_SIGN_COVARIANCE                  = NOT_ESTABLISHED
 MU_BOTH_SIGNS_REQUIRED              = VALIDATED_FOR_FREEZE
 DELTA_POSITIVITY_BOUND              = VALIDATED_FOR_FREEZE
-DELTA_NUMERICAL_BOUND               = OPEN
-G_GRID_VALUES                       = OPEN
-MU_GRID_VALUES                      = OPEN
+DELTA_NUMERICAL_BOUND               = FIXED_BY_MAIN_DELTA_GRID_MAX_4_5
+G_GRID_VALUES                       = {1/4,1/2,1,2}
+MU_GRID_VALUES                      = {-1,-3/4,-1/2,0,+1/2,+1}
+DELTA_GRID_VALUES                   = {0,1/10,1/5,2/5,3/5,4/5}
+PARAMETER_CAMPAIGN                  = VALIDATED_FOR_FREEZE
 NEGATIVE_DELTA_ORACLE_SUBSET        = VALIDATED_FOR_FREEZE
 NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE  = MAIN_FINITE_DELTA_ONLY
 NEGATIVE_DELTA_ORACLE_BASE_SIZE     = 17
@@ -766,6 +806,14 @@ REFERENCE_D_PHI_ACTIVITY            = ACTIVE_NONCONFIRMATORY
 REFERENCE_CUTOFF_EDGE_WEIGHT        = NEGLIGIBLE_NONCONFIRMATORY
 GAP_GS_PUBLICATION                  = MANDATORY
 NEAR_CROSSING_FLAG                  = VALIDATED_IN_PRINCIPLE
-NEAR_CROSSING_THRESHOLD             = OPEN
-PARAMETER_CAMPAIGN                  = OPEN
+NEAR_CROSSING_THRESHOLD             = NOT_REQUIRED_FOR_PREREGISTERED_CAMPAIGN
+NEAR_CROSSING_FLAG_ROLE             = DIAGNOSTIC_ONLY_NO_SCIENTIFIC_VETO
+```
+
+Contrôles séparés, hors campagne MAIN nominale (`specification.md` §14) :
+
+```text
+g=0,mu=0   = pure-hopping oracle
+g=1/10     = weak-g outer stress
+delta=9/10 = qualification/stress outside nominal MAIN
 ```

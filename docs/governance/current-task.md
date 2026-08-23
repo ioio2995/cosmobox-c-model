@@ -27,7 +27,10 @@ MODEL0B_CLOSURE_AUDIT_ORIGINAL  = BLOCKED (5 consolidation defects)
 MODEL0B_CLOSURE_ERRATA          = INTEGRATED 5/5 @ d00d146
 MODEL0B_ERRATA_DIFF_REVIEW      = PASS 5/5
 MODEL0B_NUMERICAL_CONTROLS      = CLOSED
-MODEL0B_FINAL_ACCEPTANCE_RULES  = OPEN
+MODEL0B_FINAL_ACCEPTANCE_RULES  = VALIDATED_FOR_FREEZE
+MODEL0B_CLOSURE_REVIEW          = PASS
+MODEL0B_FREEZE_READINESS        = READY_FOR_LIONEL_DECISION
+MODEL0B_STATUS                  = NOT_FROZEN_PENDING_LIONEL_DECISION
 IMPLEMENTATION_0B               = NOT_AUTHORIZED
 
 SCIENTIFIC_METHOD_GOVERNANCE    = DRAFT_IN_FEATURES
@@ -271,9 +274,39 @@ NUMERICAL_ZERO_BRANCH_IS_CERTIFIED            = NO
 NUMERICAL_ZERO_SINGULAR_VALUE_CREATES_EXACT_KERNEL = NO
 ZERO_SYMMETRY_INDEPENDENT_EVIDENCE_RULE       = SATISFIED_BY_CONSTRUCTION_DOES_NOT_COUNT_AS_PASS_EVIDENCE
 ZERO_SYMMETRY_ORACLE_FAMILY_NONVACUITY_RULE   = AT_LEAST_ONE_APPLICABLE_INDEPENDENT_ROBUST_PASS_REQUIRED
+
+# final acceptance rules (closes MODEL0B closure review)
+MODEL0B_FINAL_ACCEPTANCE_RULES                = VALIDATED_FOR_FREEZE
+MODEL0B_FINAL_ACCEPTANCE_MODE                 = CLAIM_SCOPED_FAIL_CLOSED_DEPENDENCY_CLOSURE
+DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY       = CLAIM_RANK_PRIMARY
+DELTA1_ARRIVAL_INTERPRETED_CONFIRMATORY       = CLAIM_RANK_STRONGER_OPTIONAL
+XI1_CONFIRMATORY_SCOPE                        = SOFT_LOOP_ONLY
 ```
 
-Définition normative complète : `docs/toy-models/toy0b/numerical-zero-symmetry-control.md`.
+Définition normative complète : `docs/toy-models/toy0b/numerical-zero-symmetry-control.md`, `docs/toy-models/toy0b/final-acceptance-rules.md`.
+
+---
+
+## Clôture finale d'acceptation — arbitrage Opus (BL1/BL2/BL3)
+
+```text
+MODEL0B_CLOSURE_REVIEW = PASS
+```
+
+Le dernier audit de clôture Opus a retourné `MODEL0B_CLOSURE_REVIEW =
+BLOCKED` avec trois blocages `BL1`, `BL2`, `BL3`. ChatGPT a arbitré les
+trois blocages `ACCEPTED` ; aucun second appel Opus n'a été requis (BL1 =
+couche de méta-statut manquante déjà identifiée par Opus ; BL2 = scission en
+deux rangs de revendication déjà proposée par Opus, utilisant la sémantique
+chemin/récurrence déjà gelée ; BL3 = synchronisation de formulations `OPEN`
+obsolètes contre la spécification consolidée déjà normative, pas un nouveau
+contenu scientifique).
+
+```text
+BL1 = ACCEPTED_AND_INTEGRATED   -> docs/toy-models/toy0b/final-acceptance-rules.md §2
+BL2 = ACCEPTED_AND_INTEGRATED   -> docs/toy-models/toy0b/final-acceptance-rules.md §4-§6
+BL3 = ACCEPTED_AND_INTEGRATED   -> synchronisation OPEN obsolète (12 fichiers)
+```
 
 ---
 
@@ -286,17 +319,20 @@ OPEN_MAJOR_CONTROLS   = 0
 
 `OPEN_MAJOR_CONTROLS = 0` signifie que tous les paramètres numériques majeurs
 préenregistrés de Toy Model 0B sont fermés. Cela ne signifie PAS que le
-modèle est gelé (`MODEL0B_CLOSURE_REVIEW = PENDING` ci-dessous), ni que tous
-les statuts spécialisés/backlog du dépôt sont clos.
+modèle est gelé (`MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION`
+ci-dessous), ni que tous les statuts spécialisés/backlog du dépôt sont clos.
 
 ```text
 GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
+GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
+GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
 OUTSIDE_MAJOR_CONTROL_COUNT     = YES
 ```
 
 Ce paramètre reste explicitement `OPEN` et hors du décompte des contrôles
-numériques majeurs ; il devra être surfacé lors du futur audit de clôture du
-modèle.
+numériques majeurs ; il ne bloque pas la préparation au gel
+(`final-acceptance-rules.md` §11) et devra être surfacé lors du futur audit
+de clôture du modèle.
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
 documentairement. Ils ne sont pas encore `FROZEN` : seule une décision explicite
@@ -376,16 +412,25 @@ Une objection `BLOCKING` peut arrêter le lot. Un élément `NON_BLOCKING_BACKLO
 ## Lot courant
 
 ```text
-CURRENT_LOT = Toy Model 0B numerical preregistration closure
-PHASE       = CLOSE_ONE_NUMERICAL_CONTROL_AT_A_TIME
+CURRENT_LOT = Toy Model 0B final acceptance rules closure
+PHASE       = MODEL0B_CLOSURE_REVIEW_INTEGRATED
 CURRENT_PARAMETER = NONE_ALL_PREREGISTERED_MAJOR_CONTROLS_CLOSED
 OPEN_MAJOR_CONTROLS = 0
-MODEL0B_CLOSURE_REVIEW = PENDING
+CLOSED_MAJOR_CONTROLS = 21
+MODEL0B_CLOSURE_REVIEW = PASS
+MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE
+MODEL0B_FINAL_ACCEPTANCE_MODE = CLAIM_SCOPED_FAIL_CLOSED_DEPENDENCY_CLOSURE
+MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION
+MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION
+GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
+GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
+GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
+XI1_CONFIRMATORY_SCOPE = SOFT_LOOP_ONLY
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : vingt-et-un paramètres numériques majeurs sont désormais fermés et
-intégrés documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
+**État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
+documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
 DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
@@ -394,12 +439,20 @@ SHORT_TIME_THRESHOLD_CONVERGENCE_RULE, EPS_PATH_CONTROL_DOMAIN_AND_GRID,
 GAMMA_CONTROL_DOMAIN_AND_GRID, RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS,
 NEGATIVE_DELTA_ORACLE_SUBSET, TRUNCATION_STRESS_POINT_SUBSET,
 TRUNCATION_COMPARISON_TOLERANCES, ESTIMATOR_COHERENCE_CRITERION,
-NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES).
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES). En complément,
+`MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDATED_FOR_FREEZE` ferme le mode
+d'acceptation finale des revendications scientifiques (`final-acceptance-rules.md`),
+suite à l'arbitrage ChatGPT `ACCEPTED` des trois blocages `BL1`/`BL2`/`BL3` de
+la dernière revue de clôture Opus (`MODEL0B_CLOSURE_REVIEW = PASS`, cf.
+« Clôture finale d'acceptation — arbitrage Opus » ci-dessus).
 
 `OPEN_MAJOR_CONTROLS = 0` ne vaut pas gel du modèle : `GROUPED_SPECTRAL_SUPPORT_ORACLE`
-reste `OPEN_PENDING_SYMMETRY_DERIVATION` (hors décompte des contrôles majeurs)
-et `MODEL0B_FINAL_ACCEPTANCE_RULES` reste `OPEN`.
+reste `OPEN_PENDING_SYMMETRY_DERIVATION` (hors décompte des contrôles majeurs,
+`GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG`).
+`MODEL0B_STATUS = NOT_FROZEN_PENDING_LIONEL_DECISION` : le modèle n'est PAS
+gelé ; `MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION` est une
+préparation documentaire/protocolaire uniquement, pas une exécution
+confirmatoire réussie.
 
-**Prochaine action** : `MODEL0B_CLOSURE_REVIEW = PENDING`. Revue de clôture du
-modèle 0B par ChatGPT / Lionel ORCIL ; aucune sélection de paramètre numérique
-majeur supplémentaire n'est requise. Aucune autorisation autonome d'implémentation.
+**Prochaine action** : `LIONEL_EXPLICIT_FREEZE_DECISION`. Décision explicite
+de gel par Lionel ORCIL. Aucune autorisation autonome d'implémentation.

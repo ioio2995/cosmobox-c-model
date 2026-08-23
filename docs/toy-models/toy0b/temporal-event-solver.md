@@ -4,7 +4,7 @@ Statut : **validé pour gel en principe — support méthodologique**
 Source scientifique principale : `docs/toy-models/toy0b/specification.md`  
 Supports liés : `exact-spectral-response.md`, `event-bandwidth-bracketing.md`, `derivative-error-budget.md`, `derivative-control.md`, `recurrence-control.md`
 
-Ce document fixe l'architecture numérique de principe pour l'extraction des temps caractéristiques. Les valeurs de tolérance et la famille de raffinement restent ouvertes.
+Ce document fixe l'architecture numérique de principe pour l'extraction des temps caractéristiques. Les valeurs de tolérance et la famille de raffinement sont désormais fermées (`BETA_VALUES = {1,1/2,1/4,1/8}`, `ROOT_SOLVER_TOLERANCES`, `ARGMAX_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`, `DEGENERATE_ROOT_CONTROL`, toutes `VALIDATED_FOR_FREEZE` ; voir §14 et §20-27 ci-dessous).
 
 ## 1. Évaluateur spectral exact en temps
 
@@ -93,7 +93,7 @@ BETA_VALUES = {1, 1/2, 1/4, 1/8}
 
 `beta` contrôle uniquement le maillage initial de certification / bracketing ; ce n'est pas une tolérance sur le temps final, obtenu par le solveur spectral continu. `beta=1` correspond à une demi-période de la bande maximale de la fonction de certification ; raffinement dyadique imbriqué ; `beta=1/8` donne une phase maximale `pi/8` par cellule à la bande limite. Aucune finesse supplémentaire n'est requise comme garantie de complétude, celle-ci reposant sur l'exclusion certifiée des cellules, leur subdivision adaptative et le solveur continu.
 
-Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques (`OPEN`). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
+Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques désormais fermées (`ROOT_SOLVER_TOLERANCES`, `ARGMAX_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`, `DEGENERATE_ROOT_CONTROL`, toutes `VALIDATED_FOR_FREEZE` ; §14, §20-27 ci-dessous). Sinon : `TIME_EVENT_CONTROL_SENSITIVE`.
 
 ## 4. Certification de T_peak par chi'
 

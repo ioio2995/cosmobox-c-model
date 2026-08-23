@@ -166,7 +166,15 @@ et non sur une grille absolue dépendant de `1-P_0(theta)`.
 
 Cette normalisation permet d'utiliser la même variable de contrôle pour les différents fonds, y compris les couples `+delta/-delta`, tout en publiant séparément `P_0(theta)` comme information physique de base.
 
-La grille `E_path` reste ouverte jusqu'au gel numérique du protocole.
+La grille `E_path` (notée `epsilon in E_path`) est désormais fermée par le
+contrôle numérique gelé :
+
+```text
+EPS_PATH_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+EPS_PATH_VALUES                  = {1/32,1/16,1/8,1/4}
+```
+
+Définition normative complète : `path-purity-control.md`.
 
 ## 6. Portée pour d=1 et d=2
 
@@ -212,6 +220,7 @@ D2_P0_PER_DOMAIN                  = MANDATORY
 PATH_BASELINE_IMPURITY_I0         = VALIDATED_FOR_FREEZE
 PATH_RELATIVE_DEGRADATION_R_PATH  = VALIDATED_FOR_FREEZE
 EPS_PATH_SINGLE_VALUE             = NOT_REQUIRED
-EPS_PATH_CONTROL_GRID             = OPEN
+EPS_PATH_CONTROL_DOMAIN_AND_GRID  = VALIDATED_FOR_FREEZE
+EPS_PATH_VALUES                   = {1/32,1/16,1/8,1/4}
 TRUNCATION_CONTROL                = MANDATORY
 ```

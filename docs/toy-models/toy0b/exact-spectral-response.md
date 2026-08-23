@@ -395,7 +395,11 @@ certifie qu'aucune racine de `g` n'appartient à cette cellule.
 
 Les cellules non exclues sont subdivisées ou traitées par solveur continu. Cette approche permet de transformer le raffinement en contrôle quantifiable plutôt qu'en simple heuristique.
 
-La stratégie exacte de certification et les valeurs `beta_k` restent `OPEN` pour le lot numérique.
+La stratégie exacte de certification et les valeurs `beta_k` sont désormais
+fermées : `BETA_VALUES = {1,1/2,1/4,1/8}` (`BETA_REFINEMENT_VALUES =
+VALIDATED_FOR_FREEZE`), et le protocole complet d'exclusion de cellule /
+solveur continu est fixé par `temporal-event-solver.md` (§7, §14, §20-27) et
+`event-bandwidth-bracketing.md`.
 
 ## 10. Nombre de termes non nuls et symétrie
 
@@ -488,10 +492,13 @@ OMEGA_MAX_SIGN_GRID_COMPLETENESS        = REJECTED
 SPECTRAL_DERIVATIVE_BOUNDS             = VALIDATED_IN_PRINCIPLE
 RAW_NONZERO_EIGENVECTOR_COUNT_ORACLE   = REJECTED
 GROUPED_SPECTRAL_SUPPORT_ORACLE         = OPEN_PENDING_SYMMETRY_DERIVATION
+GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
+GROUPED_SPECTRAL_SUPPORT_ORACLE_CURRENT_CONFIRMATORY_DEPENDENCY = NONE
+GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
 MACHINE_EPSILON_GLOBAL_ERROR_ASSUMPTION= REJECTED
 
 EDGE_SPECTRAL_SUM_RULE_NUMERICAL_ORACLE = MANDATORY
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES  = VALIDATED_FOR_FREEZE
 ```
 
-Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`. `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste `OPEN_PENDING_SYMMETRY_DERIVATION` et est hors du périmètre de ce contrôle.
+Définition normative complète de la politique numérique : `numerical-zero-symmetry-control.md`. `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste `OPEN_PENDING_SYMMETRY_DERIVATION` et est hors du périmètre de ce contrôle ; sa disposition finale de backlog non bloquant (poids groupés déjà invariants, correspondance de cluster déjà requise par `numerical-zero-symmetry-control.md` §F13, contrôles indépendants de bout en bout déjà donnés par les familles K et L) est détaillée dans `final-acceptance-rules.md` §11. Ceci ne dérive ni ne ferme cet oracle.

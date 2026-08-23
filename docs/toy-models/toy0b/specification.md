@@ -31,11 +31,22 @@ MODEL0B_SOFT_LOOP_STRUCTURE        = VALIDÉ POUR GEL
 MODEL0B_PARAMETER_CAMPAIGN_SHAPE   = VALIDÉ POUR GEL
 
 MODEL0B_NUMERICAL_CONTROL_VALUES   = VALIDÉ POUR GEL
-MODEL0B_FINAL_ACCEPTANCE_RULES     = OUVERT
+MODEL0B_FINAL_ACCEPTANCE_RULES     = VALIDÉ POUR GEL
+MODEL0B_FREEZE_READINESS           = READY_FOR_LIONEL_DECISION
+MODEL0B_STATUS                     = NOT_FROZEN_PENDING_LIONEL_DECISION
 IMPLEMENTATION_0B                  = NON AUTORISÉE
 ```
 
 `VALIDÉ POUR GEL` signifie que le contenu conceptuel peut être soumis au gel. Seule une validation explicite de Lionel ORCIL permettra de passer à `FROZEN`.
+
+`MODEL0B_FINAL_ACCEPTANCE_RULES = VALIDÉ POUR GEL` ferme le mode
+d'acceptation finale des revendications scientifiques de 0B (statuts de
+méta-routage fail-closed, deux rangs explicites de revendication `Delta1`,
+sémantique existence/absence-de-signal, coupe-feu échec/non-confirmation).
+Définition normative complète : `final-acceptance-rules.md`.
+`MODEL0B_FREEZE_READINESS = READY_FOR_LIONEL_DECISION` est une préparation
+documentaire/protocolaire uniquement ; elle ne signifie ni que la campagne
+confirmatoire a été exécutée, ni un gel du modèle.
 
 `MODEL0B_NUMERICAL_CONTROL_VALUES = VALIDÉ POUR GEL` signifie que les vingt-et-un
 paramètres numériques majeurs préenregistrés de 0B, y compris le dernier,
@@ -832,9 +843,9 @@ BETA_VALUES = {1, 1/2, 1/4, 1/8}
 
 `beta` contrôle uniquement le maillage initial de certification / bracketing ; ce n'est pas une tolérance sur le temps final, celui-ci restant obtenu par le solveur spectral continu. `beta=1` correspond à une demi-période de la bande maximale de la fonction de certification ; le raffinement est dyadique imbriqué ; `beta=1/8` donne une phase maximale `pi/8` par cellule à la bande limite. Aucune finesse supplémentaire n'est requise comme garantie de complétude, celle-ci reposant sur l'exclusion certifiée des cellules, leur subdivision adaptative et le solveur continu.
 
-Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques (`OPEN`). Si cette stabilité échoue : `TIME_EVENT_CONTROL_SENSITIVE`.
+Critère de contrôle sous raffinement : identité du premier événement stable, ordre des candidats pertinents stable, aucune cellule antérieure non résolue, temps continus compatibles selon les tolérances numériques désormais fermées (`ROOT_SOLVER_TOLERANCES`, `ARGMAX_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`, `DEGENERATE_ROOT_CONTROL`, toutes `VALIDATED_FOR_FREEZE` ; définition normative complète : `temporal-event-solver.md` §14, §20-27). Si cette stabilité échoue : `TIME_EVENT_CONTROL_SENSITIVE`.
 
-Les tolérances numériques (solveur, argmax, précision spectrale) restent ouvertes.
+Les tolérances numériques (solveur, argmax, précision spectrale) sont désormais fermées : voir `ROOT_SOLVER_TOLERANCES`, `ARGMAX_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL` ci-dessus.
 
 ---
 
@@ -1258,6 +1269,26 @@ La susceptibilité :
 
 est secondaire et locale. `Xi1=0` n'est pas un FAIL automatique.
 
+### Deux rangs explicites de revendication `Delta1`
+
+Définition normative complète : `final-acceptance-rules.md` §4.
+
+```text
+DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY = CLAIM_RANK_PRIMARY
+DELTA1_ARRIVAL_INTERPRETED_CONFIRMATORY = CLAIM_RANK_STRONGER_OPTIONAL
+```
+
+Le rang PRIMAIRE (`DELTA1_RELATIONAL_CONTRAST_CONFIRMATORY`) est un contraste
+relationnel confirmatoire non nul entre observables de temps de réponse de
+Kubo résolus ; il n'est PAS, en soi, une revendication d'arrivée propre, de
+propagation, de vitesse ou de front causal. Le rang plus fort optionnel
+(`DELTA1_ARRIVAL_INTERPRETED_CONFIRMATORY`) exige en plus `TIME_EVENT_VALID
+= PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE AND RECURRENCE_CONTROL_ACCEPTABLE` pour
+chaque dépendance d'événement requise de l'estimateur. Les deux rangs ne
+sont jamais fusionnés ; le vocabulaire d'arrivée/propagation est interdit
+pour le rang relationnel seul
+(`DELTA1_RELATIONAL_CONTRAST_ARRIVAL_LANGUAGE = FORBIDDEN`).
+
 ---
 
 ## 14. Campagne principale
@@ -1271,6 +1302,14 @@ delta = {0, 0.1, 0.2, 0.4, 0.6, 0.8}
 ```
 
 Cette campagne mesure `Delta1` à brisure finie, souvent non linéaire. Elle ne doit pas servir à estimer `Xi1`.
+
+```text
+XI1_CONFIRMATORY_SCOPE = SOFT_LOOP_ONLY
+```
+
+Définition normative complète : `final-acceptance-rules.md` §10,
+`derivative-control.md` §3-4. Aucune campagne `Xi1` MAIN n'est créée par ce
+document.
 
 Contrôles séparés :
 
@@ -1583,8 +1622,20 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` est désormais `VALIDATED_FOR_FREEZE`
 (définition normative complète : `numerical-zero-symmetry-control.md`),
 dernier des vingt-et-un paramètres numériques majeurs préenregistrés de
-0B. `GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION`
-reste `OPEN` et hors de ce décompte des contrôles numériques majeurs.
+0B (`OPEN_MAJOR_CONTROLS=0`).
+
+Le seul `OPEN` spécialisé actuel intentionnel restant est le backlog de
+support spectral groupé :
+
+```text
+GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
+GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
+GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
+```
+
+hors de ce décompte des contrôles numériques majeurs et ne bloquant pas la
+préparation au gel (définition normative complète :
+`final-acceptance-rules.md` §11).
 
 Ne sont notamment plus ouverts : orientation source-récepteur, grille MAIN
 `(g,mu,delta)`, choix interpolation vs solveur, différences finies temporelles,

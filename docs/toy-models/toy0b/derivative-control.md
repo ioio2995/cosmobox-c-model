@@ -54,18 +54,35 @@ Cependant, le pipeline confirmatoire doit conserver un sous-ensemble de calculs 
 
 Le principe de contrôle est toujours : réduire une coordonnée préenregistrée du pas et vérifier la stabilité de l'estimateur. La manière de paramétrer cette coordonnée peut dépendre d'un régime physique préenregistré, à condition qu'elle soit déterministe et ne dépende pas des valeurs observées de `Delta_1`.
 
-## 3. Famille absolue hors régime cyclique mou
+## 3. Famille absolue hors régime cyclique mou — extension méthodologique future
 
-Hors du protocole spécifique de mode cyclique mou, une famille absolue peut être utilisée :
+Hors du protocole spécifique de mode cyclique mou, une famille absolue pourrait en principe être utilisée :
 
 ```math
 \mathcal H_\delta
 =\{h_1>h_2>\cdots>h_K>0\}.
 ```
 
-Ses valeurs numériques restent `OPEN` jusqu'au gel du protocole numérique.
-
 Cette famille n'est pas transportée automatiquement dans un régime où l'échelle analytique de linéarité s'effondre avec le gap.
+
+### Fermeture normative actuelle (BL3)
+
+La portée confirmatoire de `Xi1` pour Toy 0B est exclusivement SOFT-LOOP
+(§4 ci-dessous) ; la campagne MAIN à `delta` fini ne doit JAMAIS servir à
+estimer `Xi1` (`specification.md` §14). Cette famille absolue générique
+n'est donc PAS instanciée dans la campagne préenregistrée :
+
+```text
+XI1_CONFIRMATORY_SCOPE        = SOFT_LOOP_ONLY
+H_DELTA_VALUES                = NOT_INSTANTIATED_IN_PREREGISTERED_CAMPAIGN
+ABSOLUTE_STEP_FAMILY_H_DELTA  = GENERIC_FUTURE_EXTENSION_NOT_USED_FOR_MODEL0B_CONFIRMATORY
+```
+
+Elle peut rester documentée comme extension méthodologique future pour un
+protocole hors du périmètre confirmatoire de Toy 0B, mais ne peut supporter
+aucune revendication confirmatoire `Xi1` de Toy 0B. Aucune nouvelle valeur
+`h` n'est sélectionnée par ce lot ; aucune campagne `Xi1` MAIN n'est créée.
+Définition normative complète : `final-acceptance-rules.md` §10.
 
 ## 4. Famille adimensionnée dans la sous-campagne SOFT-LOOP
 
@@ -384,7 +401,7 @@ ci-dessus (§6), qui restent inchangés.
 XI1_DELTA0_DEFINITION               = VALIDATED_FOR_FREEZE_IF_DIFFERENTIABLE
 SINGLE_DERIVATIVE_STEP              = REJECTED
 DERIVATIVE_STABILITY_REQUIRED       = VALIDATED_FOR_FREEZE
-ABSOLUTE_STEP_FAMILY_H_DELTA         = VALIDATED_FOR_FREEZE_OUTSIDE_SOFT_LOOP
+ABSOLUTE_STEP_FAMILY_H_DELTA         = GENERIC_FUTURE_EXTENSION_NOT_USED_FOR_MODEL0B_CONFIRMATORY
 SOFT_LOOP_FIXED_ABSOLUTE_STEPS       = REJECTED
 SOFT_LOOP_DIMENSIONLESS_ALPHA        = VALIDATED_FOR_FREEZE
 SOFT_LOOP_DELTA_C                    = gap_GS^(Lambda2)/(6g)
@@ -395,7 +412,8 @@ GAP_GS_PUBLICATION                   = MANDATORY
 NEAR_CROSSING_FROM_GAP_ONLY         = REJECTED
 KAPPA_DELTA_DIAGNOSTIC              = VALIDATED_IN_PRINCIPLE
 SMALL_GAP_PHYSICAL_THRESHOLD        = NOT_REQUIRED
-H_DELTA_VALUES                      = OPEN
+H_DELTA_VALUES                      = NOT_INSTANTIATED_IN_PREREGISTERED_CAMPAIGN
+XI1_CONFIRMATORY_SCOPE               = SOFT_LOOP_ONLY
 DERIVATIVE_STABILITY_CRITERION      = VALIDATED_FOR_FREEZE
 CONTROL_FAMILY_COMMON_PRINCIPLE     = VALIDATED_FOR_FREEZE
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = VALIDATED_FOR_FREEZE

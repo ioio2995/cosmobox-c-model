@@ -99,9 +99,20 @@ Ce diagnostic reste un outil de qualification de troncature ; il ne remplace pas
 
 ## 6. Conséquence méthodologique pour les bornes
 
-Les données actuelles peuvent être utilisées pour choisir des points de stress préenregistrés, mais pas pour créer rétrospectivement un seuil de saturation.
+Statut : **HISTORICAL DESIGN LOGIC — superseded for current execution**. Ce
+document a fourni l'information de conception AVANT que la grille MAIN
+finale et le sous-ensemble de stress ne soient fixés. Les bornes/points
+d'exécution actuels sont désormais donnés par `specification.md` §14/§18,
+`parameter-campaign-structure.md` et le sous-ensemble de stress de
+troncature fixe (§8 ci-dessous) :
 
-La hiérarchie recommandée est :
+```text
+PARAMETER_BOUNDS = SUPERSEDED_BY_FIXED_PREREGISTERED_PARAMETER_CAMPAIGN
+```
+
+Le raisonnement méthodologique n'est pas effacé : les données actuelles peuvent être utilisées pour choisir des points de stress préenregistrés, mais pas pour créer rétrospectivement un seuil de saturation.
+
+La hiérarchie recommandée était :
 
 ```text
 1. utiliser B2 et le gap comme diagnostics continus de design ;
@@ -121,7 +132,7 @@ BOUNDARY_WEIGHT_AS_ERROR_ESTIMATE  = REJECTED
 G_MIN_FROM_B2_ALONE                = NOT_ESTABLISHED
 RITZ_RESIDUAL_TRUNCATION_DIAGNOSTIC= VALIDATED_IN_PRINCIPLE
 CONFIRMATORY_OBSERVABLE_CHECK      = MANDATORY
-PARAMETER_BOUNDS                   = OPEN
+PARAMETER_BOUNDS                   = SUPERSEDED_BY_FIXED_PREREGISTERED_PARAMETER_CAMPAIGN
 TRUNCATION_STRESS_POINT_SUBSET     = VALIDATED_FOR_FREEZE
 TRUNCATION_COMPARISON_TOLERANCES   = VALIDATED_FOR_FREEZE
 ```
