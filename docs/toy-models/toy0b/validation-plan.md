@@ -1181,7 +1181,7 @@ Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`, `Lam
 Un événement candidat est temporellement interprétable seulement si :
 
 ```text
-PATH_CONTROL_ACCEPTABLE
+PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE
 AND RECURRENCE_CONTROL_ACCEPTABLE
 ```
 

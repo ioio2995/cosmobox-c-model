@@ -1091,7 +1091,7 @@ Les valeurs numériques de `Gamma` restent ouvertes.
 Un événement temporel est interprétable comme arrivée propre seulement si :
 
 ```text
-PATH_CONTROL_ACCEPTABLE
+PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE
 AND RECURRENCE_CONTROL_ACCEPTABLE
 ```
 
