@@ -313,7 +313,7 @@ signifie une composition mixte stable, **pas** une arrivée directe propre.
 
 `NO_DIRECT_BASELINE` et `NO_ACTIVE_PATH_RESPONSE` ne sont jamais des passages d'arrivée propre.
 
-L'interprétation complète d'un événement temporel exige en outre séparément la garde de récurrence (§24). Ce lot ne ferme pas `Gamma` (`GAMMA_CONTROL_DOMAIN_AND_GRID` reste `OPEN`).
+L'interprétation complète d'un événement temporel exige en outre séparément la garde de récurrence (§24), dont les valeurs `Gamma` sont fixées par `GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE` (définition normative : `recurrence-control.md`).
 
 ## 8. Fonction exacte de certification de l'extremum : `H_path`
 
@@ -822,7 +822,7 @@ TIME_EVENT_VALID
       AND RECURRENCE_CONTROL_ACCEPTABLE
 ```
 
-Les deux familles de contrôle (`EPS_PATH_VALUES` et `Gamma`) doivent être pré-enregistrées et leurs sensibilités publiées. `GAMMA_CONTROL_DOMAIN_AND_GRID` et `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` restent `OPEN`.
+Les deux familles de contrôle (`EPS_PATH_VALUES` et `GAMMA_VALUES`) sont préenregistrées et leurs sensibilités doivent être publiées. Les valeurs de `Gamma` sont fixées par `GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE` ; seul `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` reste `OPEN` côté récurrence.
 
 ## 25. Cas `d=3`
 
@@ -924,6 +924,6 @@ TRUNCATION_CONTROL = MANDATORY
 
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
 TRUNCATION_COMPARISON_TOLERANCES       = OPEN
-GAMMA_CONTROL_DOMAIN_AND_GRID          = OPEN
+GAMMA_CONTROL_DOMAIN_AND_GRID          = VALIDATED_FOR_FREEZE
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = OPEN
 ```

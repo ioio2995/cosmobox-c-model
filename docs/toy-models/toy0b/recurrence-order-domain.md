@@ -163,6 +163,8 @@ Elle ne signifie pas à elle seule que le retour est « quasi complet » : ce qu
 
 ## 7. Statut
 
+Les valeurs numériques de `Gamma` sont normatives dans `recurrence-control.md` ; ce support enregistre les mêmes valeurs fermées et ne les redéfinit pas.
+
 ```text
 RECURRENCE_PARTIAL_ORDER          = VALIDATED_FOR_FREEZE
 TWO_BOUND_VERDICT                 = VALIDATED_FOR_FREEZE
@@ -170,6 +172,17 @@ RECTANGULAR_GAMMA_DOMAIN          = NOT_REQUIRED
 HYSTERESIS_WIDTH_EXPLICIT         = VALIDATED_FOR_FREEZE
 ZERO_WIDTH_PRIMARY_CONTROL        = REJECTED
 ZERO_WIDTH_LIMIT_DIAGNOSTIC       = ALLOWED
-GAMMA_BOUND_VALUES                = OPEN
-GAMMA_INTERIOR_PUBLICATION_GRID   = OPEN
+
+GAMMA_CONTROL_DOMAIN_AND_GRID     = VALIDATED_FOR_FREEZE
+GAMMA_BOUND_VALUES                = VALIDATED_FOR_FREEZE
+GAMMA_INTERIOR_PUBLICATION_GRID   = VALIDATED_FOR_FREEZE
+
+GAMMA_STRICT                      = (1/8,7/8)
+GAMMA_MID                         = (1/4,3/4)
+GAMMA_PERMISSIVE                  = (3/8,5/8)
+
+GAMMA_VALUES                      = {(1/8,7/8),(1/4,3/4),(3/8,5/8)}
+GAMMA_GRID_TYPE                   = THREE_POINT_ORDERED_CHAIN
+
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = OPEN
 ```
