@@ -1116,6 +1116,13 @@ C_j(t)
 {Tr[\rho_\theta(\delta n_j)^2]}.
 ```
 
+Sous stationnarité `[rho_theta,H(theta)]=0` au point évalué (référence, état, `+delta`, `-delta`, chaque `h_k`, chaque cutoff), avec la propre `rho_theta` de ce point :
+
+```text
+RECURRENCE_AUTOCORRELATION_RANGE        = STRUCTURAL_ANALYTIC_UNDER_STATIONARITY
+RECURRENCE_AUTOCORRELATION_RANGE_VALUES = [-1,1]
+```
+
 Si le dénominateur est nul :
 
 ```text
@@ -1140,10 +1147,10 @@ RETURN_BEFORE_EVENT
 
 Pour la relation `(p,q)`, un retour à l'une quelconque des deux extrémités compte comme retour avant événement.
 
-Horizons normatifs, obligatoires :
+Horizons normatifs, obligatoires (inchangés dans ce lot) :
 
 ```text
-T_grow       -> tau = T_peak
+T_grow       -> tau >= T_peak (au minimum jusqu'à T_peak)
 T_thr(eta)   -> tau = T_down(eta)
 ```
 
@@ -1161,7 +1168,24 @@ La famille `Gamma` est un ensemble préenregistré contenu dans `{(gamma_-,gamma
 \gamma_+^{strict}\ge\gamma_+\ge\gamma_+^{perm}.
 ```
 
-Aucun domaine rectangulaire `G_- x G_+` n'est exigé. La largeur `h(gamma)=gamma_+-gamma_->0` est explicite ; `h=0` est exclu du contrôle principal. Les bornes numériques restent `OPEN`.
+Aucun domaine rectangulaire `G_- x G_+` n'est exigé. La largeur `h(gamma)=gamma_+-gamma_->0` est explicite ; `h=0` est exclu du contrôle principal.
+
+Les deux niveaux gardent des rôles distincts (`gamma_-`=sortie, `gamma_+`=retour) : `HYSTERETIC_PAIR_STRUCTURE=UNCHANGED`, `DETECTOR_THRESHOLD_COUNT=TWO_DISTINCT_LEVELS`.
+
+Chaîne anti-diagonale préenregistrée, `gamma(a)=(a,1-a)`, `0<a<1/2` (définition normative complète : `recurrence-control.md`) :
+
+```text
+GAMMA_A_VALUES = {1/8, 1/4, 3/8}
+GAMMA_VALUES   = {(1/8,7/8), (1/4,3/4), (3/8,5/8)}
+GAMMA_STRICT     = (1/8,7/8)
+GAMMA_MID        = (1/4,3/4)
+GAMMA_PERMISSIVE = (3/8,5/8)
+GAMMA_HYSTERESIS_WIDTHS = {3/4, 1/2, 1/4}
+```
+
+Le centre fixe `gamma_-+gamma_+=1` (`GAMMA_CENTER=1/2`) est une restriction de design de contrôle sans statut physique. Les bornes numériques de tolérance de croisement/contact/séparation temporelle restent `OPEN` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`).
+
+Preuve de monotonie par témoin commun : pour `a_1<a_2<1/2`, `gamma_-(a_1)<gamma_-(a_2)` et `gamma_+(a_1)>gamma_+(a_2)` ; si `RETURN_BEFORE_EVENT` se produit sous la paire stricte via `(t_out,t_ret)`, le même couple témoigne d'un retour pour toute paire plus permissive, donc `RETURN(strict) => RETURN(mid) => RETURN(permissive)` et, par contraposée, `NO_RETURN(permissive) => NO_RETURN(mid) => NO_RETURN(strict)`.
 
 Verdict robuste évalué aux deux bornes seulement :
 
@@ -1176,7 +1200,40 @@ sinon
     -> RECURRENCE_STATUS = CONTROL_SENSITIVE
 ```
 
-Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`, `Lambda=2` et `Lambda=3`.
+Ce verdict ne dépend que de `gamma^strict` et `gamma^perm`
+(`GAMMA_CHAIN_ROBUST_VERDICT_DEPENDS_ONLY_ON_ENDPOINTS=YES`) ; la chaîne est
+verdict-équivalente à tout domaine ordonné plus grand ayant les mêmes
+extrema. La paire médiane est un diagnostic de sensibilité obligatoire à
+publier (`GAMMA_INTERIOR_POINTS_ROLE=SENSITIVITY_DIAGNOSTIC_ONLY`), pas une
+évidence confirmatoire indépendante. Publier le profil complet
+`RECURRENCE_GAMMA_PROFILE` des trois paires.
+
+Fenêtre de détection déclarée (paire permissive `(3/8,5/8)`) : un retour est
+détectable ssi il existe `t_1<=tau` avec `C_j(t_1)<=3/8` puis `t_2 in
+(t_1,tau]` avec `C_j(t_2)>=5/8`. `GAMMA_EXIT_FLOOR=3/8`,
+`GAMMA_RETURN_FLOOR=5/8`, `GAMMA_MIN_DETECTED_SWING=1/4`.
+
+```text
+ROBUST_CLEAN_SEMANTICS = NO_RECURRENCE_DETECTABLE_BY_PREREGISTERED_FAMILY
+```
+
+`ROBUST_CLEAN` ne signifie jamais l'absence de toute récurrence possible.
+Insensibilité déclarée de la famille préenregistrée (non un défaut) : toute
+trajectoire dont le minimum sur `[0,tau]` reste `>3/8` (même oscillante), et
+toute récupération après sortie armée qui n'atteint jamais `5/8` avant
+l'horizon. La garde de pureté de chemin reste requise séparément et n'est
+pas affaiblie par ce choix de `Gamma`.
+
+Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`,
+chaque `h_k`, `Lambda=2` et `Lambda=3`. Interdit : `Gamma` spécifique à un
+état/signe/cutoff, recentrage spécifique à un événement, combinaison de
+`gamma_-` d'une paire avec `gamma_+` d'une autre, ajout d'une paire après
+inspection, rééchelonnement depuis les minima/maxima observés
+(`GAMMA_POSTHOC_SUBSTITUTION=FORBIDDEN`).
+
+```text
+GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+```
 
 Un événement candidat est temporellement interprétable seulement si :
 
@@ -1436,7 +1493,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # threshold / interpretation
-GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 
 # campaign / cutoff
@@ -1474,6 +1530,7 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
+GAMMA_CONTROL_DOMAIN_AND_GRID
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1500,10 +1557,17 @@ qui restent `OPEN`.
 certification continue de l'extremum `H_path`, fenêtre analytique d'origine,
 raccourci structurel exact, classification epsilon ; protocole détaillé
 ci-dessus, `path-purity-control.md` et `event-bandwidth-bracketing.md` §8).
-Ne ferme ni `GAMMA_CONTROL_DOMAIN_AND_GRID`, ni
-`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, ni
+Ne ferme ni `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, ni
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, ni
-`TRUNCATION_COMPARISON_TOLERANCES`, qui restent tous `OPEN`.
+`TRUNCATION_COMPARISON_TOLERANCES`, qui restent `OPEN`.
+
+`GAMMA_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (borne structurelle
+d'autocorrélation sous stationnarité `RECURRENCE_AUTOCORRELATION_RANGE_VALUES=[-1,1]`,
+détecteur à deux seuils distincts inchangé, chaîne anti-diagonale
+`GAMMA_VALUES={(1/8,7/8),(1/4,3/4),(3/8,5/8)}`, équivalence de verdict aux
+extrema, fenêtre de détection déclarée et sémantique restreinte de
+`ROBUST_CLEAN` ; protocole détaillé ci-dessus et `recurrence-control.md`).
+Ne ferme pas `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, qui reste `OPEN`.
 
 ---
 

@@ -1017,6 +1017,13 @@ C_j(t)
 {Tr[\rho_\theta(\delta n_j)^2]}.
 ```
 
+Sous stationnarité `[rho_theta,H(theta)]=0` au point évalué (référence, état, `+delta`, `-delta`, chaque `h_k`, chaque cutoff), avec la propre `rho_theta` de ce point :
+
+```text
+RECURRENCE_AUTOCORRELATION_RANGE        = STRUCTURAL_ANALYTIC_UNDER_STATIONARITY
+RECURRENCE_AUTOCORRELATION_RANGE_VALUES = [-1,1]
+```
+
 Si le dénominateur est nul :
 
 ```text
@@ -1043,7 +1050,7 @@ Pour la relation `(p,q)`, le statut de garde combine les deux extrémités : un 
 Horizons normatifs :
 
 ```text
-T_grow       -> tau = T_peak
+T_grow       -> tau >= T_peak (au minimum jusqu'à T_peak)
 T_thr(eta)   -> tau = T_down(eta)
 ```
 
@@ -1071,6 +1078,21 @@ avec :
 
 Aucun domaine rectangulaire `G_- x G_+` n'est exigé. La largeur `h(gamma)=gamma_+-gamma_->0` est explicite ; le point permissif porte la largeur minimale positive du domaine préenregistré, et `h=0` est exclu du contrôle principal.
 
+Les deux niveaux gardent des rôles distincts (`gamma_-` = sortie, `gamma_+` = retour) : `HYSTERETIC_PAIR_STRUCTURE = UNCHANGED`, `DETECTOR_THRESHOLD_COUNT = TWO_DISTINCT_LEVELS`. La chaîne préenregistrée à une seule coordonnée ci-dessous ne réduit pas le détecteur à un seuil unique ; elle paramétrise une famille finie de paires à deux seuils (définition complète : `recurrence-control.md` §3).
+
+Chaîne anti-diagonale préenregistrée, `gamma(a)=(a,1-a)` avec `0<a<1/2` :
+
+```text
+GAMMA_A_VALUES = {1/8, 1/4, 3/8}
+GAMMA_VALUES   = {(1/8,7/8), (1/4,3/4), (3/8,5/8)}
+GAMMA_STRICT     = (1/8,7/8)
+GAMMA_MID        = (1/4,3/4)
+GAMMA_PERMISSIVE = (3/8,5/8)
+GAMMA_HYSTERESIS_WIDTHS = {3/4, 1/2, 1/4}
+```
+
+Le centre fixe `gamma_-+gamma_+=1` (`GAMMA_CENTER=1/2`) est une restriction de design de contrôle, pas une symétrie physique, une probabilité ou un seuil physique de récurrence.
+
 Verdict robuste par les deux bornes :
 
 ```text
@@ -1084,7 +1106,23 @@ sinon
     -> RECURRENCE_STATUS = CONTROL_SENSITIVE
 ```
 
-Les valeurs numériques de `Gamma` restent ouvertes.
+Ce verdict robuste ne dépend que de `gamma^strict` et `gamma^perm` (`GAMMA_CHAIN_ROBUST_VERDICT_DEPENDS_ONLY_ON_ENDPOINTS=YES`) ; la chaîne est verdict-équivalente à tout domaine ordonné plus grand ayant les mêmes extrema. La paire médiane est un diagnostic de sensibilité obligatoire à publier (`GAMMA_INTERIOR_POINTS_ROLE=SENSITIVITY_DIAGNOSTIC_ONLY`), pas une évidence confirmatoire indépendante.
+
+Fenêtre de détection déclarée pour la paire permissive `(3/8,5/8)` : `GAMMA_EXIT_FLOOR=3/8`, `GAMMA_RETURN_FLOOR=5/8`, `GAMMA_MIN_DETECTED_SWING=1/4`. Restriction sémantique normative :
+
+```text
+ROBUST_CLEAN_SEMANTICS = NO_RECURRENCE_DETECTABLE_BY_PREREGISTERED_FAMILY
+```
+
+`ROBUST_CLEAN` ne signifie jamais l'absence de toute récurrence possible, seulement l'absence de récurrence détectable par la famille préenregistrée (insensibilité déclarée aux excursions restant au-dessus de `3/8` et aux récupérations n'atteignant jamais `5/8` : `recurrence-control.md` §8).
+
+Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`, chaque `h_k`, `Lambda=2` et `Lambda=3` ; aucune substitution post-hoc (`GAMMA_POSTHOC_SUBSTITUTION=FORBIDDEN`).
+
+Les bornes numériques de tolérance de croisement/contact/séparation temporelle restent `OPEN` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`).
+
+```text
+GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+```
 
 ### Condition d'interprétation
 
@@ -1457,8 +1495,9 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 `EPS_PATH_CONTROL_DOMAIN_AND_GRID` est également `VALIDATED_FOR_FREEZE` ; la grille `EPS_PATH_VALUES={1/32,1/16,1/8,1/4}`, la trichotomie de ligne de base, la certification continue de l'extremum `H_path` (fenêtre analytique d'origine, raccourci structurel exact) et la classification epsilon sont définies dans `path-purity-control.md` et `event-bandwidth-bracketing.md` §8.
 
+`GAMMA_CONTROL_DOMAIN_AND_GRID` est également `VALIDATED_FOR_FREEZE` ; la borne structurelle d'autocorrélation sous stationnarité, la chaîne anti-diagonale préenregistrée `GAMMA_VALUES={(1/8,7/8),(1/4,3/4),(3/8,5/8)}`, le verdict robuste à deux bornes et la fenêtre de détection déclarée sont définis dans `recurrence-control.md`.
+
 ```text
-GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 ```
 
@@ -1485,7 +1524,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
 `STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN`,
-`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE` et `EPS_PATH_CONTROL_DOMAIN_AND_GRID`.
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID` et
+`GAMMA_CONTROL_DOMAIN_AND_GRID`.
 
 ---
 

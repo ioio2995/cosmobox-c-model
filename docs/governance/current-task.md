@@ -215,6 +215,13 @@ EPS_PATH_STRICT                             = 1/32
 EPS_PATH_PERMISSIVE                         = 1/4
 PATH_CERTIFICATION_OSCILLATORY_FACTOR       = 4
 PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
+
+# recurrence gamma control domain and grid
+GAMMA_CONTROL_DOMAIN_AND_GRID   = VALIDATED_FOR_FREEZE
+GAMMA_VALUES                    = {(1/8,7/8),(1/4,3/4),(3/8,5/8)}
+GAMMA_STRICT                    = (1/8,7/8)
+GAMMA_PERMISSIVE                = (3/8,5/8)
+GAMMA_GRID_TYPE                 = THREE_POINT_ORDERED_CHAIN
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -227,7 +234,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 
 ```text
 # threshold / interpretation
-GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 
 # campaign / cutoff
@@ -305,13 +311,14 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : quatorze paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : quinze paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
 DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
 STATIC_COLLAPSE_NUMERICAL_CRITERION, ETA_GRID_AND_ADMISSIBLE_DOMAIN,
-SHORT_TIME_THRESHOLD_CONVERGENCE_RULE, EPS_PATH_CONTROL_DOMAIN_AND_GRID).
+SHORT_TIME_THRESHOLD_CONVERGENCE_RULE, EPS_PATH_CONTROL_DOMAIN_AND_GRID,
+GAMMA_CONTROL_DOMAIN_AND_GRID).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.
