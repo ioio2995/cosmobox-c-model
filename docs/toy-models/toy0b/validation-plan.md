@@ -1322,7 +1322,7 @@ Tester :
 \Delta_1(g,\mu,0)=0,
 ```
 
-et sur le sous-ensemble miroir préenregistré :
+et sur le sous-ensemble miroir préenregistré (`NEGATIVE_DELTA_ORACLE_SUBSET = VALIDATED_FOR_FREEZE`, séquence exécutable §14 ci-dessous, définition normative complète : `parameter-campaign-structure.md` §11) :
 
 ```math
 \Delta_1(-\delta)=-\Delta_1(+\delta).
@@ -1362,10 +1362,38 @@ g=0.10    -> weak-g stress outside nominal domain
 delta=0.9 -> disclosed qualification/stress outside nominal domain
 ```
 
-À figer avant campagne :
+### Séquence exécutable de l'oracle de covariance en delta négatif
+
+Définition normative complète : `parameter-campaign-structure.md` §11. Ordre exécutable :
 
 ```text
-NEGATIVE_DELTA_ORACLE_SUBSET = OPEN
+1. exécuter le côté positif MAIN requis à delta fini
+2. calculer les signatures catégorielles de branche (§11.4)
+3. former la base fixe à 17 points (S_oracle_base_plus)
+4. ajouter un représentant lexicographiquement premier pour chaque
+   signature réalisée non couverte par la base
+5. figer l'ensemble miroir dérivé AVANT toute exécution négative
+6. exécuter -delta indépendamment avec le pipeline générique
+7. vérifier la règle d'indépendance (recalcul, pas de substitution sign-dérivée)
+8. évaluer la couche discrète mappée de covariance
+9. une fois les tolérances de symétrie disponibles, évaluer la couche continue
+10. agréger fail-closed (FAIL > NUMERICALLY_INCONCLUSIVE > PASS, pas de PASS vide)
+11. à Lambda=3, utiliser l'intersection de troncature ou l'ancre de repli fixe
+```
+
+Rejeté explicitement :
+
+```text
+- construction analytique de -delta depuis +delta
+- réutilisation du système propre/projecteurs positifs pour fabriquer le résultat négatif
+- oracle MAIN fondé uniquement sur Delta1
+- revendication de couverture complète de branches par la seule géométrie
+- agrandissement du sous-ensemble piloté par un résultat négatif
+- omission silencieuse d'un point requis non exécuté
+```
+
+```text
+NEGATIVE_DELTA_ORACLE_SUBSET = VALIDATED_FOR_FREEZE
 ```
 
 ---
@@ -1523,7 +1551,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # campaign / cutoff
-NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
 
@@ -1559,6 +1586,7 @@ SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
+NEGATIVE_DELTA_ORACLE_SUBSET
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1611,6 +1639,27 @@ séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
 (`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
 qui restent `OPEN`.
+
+`NEGATIVE_DELTA_ORACLE_SUBSET` est `VALIDATED_FOR_FREEZE` (base géométrique
+fixe à 17 points `NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`, extension déterministe
+de couverture de branches fondée exclusivement sur les statuts catégoriels
+`+delta` déjà requis et figée avant toute exécution `-delta`, taille totale
+dérivée bornée `17..120` (`NEGATIVE_DELTA_ORACLE_TOTAL_SIZE=
+DERIVED_BOUNDED_17_TO_120`), recalcul indépendant obligatoire du côté `-delta`
+(`NEGATIVE_DELTA_ORACLE_INDEPENDENT_RECOMPUTATION=REQUIRED`, toute
+substitution sign-dérivée donnant `DELTA_COVARIANCE_ORACLE_POINT=
+INVALID_BY_CONSTRUCTION`), fermeture de dépendance mappée complète à deux
+couches discrète/continue (`NEGATIVE_DELTA_ORACLE_COMPARISON_LEVEL=
+FULL_MAPPED_DEPENDENCY_CLOSURE`), portée MAIN à `delta` fini uniquement
+(`NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE=MAIN_FINITE_DELTA_ONLY`), rôle
+non-évidentiel (`NEGATIVE_DELTA_ORACLE_POINT_ROLE=
+NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`), règle de cutoff `Lambda=2`/
+`Lambda=3` par intersection de troncature ou ancre de repli fixe
+`(1,0,+/-2/5)` ; protocole détaillé : `parameter-campaign-structure.md` §11,
+séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
+(`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
+`TRUNCATION_STRESS_POINT_SUBSET`, ni `TRUNCATION_COMPARISON_TOLERANCES`, ni
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
 
 ---
 

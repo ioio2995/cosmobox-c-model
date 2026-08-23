@@ -1236,7 +1236,7 @@ g=0.10       -> stress faible-g hors nominal
 delta=0.9    -> qualification / stress hors nominal
 ```
 
-La covariance `delta<->-delta` doit être exercée sur un sous-ensemble négatif préenregistré. Le sous-ensemble exact reste ouvert.
+La covariance `delta<->-delta` doit être exercée sur un sous-ensemble négatif préenregistré. Ce sous-ensemble est `VALIDATED_FOR_FREEZE` (`NEGATIVE_DELTA_ORACLE_SUBSET`, définition normative complète : `parameter-campaign-structure.md` §11) : il combine une base géométrique fixe de 17 points (`NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`) avec une extension déterministe de couverture de branches sélectionnée UNIQUEMENT depuis les statuts catégoriels d'exécution `+delta` déjà requis, avant toute exécution `-delta` (`NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SOURCE=POSITIVE_MAIN_STATUSES_ONLY`, `NEGATIVE_DELTA_RESULTS_AFFECT_SUBSET_SELECTION=FORBIDDEN`), pour une taille totale dérivée bornée entre 17 et 120 points (`NEGATIVE_DELTA_ORACLE_TOTAL_SIZE=DERIVED_BOUNDED_17_TO_120`). Chaque point `-delta` requis DOIT être recalculé indépendamment par le pipeline générique (`NEGATIVE_DELTA_ORACLE_INDEPENDENT_RECOMPUTATION=REQUIRED`) : toute construction sign-dérivée depuis le côté `+delta` (par exemple `H_minus:=R H_plus R^dagger` ou `Delta_1(-d):=-Delta_1(+d)`) rend le point `DELTA_COVARIANCE_ORACLE_POINT=INVALID_BY_CONSTRUCTION` et fait échouer l'oracle (`NEGATIVE_DELTA_ORACLE_CONTROL=FAIL`), jamais `NOT_APPLICABLE`. La comparaison utilise une fermeture de dépendance mappée complète (`NEGATIVE_DELTA_ORACLE_COMPARISON_LEVEL=FULL_MAPPED_DEPENDENCY_CLOSURE`), séparée en une couche discrète catégorielle sans nouvelle tolérance et une couche continue dont les seuils restent conditionnés à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`). Les points négatifs ne fournissent aucune évidence physique indépendante (`NEGATIVE_DELTA_ORACLE_POINT_ROLE=NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`) et ne servent à régler aucun autre paramètre. Le cutoff primaire est `Lambda=2` ; `Lambda=3` utilise l'intersection avec les points de stress de troncature ou, si elle est vide, l'ancre de repli fixe `(1,0,+/-2/5)` (`NEGATIVE_DELTA_ORACLE_LAMBDA3_RULE=TRUNCATION_INTERSECTION_OR_FIXED_ANCHOR_FALLBACK`). Cet oracle porte exclusivement sur MAIN à `delta` fini (`NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE=MAIN_FINITE_DELTA_ONLY`) et ne s'applique ni à SOFT-LOOP (déjà couvert par ses deux signes explicites) ni aux points de stress `g=0.10`/`|delta|=0.9` (`NEGATIVE_DELTA_ORACLE_EXCLUDED_STRESS_POINTS`).
 
 ---
 
@@ -1519,8 +1519,9 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 ### Campagne / troncature
 
+`NEGATIVE_DELTA_ORACLE_SUBSET` est également `VALIDATED_FOR_FREEZE` ; la base géométrique fixe à 17 points, l'extension déterministe de couverture de branches fondée uniquement sur les statuts catégoriels `+delta`, la taille totale dérivée bornée `17..120`, le recalcul indépendant obligatoire du côté `-delta`, la fermeture de dépendance mappée complète à deux couches (discrète/continue) et la règle de cutoff `Lambda=2`/`Lambda=3` sont définis dans `parameter-campaign-structure.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni `TRUNCATION_STRESS_POINT_SUBSET`, ni `TRUNCATION_COMPARISON_TOLERANCES`, ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+
 ```text
-NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
 ```
@@ -1541,7 +1542,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
 `STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN`,
 `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID`,
-`GAMMA_CONTROL_DOMAIN_AND_GRID` et `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`.
+`GAMMA_CONTROL_DOMAIN_AND_GRID`, `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` et
+`NEGATIVE_DELTA_ORACLE_SUBSET`.
 
 ---
 
