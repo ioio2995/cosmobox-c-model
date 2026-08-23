@@ -199,7 +199,7 @@ Son but est d'éviter un réglage indépendant a posteriori de la profondeur de 
 
 Conséquence déclarée : `gamma_-^perm=3/8<1/2` et `gamma_+^perm=5/8>1/2`. Ceci crée une fenêtre de détection finie intentionnelle, décrite au §8.
 
-Les bornes numériques de tolérance de croisement (voisinage de `C=gamma_-`, de `C=gamma_+`, contact tangentiel, séparation temporelle minimale sortie/retour) restent exclusivement sous `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = OPEN`.
+Les règles numériques de certification des franchissements (`C=gamma_-`, `C=gamma_+`), des contacts tangentiels, de l'ordonnancement sortie/retour et de l'incertitude d'horizon sont désormais fixées par `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE` selon le protocole fail-closed de la §11. Aucune nouvelle tolérance scalaire de récurrence n'est introduite : `RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE = NONE`.
 
 ## 4. Monotonie du détecteur
 
