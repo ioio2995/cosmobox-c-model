@@ -719,8 +719,10 @@ Sélectionner ENSUITE les trois plus petites valeurs `lambda` de
 queue : `CUTOFF_STABLE_SHORT_TIME_CONVERGENCE=SUPPORTED`. Si l'intersection
 conjointe contient moins de 3 niveaux :
 `CUTOFF_STABLE_SHORT_TIME_CONVERGENCE=INSUFFICIENT_COMMON_RANGE`. Sinon,
-propager les statuts non confirmatoires fail-closed. Ceci ne ferme pas
-`TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
+propager les statuts non confirmatoires fail-closed. La comparaison de cutoff
+de cette quantité est ensuite évaluée sous `TRUNCATION_COMPARISON_TOLERANCES`
+(`VALIDATED_FOR_FREEZE` ; définition normative complète :
+`truncation-comparison-control.md` §15, §20).
 
 **Publication diagnostique** par queue par paire : `nu`, triplets `lambda`/`z`,
 `q_01`,`q_12`, `D_i`, `e_D,i`, `m_D,i`/`M_D,i`, motif résolu/non résolu,
@@ -1086,9 +1088,10 @@ PATH_SIDE_CLEAN_ARRIVAL_ACCEPTABLE
 
 Le contrôle `Lambda=2 -> 3` est obligatoire avec exactement la même grille
 `EPS_PATH_VALUES`. `ROBUST_CLEAN` aux deux cutoffs ne prouve pas que `P_0`
-lui-même est stable au cutoff, ce qui reste conditionnel à
-`TRUNCATION_COMPARISON_TOLERANCES` (`OPEN`). Aucun rééchelonnement d'`epsilon`
-par cutoff.
+lui-même est stable au cutoff, ce qui est évalué par
+`TRUNCATION_COMPARISON_TOLERANCES` (`VALIDATED_FOR_FREEZE` ; définition
+normative complète : `truncation-comparison-control.md` §21). Aucun
+rééchelonnement d'`epsilon` par cutoff.
 
 Pour `d=3` :
 
@@ -1570,8 +1573,8 @@ Ordre exécutable de sélection/exécution du contrôle de troncature :
    commune complète déjà existante, aux deux cutoffs
 5. évaluer la fermeture de dépendance scientifique complète requise
 6. publier les diagnostics B2/Ritz/spectraux/harmoniques où disponibles
-7. appliquer les futures TRUNCATION_COMPARISON_TOLERANCES seulement une fois
-   ce contrôle fermé
+7. appliquer TRUNCATION_COMPARISON_TOLERANCES (désormais fermé, définition
+   normative complète : truncation-comparison-control.md)
 8. ne jamais retirer un point de stress non résolu/échoué
 9. garder les points extérieurs séparés de l'évidence MAIN nominale
 10. rapporter les points MAIN non échantillonnés comme
@@ -1580,7 +1583,33 @@ Ordre exécutable de sélection/exécution du contrôle de troncature :
 
 Les obligations statiques `Lambda=2`/`3` de SOFT-LOOP restent indépendantes. Ce lot n'impose aucune nouvelle campagne dynamique `Xi1` au cutoff. Si `Xi1` est comparé aux deux cutoffs, `SAME_PHYSICAL_H_ACROSS_CUTOFFS` s'applique.
 
-Rejeté explicitement :
+### 16.1 Ordre opérationnel du contrôle de comparaison `TRUNCATION_COMPARISON_TOLERANCES`
+
+Définition normative complète : `truncation-comparison-control.md`.
+
+```text
+1. exiger la précision p/2p acceptée
+2. comparer les signatures d'admissibilité eta AVANT toute intersection
+   commune
+3. construire le domaine eta commun seulement ensuite
+4. évaluer la compatibilité catégorielle de cutoff
+5. évaluer la distance de trace d'état
+6. évaluer les métriques scalaires positives/log/bornées requises
+7. évaluer la métrique double de Delta1 à delta fini
+8. router Delta1 à delta=0 vers l'oracle de zéro structurel, en attente de
+   la politique zéro/symétrie
+9. appliquer la règle catégorielle à temps court + Delta1_short dual si
+   requis
+10. évaluer les rôles chemin/récurrence/harmoniques
+11. évaluer la porte de référence
+12. agréger ponctuellement
+13. agréger MAIN séparément de l'extérieur
+14. ne jamais moyenner
+15. ne jamais revendiquer une convergence uniforme sur le domaine non
+    échantillonné
+```
+
+Rejeté explicitement (contrôle de sélection des points de stress) :
 
 ```text
 - B2 comme estimateur d'erreur de troncature
@@ -1591,10 +1620,27 @@ Rejeté explicitement :
 - revendication de convergence uniforme sur tout le domaine
 ```
 
+Rejeté explicitement (contrôle de comparaison `TRUNCATION_COMPARISON_TOLERANCES`) :
+
+```text
+- une seule tolérance brute pour chaque observable
+- Delta1 relatif normalisé par un seul cutoff
+- Delta1 absolu seul comme porte stable suffisante
+- Delta1 relatif-symétrique seul comme porte instable suffisante
+- comparaison d'appartenance à E_eta^common après intersection
+- perte différentielle de eta masquée par l'intersection
+- escalade d'une même raison non résolue symétrique en inconclusif global
+- accord de E_GS comme certificat suffisant
+- norme de trajectoire de récurrence inventée a posteriori
+- métrique relative harmonique à travers un zéro
+- annulation de référence comme moyen de racheter une instabilité
+- moyennage de points/observables
+```
+
 À figer :
 
 ```text
-TRUNCATION_COMPARISON_TOLERANCES = OPEN
+TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
 ---
@@ -1604,9 +1650,6 @@ TRUNCATION_COMPARISON_TOLERANCES = OPEN
 Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
-# campaign / cutoff
-TRUNCATION_COMPARISON_TOLERANCES
-
 # verdicts
 ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
@@ -1641,6 +1684,7 @@ GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
+TRUNCATION_COMPARISON_TOLERANCES
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1658,9 +1702,8 @@ protocole détaillé : `temporal-event-solver.md` §27, `short-time-oracles.md`
 queue commune à trois niveaux minimum, branchement information-monotone,
 statuts forts `SUPPORTED_RESOLVED_TREND`/`SUPPORTED_FLOOR_AFTER_CONTRACTION`,
 traitement par paire avant `Delta1`, queue conjointe de stabilité au cutoff ;
-protocole détaillé ci-dessus et `short-time-oracles.md` §10). Ne ferme ni
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
-qui restent `OPEN`.
+protocole détaillé ci-dessus et `short-time-oracles.md` §10). Ne ferme pas
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
 
 `EPS_PATH_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (grille
 `EPS_PATH_VALUES={1/32,1/16,1/8,1/4}`, trichotomie de ligne de base,
@@ -1668,8 +1711,7 @@ certification continue de l'extremum `H_path`, fenêtre analytique d'origine,
 raccourci structurel exact, classification epsilon ; protocole détaillé
 ci-dessus, `path-purity-control.md` et `event-bandwidth-bracketing.md` §8).
 Ne ferme ni `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, ni
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, ni
-`TRUNCATION_COMPARISON_TOLERANCES`, qui restent `OPEN`.
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
 
 `GAMMA_CONTROL_DOMAIN_AND_GRID` est `VALIDATED_FOR_FREEZE` (borne structurelle
 d'autocorrélation sous stationnarité `RECURRENCE_AUTOCORRELATION_RANGE_VALUES=[-1,1]`,
@@ -1690,9 +1732,8 @@ instanciation opérationnelle de l'énoncé scientifique déjà validé « au mo
 jusqu'à `T_peak` », contrôle croisé de monotonie `Gamma`, variance locale
 nulle non confirmatoire ; protocole détaillé : `recurrence-control.md` §11,
 séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
-(`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
-qui restent `OPEN`.
+(`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
 
 `NEGATIVE_DELTA_ORACLE_SUBSET` est `VALIDATED_FOR_FREEZE` (base géométrique
 fixe à 17 points `NEGATIVE_DELTA_ORACLE_BASE_SIZE=17`, extension déterministe
@@ -1711,9 +1752,8 @@ NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`), règle de cutoff `Lambda=2`/
 `Lambda=3` par intersection de troncature ou ancre de repli fixe
 `(1,0,+/-2/5)` ; protocole détaillé : `parameter-campaign-structure.md` §11,
 séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
-(`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
-`TRUNCATION_COMPARISON_TOLERANCES`, ni
-`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+(`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
 
 `TRUNCATION_STRESS_POINT_SUBSET` est `VALIDATED_FOR_FREEZE` (sous-ensemble
 fixe à 18 points préenregistrés `TRUNCATION_STRESS_POINT_SUBSET_SIZE=18`,
@@ -1733,7 +1773,33 @@ PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM`) ; protocole détaillé :
 `truncation-design-qualification.md` §8, résumé opérationnel :
 `parameter-campaign-structure.md` §5, séquence exécutable ci-dessus). Aucune
 nouvelle tolérance scalaire (`TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE=NONE`).
-Ne ferme pas `TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
+
+`TRUNCATION_COMPARISON_TOLERANCES` est `VALIDATED_FOR_FREEZE` (famille
+opérationnelle préenregistrée `TRUNCATION_TOLERANCE_VALUES={0.01,0.02,0.05}`
+dimensionnée par la qualification de design préalable
+(`TRUNCATION_TOLERANCE_DIMENSIONING=
+DESIGN_QUALIFICATION_INFORMED_PREREGISTRATION`), marge numérique générique
+`p/2p` + budget propagé (`TRUNCATION_NUMERICAL_MARGIN=
+MAX_P2P_AND_EXISTING_PROPAGATED_ERROR`), couche catégorielle
+(`TRUNCATION_CATEGORICAL_RULE=EXACT_RESOLVED_CATEGORY_COMPATIBILITY`),
+métrique d'état par distance de trace (`TRUNCATION_STATE_METRIC=
+TRACE_DISTANCE_UNDER_NATURAL_EMBEDDING`), garde double absolue +
+relative-symétrique obligatoire pour `Delta1` fini
+(`TRUNCATION_DELTA1_DUAL_METRIC=REQUIRED_FOR_FINITE_DELTA_PRIMARY_SIGNAL`,
+`TRUNCATION_DELTA1_COMPOSITE_RULE=
+DUAL_SCALE_CONJUNCTIVE_STABILITY_AND_INSTABILITY`), exclusion
+`NOT_APPLICABLE_STRUCTURAL_ZERO` de `Delta1` à `delta=0`, comparaison
+d'admissibilité `eta` AVANT intersection commune
+(`TRUNCATION_ETA_ADMISSIBILITY_COMPARISON_STAGE=BEFORE_COMMON_INTERSECTION`),
+porte de référence robuste-stable obligatoire (`TRUNCATION_REFERENCE_GATE=
+ROBUST_STABLE_REQUIRED`), agrégation ponctuelle fail-closed sans moyennage,
+MAIN séparé de l'extérieur (`TRUNCATION_MAIN_AGGREGATION=
+POINTWISE_FAIL_CLOSED_NO_AVERAGING`) ; protocole détaillé :
+`truncation-comparison-control.md`, séquence exécutable ci-dessus §16.1).
+Aucune nouvelle tolérance de virgule flottante
+(`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). Ne ferme ni
+`ESTIMATOR_COHERENCE_CRITERION`, ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`,
+qui restent `OPEN`.
 
 ---
 

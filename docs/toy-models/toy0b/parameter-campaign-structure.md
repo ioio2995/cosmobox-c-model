@@ -187,8 +187,20 @@ TRUNCATION_STRESS_CLAIM_SCOPE = PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM
 
 Ce sous-ensemble porte exclusivement sur `delta` non négatif ; `delta` négatif reste un oracle d'implémentation de signe déjà couvert par `NEGATIVE_DELTA_ORACLE_SUBSET` (§11) et n'apporte aucune évidence de troncature physique indépendante (`TRUNCATION_NEGATIVE_DELTA_ROLE = IMPLEMENTATION_ORACLE_ONLY`). Il n'absorbe pas SOFT-LOOP : la porte statique `Lambda=2`/`3` déjà gelée de SOFT-LOOP reste inchangée et hors de cette sélection (`SOFT_LOOP_EXISTING_CUTOFF_OBLIGATIONS = UNCHANGED_AND_OUTSIDE_TRUNCATION_STRESS_SUBSET_SELECTION`) ; ce lot n'impose aucune nouvelle campagne dynamique `Xi1` au cutoff (`SOFT_LOOP_DYNAMIC_XI1_CUTOFF_REQUIREMENT_BY_THIS_LOT = NOT_IMPOSED`).
 
+COMMENT ces deux cutoffs sont comparés sur ce sous-ensemble est désormais également fixé (définition normative complète : `truncation-comparison-control.md`) :
+
 ```text
-TRUNCATION_COMPARISON_TOLERANCES = OPEN
+TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
+TRUNCATION_TOLERANCE_VALUES = {0.01,0.02,0.05}
+TRUNCATION_TOLERANCE_DIMENSIONING = DESIGN_QUALIFICATION_INFORMED_PREREGISTRATION
+```
+
+Résumé de la sémantique d'agrégation : chaque point sélectionné reçoit un `TRUNCATION_POINT_STATUS` fail-closed (`ROBUST_UNSTABLE > NUMERICALLY_INCONCLUSIVE > CONTROL_SENSITIVE > ROBUST_STABLE`, sans moyennage) combinant couche catégorielle, métrique d'état, métriques log positives, métrique double de `Delta_1` (absolue + relative symétrique) et admissibilité `eta` évaluée AVANT intersection commune. L'ancre de référence `(1,0,0)` doit être `ROBUST_STABLE` pour toute revendication MAIN robuste-stable ; les 16 points MAIN et les 2 points extérieurs sont agrégés séparément (`TRUNCATION_MAIN_AGGREGATION = POINTWISE_FAIL_CLOSED_NO_AVERAGING`, `TRUNCATION_OUTER_STRESS_ROLE = SEPARATE_DIAGNOSTIC_OUTSIDE_MAIN`). `B2`, l'écart `E_GS` et `F_peak` restent `DIAGNOSTIC_ONLY`. Ce contrôle ne ferme ni `ESTIMATOR_COHERENCE_CRITERION` ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, et ne prouve toujours pas la convergence uniforme sur MAIN non échantillonné :
+
+```text
+TRUNCATION_STRESS_CLAIM_SCOPE = PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM
+TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT = NOT_CERTIFIED_BY_STRESS_SUBSET
+NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
 ```
 
 ## 6. Limite de pur hopping et scaling d=2
@@ -742,7 +754,8 @@ NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE = NONE
 DELTA1_ODDNESS_ONLY_AS_END_TO_END_ORACLE = REJECTED_AS_INSUFFICIENT_FOR_MAIN
 TRUNCATION_STRESS_POINT_SUBSET      = VALIDATED_FOR_FREEZE
 TRUNCATION_STRESS_POINT_SUBSET_SIZE = 18
-TRUNCATION_COMPARISON_TOLERANCES    = OPEN
+TRUNCATION_COMPARISON_TOLERANCES    = VALIDATED_FOR_FREEZE
+TRUNCATION_TOLERANCE_VALUES         = {0.01,0.02,0.05}
 D2_G2_SCALING                       = CONDITIONAL_EXPECTATION
 REFERENCE_GS_QUALIFICATION          = COMPLETED_NONCONFIRMATORY
 REFERENCE_D_GS_LAMBDA2              = 1

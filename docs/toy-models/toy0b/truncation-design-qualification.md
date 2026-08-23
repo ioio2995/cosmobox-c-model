@@ -123,17 +123,20 @@ RITZ_RESIDUAL_TRUNCATION_DIAGNOSTIC= VALIDATED_IN_PRINCIPLE
 CONFIRMATORY_OBSERVABLE_CHECK      = MANDATORY
 PARAMETER_BOUNDS                   = OPEN
 TRUNCATION_STRESS_POINT_SUBSET     = VALIDATED_FOR_FREEZE
+TRUNCATION_COMPARISON_TOLERANCES   = VALIDATED_FOR_FREEZE
 ```
 
 ## 8. Sélection préenregistrée du sous-ensemble de stress de troncature
 
-Cette section fige la sélection exacte des points de stress `Lambda=2 -> 3`, préenregistrée avant toute évaluation confirmatoire `Lambda=3`. Elle ferme UNIQUEMENT le périmètre « où le contrôle complet est obligatoire », pas les tolérances de comparaison :
+Cette section fige la sélection exacte des points de stress `Lambda=2 -> 3`, préenregistrée avant toute évaluation confirmatoire `Lambda=3`. Elle ferme le périmètre « où le contrôle complet est obligatoire » (`TRUNCATION_STRESS_POINT_SUBSET`) :
 
 ```text
 TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE
-TRUNCATION_COMPARISON_TOLERANCES = OPEN
+TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE = NONE
 ```
+
+`TRUNCATION_COMPARISON_TOLERANCES` ferme séparément COMMENT `Lambda=2` et `Lambda=3` sont comparés sur ce périmètre ; définition normative complète : `truncation-comparison-control.md`. `B2`, l'écart `E_GS` et le résidu de Ritz conservent leurs rôles de diagnostics de design déjà définis en §1-7 (`BOUNDARY_WEIGHT_B2 = DESIGN_DIAGNOSTIC`, `GS_ENERGY_CUTOFF_DIFFERENCE = DESIGN_DIAGNOSTIC`, `RITZ_RESIDUAL_TRUNCATION_DIAGNOSTIC = VALIDATED_IN_PRINCIPLE`) ; le contrôle confirmatoire `Lambda=2 -> 3` lui-même est porté par `truncation-comparison-control.md`, pas par ces diagnostics de design.
 
 Portée : points MAIN à `delta` non négatif sélectionnés plus deux points de stress/qualification extérieurs déjà divulgués (`TRUNCATION_STRESS_POINT_SUBSET_SCOPE = MAIN_PLUS_DISCLOSED_OUTER_STRESS`). Cette sélection n'absorbe pas SOFT-LOOP : la porte statique `Lambda=2`/`3` déjà gelée de SOFT-LOOP reste inchangée et hors de cette sélection (`SOFT_LOOP_EXISTING_CUTOFF_OBLIGATIONS = UNCHANGED_AND_OUTSIDE_TRUNCATION_STRESS_SUBSET_SELECTION`) ; ce lot n'impose aucune nouvelle campagne dynamique `Xi1` au cutoff (`SOFT_LOOP_DYNAMIC_XI1_CUTOFF_REQUIREMENT_BY_THIS_LOT = NOT_IMPOSED`). Si `Xi1` est comparé séparément aux deux cutoffs, `SAME_PHYSICAL_H_ACROSS_CUTOFFS = MANDATORY` (déjà défini dans `derivative-control.md`) s'applique.
 
