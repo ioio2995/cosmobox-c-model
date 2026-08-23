@@ -1372,7 +1372,9 @@ Définition normative complète : `parameter-campaign-structure.md` §11. Ordre 
 3. former la base fixe à 17 points (S_oracle_base_plus)
 4. ajouter un représentant lexicographiquement premier pour chaque
    signature réalisée non couverte par la base
-5. figer l'ensemble miroir dérivé AVANT toute exécution négative
+5. figer l'ensemble final complet S_oracle_plus et son ensemble miroir
+   négatif dérivé AVANT TOUTE exécution négative-delta MAIN, y compris
+   les 17 miroirs de la base géométrique fixe
 6. exécuter -delta indépendamment avec le pipeline générique
 7. vérifier la règle d'indépendance (recalcul, pas de substitution sign-dérivée)
 8. évaluer la couche discrète mappée de covariance
@@ -1380,6 +1382,19 @@ Définition normative complète : `parameter-campaign-structure.md` §11. Ordre 
 10. agréger fail-closed (FAIL > NUMERICALLY_INCONCLUSIVE > PASS, pas de PASS vide)
 11. à Lambda=3, utiliser l'intersection de troncature ou l'ancre de repli fixe
 ```
+
+Diagnostics de publication obligatoires (définition normative complète en
+`parameter-campaign-structure.md` §11.4 et §11.7) :
+
+```text
+NEGATIVE_DELTA_ORACLE_REALIZED_SIGNATURE_COUNT
+NEGATIVE_DELTA_ORACLE_BASE_SIGNATURE_COUNT
+NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SIZE
+NEGATIVE_DELTA_ORACLE_FINAL_SIZE
+NEGATIVE_DELTA_ORACLE_RESOLUTION_ASYMMETRY_COUNT (et points/objets mappés affectés)
+```
+
+Ces diagnostics sont `DIAGNOSTIC_ONLY` : ils ne créent aucun nouveau seuil `PASS`/`FAIL`.
 
 Rejeté explicitement :
 

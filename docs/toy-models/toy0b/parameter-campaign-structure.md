@@ -463,8 +463,10 @@ NEGATIVE_DELTA_ORACLE_BRANCH_SIGNATURE = PUBLISHED_CATEGORICAL_EXECUTION_STATUS_
    lexicographiquement premier ayant cette signature
    (ordre canonique : g croissant, mu croissant, delta croissant) ;
 3. réunir tous ces représentants dans S_branch_extension_plus ;
-4. figer cet ensemble dérivé pour cette exécution de campagne AVANT
-   d'exécuter tout nouveau point miroir négatif sélectionné ;
+4. figer l'ensemble final complet `S_oracle_plus` (base + extension) ainsi
+   que son ensemble miroir négatif dérivé, AVANT TOUTE exécution
+   négative-delta MAIN, y compris les 17 miroirs de la base géométrique
+   fixe ;
 5. ne jamais itérer ni agrandir cet ensemble sur la base de résultats
    observés à -delta.
 ```
@@ -474,7 +476,47 @@ NEGATIVE_DELTA_ORACLE_BRANCH_COVERAGE_RULE = REQUIRED
 NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION = ONE_LEXICOGRAPHIC_REPRESENTATIVE_PER_UNCOVERED_REALIZED_SIGNATURE
 NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SOURCE = POSITIVE_MAIN_STATUSES_ONLY
 NEGATIVE_DELTA_RESULTS_AFFECT_SUBSET_SELECTION = FORBIDDEN
+NEGATIVE_DELTA_ORACLE_SET_FREEZE_TIMING = BEFORE_ANY_NEGATIVE_MAIN_EXECUTION
 ```
+
+**Diagnostics obligatoires de couverture de branches.** Une fois la sélection ci-dessus effectuée, publier :
+
+```text
+NEGATIVE_DELTA_ORACLE_REALIZED_SIGNATURE_COUNT
+```
+
+= nombre de signatures catégorielles de branche distinctes réalisées sur l'ensemble des 120 points MAIN positifs à `delta` fini, à `Lambda=2`.
+
+```text
+NEGATIVE_DELTA_ORACLE_BASE_SIGNATURE_COUNT
+```
+
+= nombre de ces signatures réalisées déjà représentées par la base à 17 points.
+
+```text
+NEGATIVE_DELTA_ORACLE_BRANCH_EXTENSION_SIZE
+```
+
+= `|S_branch_extension_plus|`.
+
+```text
+NEGATIVE_DELTA_ORACLE_FINAL_SIZE
+```
+
+= `|S_oracle_plus|`.
+
+```text
+NEGATIVE_DELTA_ORACLE_BRANCH_COVERAGE_DIAGNOSTICS = MANDATORY_PUBLICATION
+```
+
+Ces comptages sont `DIAGNOSTIC_ONLY`. Ils :
+
+- ne créent pas de diversité minimale requise ;
+- ne changent pas `PASS`/`FAIL` par eux-mêmes ;
+- ne modifient pas l'appartenance au sous-ensemble après gel ;
+- ne prétendent pas qu'un grand nombre de signatures implique la correction.
+
+Avertissement : une partition de signatures réalisées dégénérée (par exemple une seule signature partagée par la plupart/la totalité des points MAIN positifs) doit être visible dans la publication et ne doit jamais être décrite comme une forte couverture de branches au seul motif que l'algorithme déterministe s'est achevé.
 
 Cette règle est information-monotone : elle ne peut qu'ajouter du travail de test, jamais racheter un `FAIL` ni améliorer un résultat scientifique. Taille finale :
 
@@ -536,6 +578,23 @@ DELTA_COVARIANCE_ORACLE_CONTINUOUS_LAYER
 La couche discrète compare les correspondances catégorielles/de statut, sans nouvelle tolérance d'égalité flottante ; `PASS` uniquement si les deux côtés sont individuellement résolus et leurs branches catégorielles symétriquement cohérentes ; un côté non résolu donne `NUMERICALLY_INCONCLUSIVE`.
 
 La couche continue compare `E_GS`, gap, temps d'événement, diagnostics continus de chemin/récurrence, `C_eff`, `Delta_1`, etc. ; ses seuils `PASS`/`FAIL` restent conditionnés à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN`. Ce lot ne définit pas cette tolérance.
+
+**Diagnostic d'asymétrie de résolution.** Pour chaque paire `+/-` requise, enregistrer si un signe est résolu alors que le partenaire mappé est numériquement non résolu. Publier :
+
+```text
+NEGATIVE_DELTA_ORACLE_RESOLUTION_ASYMMETRY_COUNT
+```
+
+ainsi que les points de paramètres / objets mappés affectés.
+
+```text
+NEGATIVE_DELTA_ORACLE_RESOLUTION_ASYMMETRY_DIAGNOSTIC = MANDATORY_PUBLICATION
+```
+
+Rôle : `DIAGNOSTIC_ONLY`. Ceci ne crée aucune nouvelle règle de `FAIL` autonome. La sémantique existante reste inchangée :
+
+- un décalage résolu au-delà de la tolérance applicable future -> `FAIL` ;
+- un côté requis non résolu, sans `FAIL` résolu -> `NUMERICALLY_INCONCLUSIVE`.
 
 ```text
 NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE = NONE
@@ -618,6 +677,9 @@ NEGATIVE_DELTA_ORACLE_SUBSET_SCOPE  = MAIN_FINITE_DELTA_ONLY
 NEGATIVE_DELTA_ORACLE_BASE_SIZE     = 17
 NEGATIVE_DELTA_ORACLE_BASE_DESIGN   = AXIAL_CROSS_PLUS_INTERACTION_CORNERS
 NEGATIVE_DELTA_ORACLE_BRANCH_COVERAGE_RULE = REQUIRED
+NEGATIVE_DELTA_ORACLE_SET_FREEZE_TIMING = BEFORE_ANY_NEGATIVE_MAIN_EXECUTION
+NEGATIVE_DELTA_ORACLE_BRANCH_COVERAGE_DIAGNOSTICS = MANDATORY_PUBLICATION
+NEGATIVE_DELTA_ORACLE_RESOLUTION_ASYMMETRY_DIAGNOSTIC = MANDATORY_PUBLICATION
 NEGATIVE_DELTA_ORACLE_TOTAL_SIZE    = DERIVED_BOUNDED_17_TO_120
 NEGATIVE_DELTA_ORACLE_INDEPENDENT_RECOMPUTATION = REQUIRED
 NEGATIVE_DELTA_ORACLE_COMPARISON_LEVEL = FULL_MAPPED_DEPENDENCY_CLOSURE
