@@ -147,6 +147,32 @@ Aucun verdict de troncature ne rachète un veto scientifique local.
 
 L'admissibilité `eta` de seuil utilise la règle spéciale PRE-INTERSECTION ci-dessous (§16-20), pas une comparaison de `E_eta^common(Q)` à lui-même.
 
+### 4.1 Dépendance : cohérence entre estimateurs de propagation
+
+Aux points de stress `Lambda=3` sélectionnés, lorsqu'une quantité scientifique requise s'appuie sur l'interprétation par estimateur de propagation à `delta` fini, évaluer le statut catégoriel :
+
+```text
+ESTIMATOR_COHERENCE_POINT
+```
+
+en utilisant `estimator-coherence-control.md`. Ce statut fait partie de la fermeture de dépendance scientifique complète requise (§4, catégorie « toute autre catégorie terminale déjà gelée changeant le sens scientifique »).
+
+Routage au sein du présent protocole de cutoff :
+
+```text
+- ROBUST_COHERENT_ORDERING reste comparable au cutoff, sous la même
+  provisionalité finale zéro/symétrie que le reste de ce protocole ;
+- ESTIMATOR_ORDERING_CONFLICT reste une condition scientifique locale
+  CONTROL_SENSITIVE/non confirmatoire ; la stabilité de cutoff ne la rachète
+  jamais ;
+- ESTIMATOR_ELIGIBILITY_ASYMMETRY, NONCONFIRMATORY_COMMON_LOCAL_VETO et les
+  limitations de couverture sans estimateur de seuil restent des
+  dépendances locales non confirmatoires ;
+- NUMERICALLY_INCONCLUSIVE reste fail-closed.
+```
+
+Ceci ne crée aucune nouvelle tolérance de troncature et n'agrège jamais le statut de cohérence dans une métrique scalaire.
+
 ## 5. Métrique d'état
 
 Plongement naturel :

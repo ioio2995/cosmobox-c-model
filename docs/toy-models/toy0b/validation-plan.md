@@ -1643,6 +1643,57 @@ Rejeté explicitement (contrôle de comparaison `TRUNCATION_COMPARISON_TOLERANCE
 TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
+### 16.2 Ordre opérationnel du contrôle de cohérence d'estimateurs `ESTIMATOR_COHERENCE_CRITERION`
+
+Définition normative complète : `estimator-coherence-control.md`.
+
+```text
+1. sélectionner un point MAIN positif à delta fini
+2. construire le domaine complet gelé des seuils eta requis
+3. évaluer l'éligibilité locale pour GROW et chaque THRESHOLD(eta) requis
+4. publier les comptages requis/éligibles/résolus d'estimateurs
+5. calculer l'intervalle p/2p et propagé de Delta1 pour chaque estimateur
+   éligible
+6. classer chaque ordre résolu selon l'orientation fixée
+7. inspecter TOUS les ordres de seuil éligibles, sans moyenne ni vote
+8. détecter un conflit d'ordre interne à la famille de seuils
+9. comparer GROW à l'ordre de seuil cohérent
+10. séparer le conflit d'ordre de l'asymétrie d'éligibilité
+11. publier les diagnostics de magnitude
+12. agréger le statut de point
+13. agréger MAIN selon la priorité corrigée
+14. garder toute revendication finale de non-nullité/signe conditionnée au
+    contrôle zéro/symétrie
+15. appliquer la correspondance de covariance aux points d'oracle négatif
+    lorsque requis
+16. à Lambda=3, propager le statut catégoriel de cohérence à travers la
+    fermeture de dépendance de troncature déjà gelée
+17. ne pas exécuter/revendiquer l'oracle de rééchelonnement comme
+    confirmatoire tant que sa paramétrisation finale zéro/symétrie n'est
+    pas fermée
+```
+
+Rejeté explicitement (contrôle de cohérence d'estimateurs) :
+
+```text
+- porte d'égalité entre les magnitudes de croissance et de seuil
+- moyennage de Delta1 sur eta
+- vote majoritaire sur eta
+- suppression d'un eta discordant
+- traiter une asymétrie d'éligibilité comme un conflit d'ordre
+- utiliser un estimateur non éligible pour inférer le signe
+- traiter Delta1_short comme un troisième estimateur de propagation
+- inflation d'évidence par un grand nombre de niveaux eta
+- importer la règle du minimum 3 niveaux du temps court dans la cohérence
+- inventer ici une grille s ou un seuil d'égalité/zéro
+```
+
+À figer :
+
+```text
+ESTIMATOR_COHERENCE_CRITERION = VALIDATED_FOR_FREEZE
+```
+
 ---
 
 ## 17. Paramètres numériques réellement OPEN
@@ -1651,7 +1702,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # verdicts
-ESTIMATOR_COHERENCE_CRITERION
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES
 ```
 
@@ -1685,6 +1735,7 @@ RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
+ESTIMATOR_COHERENCE_CRITERION
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1797,9 +1848,37 @@ MAIN séparé de l'extérieur (`TRUNCATION_MAIN_AGGREGATION=
 POINTWISE_FAIL_CLOSED_NO_AVERAGING`) ; protocole détaillé :
 `truncation-comparison-control.md`, séquence exécutable ci-dessus §16.1).
 Aucune nouvelle tolérance de virgule flottante
-(`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). Ne ferme ni
-`ESTIMATOR_COHERENCE_CRITERION`, ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`,
-qui restent `OPEN`.
+(`TRUNCATION_NEW_FLOATING_POINT_TOLERANCE=NONE`). Ne ferme pas
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
+
+`ESTIMATOR_COHERENCE_CRITERION` est `VALIDATED_FOR_FREEZE` (portée
+`MAIN_FINITE_DELTA_PRIMARY_SIGNAL`, objet de cohérence par ordre relationnel
+`Delta1` (`ESTIMATOR_COHERENCE_OBJECT=DELTA1_RELATIONAL_ORDERING`), rejet de
+la porte d'égalité de magnitude (`ESTIMATOR_MAGNITUDE_EQUALITY_GATE=
+REJECTED`), famille complète de seuils `eta` sans sélection a posteriori
+(`ESTIMATOR_COHERENCE_THRESHOLD_DOMAIN=
+EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`,
+`ESTIMATOR_COHERENCE_POSTHOC_ETA_SELECTION=FORBIDDEN`), éligibilité
+scientifique locale évaluée en premier, correction de blocage distinguant
+l'asymétrie d'éligibilité (limitation de couverture non confirmatoire) d'un
+contre-exemple d'ordre résolu (`ESTIMATOR_ELIGIBILITY_CONFLICT_AS_
+ORDERING_COUNTEREXAMPLE=REJECTED`), diagnostics obligatoires de cardinalité
+effective (`ESTIMATOR_COHERENCE_CARDINALITY_DIAGNOSTICS=
+MANDATORY_PUBLICATION`), agrégation MAIN ponctuelle sans moyennage où seul un
+conflit d'ordre résolu domine (`ESTIMATOR_COHERENCE_MAIN_AGGREGATION=
+POINTWISE_NO_AVERAGING_ORDERING_CONFLICT_ONLY_DOMINATES_AS_
+PROTOCOL_DEPENDENCE`), et conditionnalité de toute revendication finale
+d'ordre non nul au contrôle zéro/symétrie
+(`ESTIMATOR_ORDERING_FINAL_CLAIM_REQUIRES_ZERO_SYMMETRY_CONTROL=YES`) ;
+protocole détaillé : `estimator-coherence-control.md`, séquence exécutable
+ci-dessus §16.2). L'oracle exact de rééchelonnement temporel reste un
+contrôle d'implémentation obligatoire dont la paramétrisation numérique est
+différée au contrôle zéro/symétrie (`ESTIMATOR_RESCALING_ORACLE_ROLE=
+MANDATORY_IMPLEMENTATION_CONTROL`,
+`ESTIMATOR_RESCALING_ORACLE_PARAMETERIZATION=
+DEFERRED_TO_NUMERICAL_ZERO_AND_SYMMETRY_CONTROL`). Aucune nouvelle tolérance
+scalaire (`ESTIMATOR_COHERENCE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui reste `OPEN`.
 
 ---
 
