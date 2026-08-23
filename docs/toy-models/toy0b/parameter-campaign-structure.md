@@ -144,7 +144,52 @@ Les contrôles `Lambda=2 -> 3` doivent donc être concentrés en priorité dans 
 
 Le paramètre `mu` peut en outre modifier les configurations de matière dominantes et donc leur `spread`; les deux signes de `mu` doivent être représentés dans les points de stress de troncature.
 
-La sélection exacte de ces points reste `OPEN`.
+Cette sélection est désormais préenregistrée et fixe (définition normative complète : `truncation-design-qualification.md` §8) :
+
+```text
+TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE
+TRUNCATION_STRESS_POINT_SUBSET_SIZE = 18
+TRUNCATION_STRESS_MAIN_POINT_COUNT = 16
+TRUNCATION_STRESS_OUTER_POINT_COUNT = 2
+TRUNCATION_STRESS_POINT_DESIGN = THREE_AXIS_STRESS_CROSS_PLUS_CONDITIONING_INTERIOR_AND_OUTER_ANCHORS
+```
+
+L'ensemble comprend un squelette de stress à trois axes (spine `delta` complète à `g` faible ; spine `g` complète à `mu` négatif et `delta` maximal nominal ; spine `mu` complète à `g` faible et `delta` maximal nominal), une ancre intérieure de calibration `(1,0,2/5)`, deux points de stress extérieurs déjà divulgués `(1/10,0,0)` et `(1,0,9/10)`, et une ancre de stress de conditionnement `(1,-1,0)` motivée par le petit gap déjà divulgué en qualification préalable (`gap_GS ~= 0.214`), sans établir de loi de monotonie globale du gap ni de seuil de petit gap. `g_weak=g(1-|delta|)` motive ce design mais ne constitue pas un théorème de convergence.
+
+Une ancre de référence obligatoire, distincte du sous-ensemble de stress et non comptée dans sa taille, est requise à `Lambda=3` :
+
+```text
+TRUNCATION_REFERENCE_ANCHOR = (1,0,0)
+TRUNCATION_REFERENCE_ANCHOR_ROLE = MANDATORY_REFERENCE_NOT_STRESS
+```
+
+Chaque point sélectionné est comparé sur la fermeture de dépendance scientifique complète requise, avec la fermeture de dépendance `eta` commune déjà gelée aux deux cutoffs, sans rétrécissement différencié :
+
+```text
+TRUNCATION_STRESS_OBSERVABLE_SCOPE = FULL_REQUIRED_SCIENTIFIC_DEPENDENCY_CLOSURE
+TRUNCATION_THRESHOLD_DOMAIN_RULE = EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE
+```
+
+Ce sous-ensemble est fixé avant toute évaluation confirmatoire `Lambda=3` ; aucune extension adaptative ni substitution a posteriori n'est autorisée à partir des résultats observés :
+
+```text
+TRUNCATION_STRESS_POSTHOC_SUBSTITUTION = FORBIDDEN
+TRUNCATION_STRESS_ADAPTIVE_EXTENSION = REJECTED_FOR_PRIMARY_PREREGISTERED_SUBSET
+TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE = NONE
+```
+
+Tout point MAIN non sélectionné par ce sous-ensemble n'obtient aucun statut de cutoff certifié par ce protocole clairsemé, et un contrôle réussi ne supporte qu'une absence d'instabilité détectée sur ce sous-ensemble préenregistré, jamais une convergence uniforme sur tout le domaine MAIN :
+
+```text
+TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT = NOT_CERTIFIED_BY_STRESS_SUBSET
+TRUNCATION_STRESS_CLAIM_SCOPE = PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM
+```
+
+Ce sous-ensemble porte exclusivement sur `delta` non négatif ; `delta` négatif reste un oracle d'implémentation de signe déjà couvert par `NEGATIVE_DELTA_ORACLE_SUBSET` (§11) et n'apporte aucune évidence de troncature physique indépendante (`TRUNCATION_NEGATIVE_DELTA_ROLE = IMPLEMENTATION_ORACLE_ONLY`). Il n'absorbe pas SOFT-LOOP : la porte statique `Lambda=2`/`3` déjà gelée de SOFT-LOOP reste inchangée et hors de cette sélection (`SOFT_LOOP_EXISTING_CUTOFF_OBLIGATIONS = UNCHANGED_AND_OUTSIDE_TRUNCATION_STRESS_SUBSET_SELECTION`) ; ce lot n'impose aucune nouvelle campagne dynamique `Xi1` au cutoff (`SOFT_LOOP_DYNAMIC_XI1_CUTOFF_REQUIREMENT_BY_THIS_LOT = NOT_IMPOSED`).
+
+```text
+TRUNCATION_COMPARISON_TOLERANCES = OPEN
+```
 
 ## 6. Limite de pur hopping et scaling d=2
 
@@ -643,6 +688,12 @@ NEGATIVE_DELTA_ORACLE_LAMBDA3_FALLBACK = (1,0,+/-2/5)
 
 Ce repli est un oracle d'implémentation de signe uniquement ; il ne devient pas un point de stress de troncature.
 
+Le sous-ensemble de stress de troncature étant désormais fixe (§5 ; définition normative complète : `truncation-design-qualification.md` §8), l'intersection `S_oracle_plus intersect S_truncation_plus^(Lambda3)` contient structurellement au moins `(1,0,2/5)`. La règle générique de repli ci-dessus n'est pas supprimée et reste une garde de sécurité valide pour le protocole général, mais elle n'est PAS déclenchée pour cette campagne :
+
+```text
+NEGATIVE_DELTA_ORACLE_LAMBDA3_FALLBACK_STATUS_FOR_CURRENT_TRUNCATION_SUBSET = NOT_TRIGGERED_STRUCTURALLY
+```
+
 ### 11.10 Exclusions / couverture résiduelle
 
 Ne PAS ajouter `g=0`, `g=0.10`, `|delta|=0.9` à l'oracle négatif MAIN. À `g=0`, `delta` est structurellement inactif et l'oracle de signe dégénère vers l'oracle nul déjà existant. `g=0.10` et `|delta|=0.9` sont des points de stress/qualification divulgués séparés, hors MAIN.
@@ -689,7 +740,9 @@ NEGATIVE_DELTA_ORACLE_LAMBDA3_FALLBACK = (1,0,+/-2/5)
 NEGATIVE_DELTA_ORACLE_POINT_ROLE    = NUMERICAL_CONTROL / IMPLEMENTATION_ORACLE
 NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE = NONE
 DELTA1_ODDNESS_ONLY_AS_END_TO_END_ORACLE = REJECTED_AS_INSUFFICIENT_FOR_MAIN
-TRUNCATION_STRESS_POINTS            = OPEN
+TRUNCATION_STRESS_POINT_SUBSET      = VALIDATED_FOR_FREEZE
+TRUNCATION_STRESS_POINT_SUBSET_SIZE = 18
+TRUNCATION_COMPARISON_TOLERANCES    = OPEN
 D2_G2_SCALING                       = CONDITIONAL_EXPECTATION
 REFERENCE_GS_QUALIFICATION          = COMPLETED_NONCONFIRMATORY
 REFERENCE_D_GS_LAMBDA2              = 1

@@ -1551,10 +1551,49 @@ Les harmonique `k=5,6` propres à `Lambda=3` sont `EXTENDED_DIAGNOSTIC`.
 
 Le sous-ensemble `Lambda=3` doit concentrer les points de stress préenregistrés, notamment dans la région faible `g`, `mu<0`, grand `|delta|`, sans modifier le sous-ensemble après inspection.
 
+Ce sous-ensemble est désormais fixe (définition normative complète : `truncation-design-qualification.md` §8, résumé opérationnel : `parameter-campaign-structure.md` §5) :
+
+```text
+TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE
+TRUNCATION_STRESS_POINT_SUBSET_SIZE = 18
+TRUNCATION_STRESS_MAIN_POINT_COUNT = 16
+TRUNCATION_STRESS_OUTER_POINT_COUNT = 2
+```
+
+Ordre exécutable de sélection/exécution du contrôle de troncature :
+
+```text
+1. utiliser le sous-ensemble fixe à 18 points de stress
+2. garantir la disponibilité de l'ancre de référence Lambda=3 (1,0,0)
+3. évaluer les mêmes paramètres physiques à Lambda=2 et Lambda=3
+4. pour les quantités de seuil, utiliser la fermeture de dépendance eta
+   commune complète déjà existante, aux deux cutoffs
+5. évaluer la fermeture de dépendance scientifique complète requise
+6. publier les diagnostics B2/Ritz/spectraux/harmoniques où disponibles
+7. appliquer les futures TRUNCATION_COMPARISON_TOLERANCES seulement une fois
+   ce contrôle fermé
+8. ne jamais retirer un point de stress non résolu/échoué
+9. garder les points extérieurs séparés de l'évidence MAIN nominale
+10. rapporter les points MAIN non échantillonnés comme
+    NOT_CERTIFIED_BY_STRESS_SUBSET
+```
+
+Les obligations statiques `Lambda=2`/`3` de SOFT-LOOP restent indépendantes. Ce lot n'impose aucune nouvelle campagne dynamique `Xi1` au cutoff. Si `Xi1` est comparé aux deux cutoffs, `SAME_PHYSICAL_H_ACROSS_CUTOFFS` s'applique.
+
+Rejeté explicitement :
+
+```text
+- B2 comme estimateur d'erreur de troncature
+- accord de E_GS comme certificat suffisant
+- extension adaptative du sous-ensemble de stress
+- substitution de point après inspection Lambda=3
+- rétrécissement de eta spécifique au cutoff
+- revendication de convergence uniforme sur tout le domaine
+```
+
 À figer :
 
 ```text
-TRUNCATION_STRESS_POINT_SUBSET = OPEN
 TRUNCATION_COMPARISON_TOLERANCES = OPEN
 ```
 
@@ -1566,7 +1605,6 @@ Cette liste est normative pour la phase de clôture et remplace les anciennes li
 
 ```text
 # campaign / cutoff
-TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
 
 # verdicts
@@ -1602,6 +1640,7 @@ EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 NEGATIVE_DELTA_ORACLE_SUBSET
+TRUNCATION_STRESS_POINT_SUBSET
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1673,8 +1712,28 @@ NUMERICAL_CONTROL/IMPLEMENTATION_ORACLE`), règle de cutoff `Lambda=2`/
 `(1,0,+/-2/5)` ; protocole détaillé : `parameter-campaign-structure.md` §11,
 séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
 (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
-`TRUNCATION_STRESS_POINT_SUBSET`, ni `TRUNCATION_COMPARISON_TOLERANCES`, ni
+`TRUNCATION_COMPARISON_TOLERANCES`, ni
 `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+
+`TRUNCATION_STRESS_POINT_SUBSET` est `VALIDATED_FOR_FREEZE` (sous-ensemble
+fixe à 18 points préenregistrés `TRUNCATION_STRESS_POINT_SUBSET_SIZE=18`,
+`TRUNCATION_STRESS_MAIN_POINT_COUNT=16`,
+`TRUNCATION_STRESS_OUTER_POINT_COUNT=2`, ancre de référence obligatoire non
+comptée `TRUNCATION_REFERENCE_ANCHOR=(1,0,0)`, ancre de stress de
+conditionnement `(1,-1,0)` motivée par le petit gap déjà divulgué en
+qualification préalable, fermeture de dépendance scientifique complète
+requise (`TRUNCATION_STRESS_OBSERVABLE_SCOPE=
+FULL_REQUIRED_SCIENTIFIC_DEPENDENCY_CLOSURE`), règle `eta` commune existante
+(`TRUNCATION_THRESHOLD_DOMAIN_RULE=
+EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`), absence d'extension
+adaptative (`TRUNCATION_STRESS_ADAPTIVE_EXTENSION=
+REJECTED_FOR_PRIMARY_PREREGISTERED_SUBSET`), portée restreinte au soutien
+préenregistré (`TRUNCATION_STRESS_CLAIM_SCOPE=
+PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM`) ; protocole détaillé :
+`truncation-design-qualification.md` §8, résumé opérationnel :
+`parameter-campaign-structure.md` §5, séquence exécutable ci-dessus). Aucune
+nouvelle tolérance scalaire (`TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE=NONE`).
+Ne ferme pas `TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
 
 ---
 

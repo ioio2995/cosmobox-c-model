@@ -1260,7 +1260,7 @@ Le contrôle scientifique `Lambda=2 -> 3` doit comparer les mêmes observables e
 
 Pour les harmoniques : appariement principal à `k` fixe ; appariement à `j=2Lambda-k` comme diagnostic relatif au bord.
 
-Le sous-ensemble exact des points de stress `Lambda=3` reste à préenregistrer.
+Le sous-ensemble exact des points de stress `Lambda=3` est désormais préenregistré et fixe (`TRUNCATION_STRESS_POINT_SUBSET = VALIDATED_FOR_FREEZE`, définition normative complète : `truncation-design-qualification.md` §8, résumé opérationnel : `parameter-campaign-structure.md` §5). Il comprend 18 points fixes (`TRUNCATION_STRESS_POINT_SUBSET_SIZE=18` ; `TRUNCATION_STRESS_MAIN_POINT_COUNT=16` ; `TRUNCATION_STRESS_OUTER_POINT_COUNT=2` ; `TRUNCATION_STRESS_POINT_DESIGN=THREE_AXIS_STRESS_CROSS_PLUS_CONDITIONING_INTERIOR_AND_OUTER_ANCHORS`), plus une ancre de référence obligatoire `Lambda=3` distincte et non comptée dans ce total (`TRUNCATION_REFERENCE_ANCHOR=(1,0,0)`, `TRUNCATION_REFERENCE_ANCHOR_ROLE=MANDATORY_REFERENCE_NOT_STRESS`). Chaque point sélectionné est comparé sur la fermeture de dépendance scientifique complète requise (`TRUNCATION_STRESS_OBSERVABLE_SCOPE=FULL_REQUIRED_SCIENTIFIC_DEPENDENCY_CLOSURE`), avec la fermeture `eta` commune déjà gelée aux deux cutoffs, sans rétrécissement différencié (`TRUNCATION_THRESHOLD_DOMAIN_RULE=EXISTING_COMPLETE_COMMON_ETA_DEPENDENCY_CLOSURE`). Le sous-ensemble porte exclusivement sur `delta` non négatif ; `delta` négatif n'apporte aucune évidence de troncature physique indépendante et reste un oracle d'implémentation de signe déjà couvert par `NEGATIVE_DELTA_ORACLE_SUBSET` (`TRUNCATION_NEGATIVE_DELTA_ROLE=IMPLEMENTATION_ORACLE_ONLY`). Aucune extension adaptative n'est autorisée après inspection des résultats `Lambda=3` (`TRUNCATION_STRESS_ADAPTIVE_EXTENSION=REJECTED_FOR_PRIMARY_PREREGISTERED_SUBSET`, `TRUNCATION_STRESS_POSTHOC_SUBSTITUTION=FORBIDDEN`). Un contrôle réussi sur ce sous-ensemble clairsemé ne supporte qu'une absence d'instabilité de cutoff détectée sur ce sous-ensemble préenregistré, jamais une convergence uniforme sur tout le domaine MAIN (`TRUNCATION_STRESS_CLAIM_SCOPE=PREREGISTERED_STRESS_SUPPORT_NOT_UNIFORM_THEOREM`) ; tout point MAIN non sélectionné reste non certifié par ce protocole (`TRUNCATION_CUTOFF_STATUS_FOR_UNSAMPLED_MAIN_POINT=NOT_CERTIFIED_BY_STRESS_SUBSET`). `TRUNCATION_COMPARISON_TOLERANCES` reste `OPEN`.
 
 ---
 
@@ -1519,10 +1519,11 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 ### Campagne / troncature
 
-`NEGATIVE_DELTA_ORACLE_SUBSET` est également `VALIDATED_FOR_FREEZE` ; la base géométrique fixe à 17 points, l'extension déterministe de couverture de branches fondée uniquement sur les statuts catégoriels `+delta`, la taille totale dérivée bornée `17..120`, le recalcul indépendant obligatoire du côté `-delta`, la fermeture de dépendance mappée complète à deux couches (discrète/continue) et la règle de cutoff `Lambda=2`/`Lambda=3` sont définis dans `parameter-campaign-structure.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni `TRUNCATION_STRESS_POINT_SUBSET`, ni `TRUNCATION_COMPARISON_TOLERANCES`, ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+`NEGATIVE_DELTA_ORACLE_SUBSET` est également `VALIDATED_FOR_FREEZE` ; la base géométrique fixe à 17 points, l'extension déterministe de couverture de branches fondée uniquement sur les statuts catégoriels `+delta`, la taille totale dérivée bornée `17..120`, le recalcul indépendant obligatoire du côté `-delta`, la fermeture de dépendance mappée complète à deux couches (discrète/continue) et la règle de cutoff `Lambda=2`/`Lambda=3` sont définis dans `parameter-campaign-structure.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`NEGATIVE_DELTA_ORACLE_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni `TRUNCATION_COMPARISON_TOLERANCES`, ni `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES`, qui restent `OPEN`.
+
+`TRUNCATION_STRESS_POINT_SUBSET` est `VALIDATED_FOR_FREEZE` ; le sous-ensemble fixe de 18 points de stress préenregistrés (16 points MAIN + 2 points de stress extérieurs déjà divulgués), l'ancre de référence obligatoire non comptée `(1,0,0)`, l'ancre de conditionnement `(1,-1,0)`, la fermeture de dépendance scientifique complète requise, la règle `eta` commune déjà existante, l'absence d'extension adaptative et la portée de revendication restreinte au soutien préenregistré sont définis dans `truncation-design-qualification.md` §8 et résumés dans `parameter-campaign-structure.md` §5. Aucune nouvelle tolérance scalaire n'est introduite (`TRUNCATION_STRESS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme pas `TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
 
 ```text
-TRUNCATION_STRESS_POINT_SUBSET
 TRUNCATION_COMPARISON_TOLERANCES
 ```
 
@@ -1542,8 +1543,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
 `STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN`,
 `SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID`,
-`GAMMA_CONTROL_DOMAIN_AND_GRID`, `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` et
-`NEGATIVE_DELTA_ORACLE_SUBSET`.
+`GAMMA_CONTROL_DOMAIN_AND_GRID`, `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`,
+`NEGATIVE_DELTA_ORACLE_SUBSET` et `TRUNCATION_STRESS_POINT_SUBSET`.
 
 ---
 
