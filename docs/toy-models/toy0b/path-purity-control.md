@@ -802,13 +802,13 @@ Utiliser exactement la même `EPS_PATH_VALUES` à `Lambda=2` et `Lambda=3`. Les 
 
 `ROBUST_CLEAN` aux deux cutoffs signifie uniquement une non-dégradation relative par rapport à la propre ligne de base de chaque cutoff. Cela ne prouve **pas** que `P_0` lui-même est stable au cutoff.
 
-Une revendication d'arrivée propre stable au cutoff reste conditionnelle à :
+`ROBUST_CLEAN` aux deux cutoffs ne certifie donc pas, à lui seul, `P_0` ni la couche de chemin complète au cutoff. La stabilité au cutoff de la couche de chemin est désormais évaluée par le protocole général fermé :
 
 ```text
-TRUNCATION_COMPARISON_TOLERANCES = OPEN.
+TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
 
-Aucun rééchelonnement d'`epsilon` par cutoff.
+Définition normative complète : `truncation-comparison-control.md` §21. La même `EPS_PATH_VALUES` reste obligatoire aux deux cutoffs. Aucun rééchelonnement d'`epsilon` par cutoff.
 
 ## 24. Relation avec la garde de récurrence
 
@@ -923,7 +923,7 @@ PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
 TRUNCATION_CONTROL = MANDATORY
 
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
-TRUNCATION_COMPARISON_TOLERANCES       = OPEN
+TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 GAMMA_CONTROL_DOMAIN_AND_GRID          = VALIDATED_FOR_FREEZE
 RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```

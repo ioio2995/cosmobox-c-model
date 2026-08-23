@@ -414,11 +414,26 @@ Si `Lambda=2` est `SUPPORTED` mais que `Lambda=3` n'est pas `SUPPORTED`
 ordinaire : le protocole dynamique de `Lambda=2` peut toujours être calculé ;
 la comparaison de troncature SOFT-LOOP interprétée est
 `NONCONFIRMATORY`/sensible à la troncature ; aucune revendication de
-mécanisme à deux niveaux stable au cutoff n'est autorisée. Cela ne ferme pas :
+mécanisme à deux niveaux stable au cutoff n'est autorisée exactement comme
+défini ci-dessus.
+
+Le protocole général de comparaison de troncature MAIN est désormais fixé :
 
 ```text
-TRUNCATION_COMPARISON_TOLERANCES = OPEN
+TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE
 ```
+
+(définition normative complète : `truncation-comparison-control.md`). Ceci
+N'absorbe PAS, ne remplace PAS et ne rachète PAS la porte statique autonome
+SOFT-LOOP ci-dessus : la séparation déjà gelée entre les obligations de
+cutoff SOFT-LOOP et la sélection du sous-ensemble de stress de troncature
+MAIN (`SOFT_LOOP_EXISTING_CUTOFF_OBLIGATIONS =
+UNCHANGED_AND_OUTSIDE_TRUNCATION_STRESS_SUBSET_SELECTION`,
+`SOFT_LOOP_DYNAMIC_XI1_CUTOFF_REQUIREMENT_BY_THIS_LOT = NOT_IMPOSED` ;
+définition normative : `parameter-campaign-structure.md` §5,
+`truncation-design-qualification.md` §8) reste inchangée. La famille
+générale `{0.01,0.02,0.05}` du protocole MAIN ne remplace pas
+`STATIC_COLLAPSE_TOLERANCE = 0.10` de cette porte statique SOFT-LOOP.
 
 ### 6.11 Oracles signe négatif / `x=0` et provisionalité
 
@@ -468,5 +483,5 @@ SAME_PHYSICAL_DELTA_ACROSS_CUTOFFS     = MANDATORY
 DELTA1_COLLAPSE_PRIMARY_ORACLE         = REJECTED
 DELTA1_COLLAPSE_SECONDARY_HYPOTHESIS   = ALLOWED
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
-TRUNCATION_COMPARISON_TOLERANCES       = OPEN
+TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 ```

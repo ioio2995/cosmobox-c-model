@@ -876,7 +876,7 @@ CUTOFF_STABLE_SHORT_TIME_CONVERGENCE = INSUFFICIENT_COMMON_RANGE
 
 Sinon, propager les statuts non confirmatoires fail-closed.
 
-Ceci ne ferme PAS `TRUNCATION_COMPARISON_TOLERANCES`, qui reste `OPEN`.
+Cette règle de queue conjointe à trois niveaux reste une dépendance requise du protocole général de comparaison de cutoff : moins de 3 niveaux communs joints donne `INSUFFICIENT_COMMON_RANGE`, ce que la famille générale de tolérance ne répare jamais. Le protocole général de comparaison est désormais fixé (`TRUNCATION_COMPARISON_TOLERANCES = VALIDATED_FOR_FREEZE` ; définition normative complète : `truncation-comparison-control.md` §15, §20).
 
 ### 10.15 Publication diagnostique
 
@@ -945,5 +945,7 @@ SUPPORTED_FLOOR_AFTER_CONTRACTION
 SHORT_TIME_CONVERGENCE_NEW_SCALAR_TOLERANCE = NONE
 
 NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES = OPEN
-TRUNCATION_COMPARISON_TOLERANCES       = OPEN
+TRUNCATION_COMPARISON_TOLERANCES       = VALIDATED_FOR_FREEZE
 ```
+
+Définition normative complète du protocole général de comparaison de cutoff : `truncation-comparison-control.md`.
