@@ -1504,3 +1504,71 @@ THRESHOLD_RELATIVE_TIME_GUARD            = REQUIRED
 THRESHOLD_RELATIVE_TIME_NEW_TOLERANCE    = NONE
 THRESHOLD_RELATIVE_TIME_NECESSARY_U_MIN  = 1e-2
 ```
+
+## 28. Certification bornée de racine de récurrence
+
+Cette section ajoute une sous-section de certification de racine bornée pour le
+détecteur de récurrence hystérétique. Elle ne modifie aucune formule
+d'événement existante (`chi'`, `chi - s 2 sqrt(eta)`, `H_grow`). La définition
+normative complète du protocole de récurrence (représentation spectrale,
+porte de normalisation, témoin de RETOUR, complétude de NO RETURN, horizons,
+agrégation, verdict Gamma) est portée par `recurrence-control.md` §11 ; elle
+n'est pas dupliquée ici.
+
+Fonction de racine de récurrence :
+
+```math
+g(t)=C_j(t)-\gamma,
+\qquad
+s_{rec}=1,
+\qquad
+u_{rec}=\frac{\Omega_{safe}t}{\pi}.
+```
+
+Exclusion de cellule CONFIRMATOIRE spécifique à la récurrence :
+
+```math
+\boxed{
+|C_j^{(2p)}(t_c)-\gamma|
+>
+|C_j^{(2p)}(t_c)-C_j^{(p)}(t_c)|
++
+\Omega_{safe}h.
+}
+```
+
+Unicité CONFIRMATOIRE spécifique à la récurrence :
+
+```math
+\boxed{
+|C_j'^{(2p)}(t_c)|
+>
+|C_j'^{(2p)}(t_c)-C_j'^{(p)}(t_c)|
++
+\Omega_{safe}^2h.
+}
+```
+
+Ces marges spécifiques à la récurrence ne modifient PAS les règles de
+certification génériques déjà validées pour `chi`/`H_grow`/`H_path` (§7, §26 ;
+`event-bandwidth-bracketing.md`). Elles remplacent, pour la seule fonction
+normalisée `C_j`, l'ancien test sans marge `|C_j-gamma|>M_1 h`, qui n'est plus
+utilisé en voie confirmatoire (fermeture du blocage B1, `recurrence-control.md`
+§11.4-§11.8).
+
+Réutiliser sans modification `tau_root=1e-12`, `tau_event=1e-10`,
+`SIMPLE_ROOT_CONTROL`, `DEGENERATE_ROOT_CONTROL`, la porte de complétude et de
+subdivision de §26, et `BETA_VALUES={1,1/2,1/4,1/8}`.
+
+Porte de pré-normalisation : avant toute exclusion de cellule ou certification
+de racine de récurrence, la porte de précision au petit dénominateur définie
+dans `recurrence-control.md` §11.4 (`RECURRENCE_NORMALIZATION_GATE =
+RELATIVE_V_P2P_PLUS_RAW_SPECTRAL_MASS_CLOSURE`) doit être franchie. Un échec de
+cette porte donne `RECURRENCE_NORMALIZATION_NUMERICALLY_INCONCLUSIVE` et
+interdit tout verdict confirmatoire `NO RETURN`/`ROBUST_CLEAN`.
+
+```text
+RECURRENCE_ROOT_TOLERANCE  = EXISTING_TAU_ROOT
+RECURRENCE_EVENT_TOLERANCE = EXISTING_TAU_EVENT
+RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE = NONE
+```

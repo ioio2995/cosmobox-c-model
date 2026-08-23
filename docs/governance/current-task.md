@@ -222,6 +222,14 @@ GAMMA_VALUES                    = {(1/8,7/8),(1/4,3/4),(3/8,5/8)}
 GAMMA_STRICT                    = (1/8,7/8)
 GAMMA_PERMISSIVE                = (3/8,5/8)
 GAMMA_GRID_TYPE                 = THREE_POINT_ORDERED_CHAIN
+
+# recurrence hysteresis numerical bounds
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS       = VALIDATED_FOR_FREEZE
+RECURRENCE_CERTIFICATION_OSCILLATORY_FACTOR  = 1
+RECURRENCE_ROOT_TOLERANCE                    = EXISTING_TAU_ROOT
+RECURRENCE_EVENT_TOLERANCE                   = EXISTING_TAU_EVENT
+RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE   = NONE
+RECURRENCE_TGROW_PRIMARY_HORIZON             = T_peak
 ```
 
 Tous ces éléments ont été validés scientifiquement dans ce lot et intégrés
@@ -233,9 +241,6 @@ de gel de Lionel ORCIL autoriser le passage à `FROZEN`.
 ## Paramètres encore OPEN avant gel
 
 ```text
-# threshold / interpretation
-RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
-
 # campaign / cutoff
 NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
@@ -311,14 +316,14 @@ CURRENT_PARAMETER = PENDING_NEXT_SELECTION
 IMPLEMENTATION_0B = NOT_AUTHORIZED
 ```
 
-**État** : quinze paramètres numériques majeurs viennent d'être fermés et intégrés
+**État** : seize paramètres numériques majeurs viennent d'être fermés et intégrés
 documentairement (ROOT_SOLVER_TOLERANCES, SPECTRAL_PRECISION_CONTROL,
 SIMPLE_ROOT_CONTROL, ARGMAX_TOLERANCES, DELTA1_PROPAGATED_ERROR_BUDGET,
 A_DELTA_VALUES, DERIVATIVE_STABILITY_CRITERION, RICHARDSON_USAGE_RULE,
 DEGENERATE_ROOT_CONTROL, STATIC_X_CONTROL_VALUES,
 STATIC_COLLAPSE_NUMERICAL_CRITERION, ETA_GRID_AND_ADMISSIBLE_DOMAIN,
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE, EPS_PATH_CONTROL_DOMAIN_AND_GRID,
-GAMMA_CONTROL_DOMAIN_AND_GRID).
+GAMMA_CONTROL_DOMAIN_AND_GRID, RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS).
 
 **Prochaine action** : sélection par ChatGPT / Lionel ORCIL du prochain
 paramètre OPEN à fermer. Aucune sélection autonome de paramètre suivant.

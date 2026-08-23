@@ -1183,7 +1183,7 @@ GAMMA_PERMISSIVE = (3/8,5/8)
 GAMMA_HYSTERESIS_WIDTHS = {3/4, 1/2, 1/4}
 ```
 
-Le centre fixe `gamma_-+gamma_+=1` (`GAMMA_CENTER=1/2`) est une restriction de design de contrôle sans statut physique. Les bornes numériques de tolérance de croisement/contact/séparation temporelle restent `OPEN` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`).
+Le centre fixe `gamma_-+gamma_+=1` (`GAMMA_CENTER=1/2`) est une restriction de design de contrôle sans statut physique. Les bornes numériques de tolérance de croisement/contact/séparation temporelle sont désormais `VALIDATED_FOR_FREEZE` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, protocole complet : `recurrence-control.md` §11).
 
 Preuve de monotonie par témoin commun : pour `a_1<a_2<1/2`, `gamma_-(a_1)<gamma_-(a_2)` et `gamma_+(a_1)>gamma_+(a_2)` ; si `RETURN_BEFORE_EVENT` se produit sous la paire stricte via `(t_out,t_ret)`, le même couple témoigne d'un retour pour toute paire plus permissive, donc `RETURN(strict) => RETURN(mid) => RETURN(permissive)` et, par contraposée, `NO_RETURN(permissive) => NO_RETURN(mid) => NO_RETURN(strict)`.
 
@@ -1233,6 +1233,36 @@ inspection, rééchelonnement depuis les minima/maxima observés
 
 ```text
 GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+```
+
+### Séquence exécutable de certification numérique fail-closed
+
+Définition normative complète : `recurrence-control.md` §11. Ordre exécutable :
+
+```text
+1. porte de stationnarité / variance non nulle (V_j != 0 structurel ou r_V<=tau_event, W_0 vs V_j)
+2. porte de normalisation p/2p (RECURRENCE_NORMALIZATION_GATE)
+3. construction de C_j et de la famille de cellules de récurrence
+4. tentative de RETOUR fondé sur témoin (CERTIFIED_RETURN)
+5. sinon, certification par complétude continue pour NO_EXIT_BEFORE_EVENT ou EXIT_NO_RETURN_BEFORE_EVENT
+6. logique d'intervalle d'horizon (tau_-/tau_+)
+7. agrégation par site (extrémités p,q)
+8. verdict robuste aux extrémités Gamma (strict/permissive)
+9. contrôle croisé du profil de monotonie (strict=>mid=>permissive)
+10. RECURRENCE_CONTROL_ACCEPTABLE final
+```
+
+Rejeté explicitement :
+
+```text
+- les croisements échantillonnés sur grille comme preuve de NO RETURN
+- l'exclusion de cellule sans marge p/2p (ancien test |C-gamma|>M_1 h)
+- la porte de normalisation absolue max(1,V_j)
+- toute édition post-hoc de l'horizon après inspection des résultats
+```
+
+```text
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```
 
 Un événement candidat est temporellement interprétable seulement si :
@@ -1492,9 +1522,6 @@ TRUNCATION_COMPARISON_TOLERANCES = OPEN
 Cette liste est normative pour la phase de clôture et remplace les anciennes listes dispersées.
 
 ```text
-# threshold / interpretation
-RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
-
 # campaign / cutoff
 NEGATIVE_DELTA_ORACLE_SUBSET
 TRUNCATION_STRESS_POINT_SUBSET
@@ -1531,6 +1558,7 @@ ETA_GRID_AND_ADMISSIBLE_DOMAIN
 SHORT_TIME_THRESHOLD_CONVERGENCE_RULE
 EPS_PATH_CONTROL_DOMAIN_AND_GRID
 GAMMA_CONTROL_DOMAIN_AND_GRID
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
 ```
 
 `DEGENERATE_ROOT_CONTROL` est `VALIDATED_FOR_FREEZE`, avec
@@ -1567,7 +1595,22 @@ détecteur à deux seuils distincts inchangé, chaîne anti-diagonale
 `GAMMA_VALUES={(1/8,7/8),(1/4,3/4),(3/8,5/8)}`, équivalence de verdict aux
 extrema, fenêtre de détection déclarée et sémantique restreinte de
 `ROBUST_CLEAN` ; protocole détaillé ci-dessus et `recurrence-control.md`).
-Ne ferme pas `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, qui reste `OPEN`.
+La fermeture du domaine `Gamma` est distincte de celle des bornes numériques
+de croisement/contact/séparation ; cette dernière est traitée séparément
+ci-dessous.
+
+`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` est `VALIDATED_FOR_FREEZE` (porte de
+précision au petit dénominateur sur la normalisation `C_j`, marges
+d'exclusion de cellule et d'unicité `p/2p` spécifiques à la récurrence, mode
+témoin de `CERTIFIED_RETURN`, mode complétude de `CERTIFIED_NO_RETURN`, règle
+d'incertitude d'horizon, `RECURRENCE_TGROW_PRIMARY_HORIZON=T_peak` comme
+instanciation opérationnelle de l'énoncé scientifique déjà validé « au moins
+jusqu'à `T_peak` », contrôle croisé de monotonie `Gamma`, variance locale
+nulle non confirmatoire ; protocole détaillé : `recurrence-control.md` §11,
+séquence exécutable ci-dessus). Aucune nouvelle tolérance scalaire
+(`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`). Ne ferme ni
+`NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` ni `TRUNCATION_COMPARISON_TOLERANCES`,
+qui restent `OPEN`.
 
 ---
 

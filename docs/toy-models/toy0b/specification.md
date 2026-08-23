@@ -1118,10 +1118,28 @@ ROBUST_CLEAN_SEMANTICS = NO_RECURRENCE_DETECTABLE_BY_PREREGISTERED_FAMILY
 
 Le même domaine `Gamma` est utilisé pour `reference`, `+delta`, `-delta`, chaque `h_k`, `Lambda=2` et `Lambda=3` ; aucune substitution post-hoc (`GAMMA_POSTHOC_SUBSTITUTION=FORBIDDEN`).
 
-Les bornes numériques de tolérance de croisement/contact/séparation temporelle restent `OPEN` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`).
+Les bornes numériques de tolérance de croisement/contact/séparation temporelle sont désormais `VALIDATED_FOR_FREEZE` (`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`, définition normative complète : `recurrence-control.md` §11).
 
 ```text
 GAMMA_CONTROL_DOMAIN_AND_GRID = VALIDATED_FOR_FREEZE
+```
+
+### Certification numérique fail-closed de la garde de récurrence
+
+`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` est `VALIDATED_FOR_FREEZE`. Le protocole numérique complet (`recurrence-control.md` §11) repose sur :
+
+- une porte de précision au petit dénominateur sur la normalisation `C_j=N_j/V_j` (`RECURRENCE_NORMALIZATION_GATE = RELATIVE_V_P2P_PLUS_RAW_SPECTRAL_MASS_CLOSURE`), fondée sur un rapport `p/2p` réellement relatif à `V_j` et sur la fermeture indépendante de la masse spectrale brute, sans normalisation `max(1,V_j)` ;
+- des marges d'exclusion de cellule et d'unicité de racine spécifiques à `C_j`, fondées sur les écarts fonctionnels/dérivés `p/2p` et les bornes structurelles exactes `Omega_safe`/`Omega_safe^2` (`RECURRENCE_EMPTY_CELL_MARGIN`, `RECURRENCE_UNIQUENESS_MARGIN`), en remplacement de l'ancien test sans marge ;
+- aucune nouvelle tolérance scalaire (`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE = NONE`) : réutilisation exacte de `BETA_VALUES`, `tau_root=1e-12`, `tau_event=1e-10`, `SIMPLE_ROOT_CONTROL`, `DEGENERATE_ROOT_CONTROL`, `SPECTRAL_PRECISION_CONTROL` ;
+- `CERTIFIED_RETURN` fondé sur témoin existentiel (`RECURRENCE_CERTIFIED_RETURN_MODE = WITNESS_BASED_EXISTENTIAL`), sans énumération exhaustive de racines ;
+- `CERTIFIED_NO_RETURN` fondé sur complétude continue (`RECURRENCE_CERTIFIED_NO_RETURN_MODE = CONTINUOUS_COMPLETENESS_BASED`), via `NO_EXIT_BEFORE_EVENT` certifié ou `EXIT_NO_RETURN_BEFORE_EVENT` certifié ; toute ambiguïté reste `RECURRENCE_HORIZON_UNRESOLVED` ou `RECURRENCE_FIXED_HORIZON_NUMERICALLY_INCONCLUSIVE`, jamais promue silencieusement ;
+- une règle d'incertitude d'horizon fixe/incertain (`RECURRENCE_HORIZON_UNCERTAINTY_RULE = EARLIEST_HORIZON_FOR_RETURN_LATEST_HORIZON_FOR_NO_RETURN`) ; `RECURRENCE_TGROW_PRIMARY_HORIZON = T_peak` instancie opérationnellement, pour la campagne primaire préenregistrée, l'énoncé scientifique déjà validé « au moins jusqu'à `T_peak` » (§6), sans le redéfinir ; `RECURRENCE_TTHR_PRIMARY_HORIZON = T_down(eta)` est inchangé ;
+- une agrégation par site fail-closed et un verdict robuste `Gamma` évalué aux deux bornes, avec contrôle croisé de la monotonie exacte déjà démontrée (§4) : toute contradiction donne `RECURRENCE_GAMMA_MONOTONICITY_VIOLATION` et `RECURRENCE_STATUS = NUMERICALLY_INCONCLUSIVE`, sans arbitrage par sélection d'un seul calcul ;
+- la variance locale nulle reste non confirmatoire (`RECURRENCE_DIAGNOSTIC = NOT_APPLICABLE_ZERO_LOCAL_VARIANCE`), sans identification silencieuse à `CERTIFIED_NO_RETURN` ; ceci reste conditionné à `NUMERICAL_ZERO_AND_SYMMETRY_TOLERANCES` (`OPEN`) ;
+- `RECURRENCE_CONTROL_ACCEPTABLE` n'est établi que pour `RECURRENCE_STATUS = ROBUST_CLEAN` avec dépendances confirmatoires.
+
+```text
+RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS = VALIDATED_FOR_FREEZE
 ```
 
 ### Condition d'interprétation
@@ -1497,9 +1515,7 @@ STATIC_COLLAPSE_NUMERICAL_CRITERION
 
 `GAMMA_CONTROL_DOMAIN_AND_GRID` est également `VALIDATED_FOR_FREEZE` ; la borne structurelle d'autocorrélation sous stationnarité, la chaîne anti-diagonale préenregistrée `GAMMA_VALUES={(1/8,7/8),(1/4,3/4),(3/8,5/8)}`, le verdict robuste à deux bornes et la fenêtre de détection déclarée sont définis dans `recurrence-control.md`.
 
-```text
-RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS
-```
+`RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS` est également `VALIDATED_FOR_FREEZE` ; la porte de précision au petit dénominateur sur la normalisation `C_j`, les marges d'exclusion de cellule et d'unicité `p/2p` spécifiques à la récurrence, le mode témoin de `CERTIFIED_RETURN`, le mode complétude de `CERTIFIED_NO_RETURN`, la règle d'incertitude d'horizon, l'instanciation opérationnelle `RECURRENCE_TGROW_PRIMARY_HORIZON=T_peak` et le contrôle croisé de monotonie `Gamma` sont définis dans `recurrence-control.md` §11. Aucune nouvelle tolérance scalaire n'est introduite (`RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE=NONE`).
 
 ### Campagne / troncature
 
@@ -1524,8 +1540,8 @@ des événements, `ROOT_SOLVER_TOLERANCES`, `SPECTRAL_PRECISION_CONTROL`,
 `DERIVATIVE_STABILITY_CRITERION`, `RICHARDSON_USAGE_RULE`,
 `ARGMAX_TOLERANCES`, `DEGENERATE_ROOT_CONTROL`,
 `STATIC_COLLAPSE_NUMERICAL_CRITERION`, `ETA_GRID_AND_ADMISSIBLE_DOMAIN`,
-`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID` et
-`GAMMA_CONTROL_DOMAIN_AND_GRID`.
+`SHORT_TIME_THRESHOLD_CONVERGENCE_RULE`, `EPS_PATH_CONTROL_DOMAIN_AND_GRID`,
+`GAMMA_CONTROL_DOMAIN_AND_GRID` et `RECURRENCE_HYSTERESIS_NUMERICAL_BOUNDS`.
 
 ---
 

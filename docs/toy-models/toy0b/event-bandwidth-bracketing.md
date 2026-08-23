@@ -401,7 +401,57 @@ PATH_CONTROL_NEW_SCALAR_NUMERICAL_TOLERANCE = NONE
 
 Aucune nouvelle tolérance de racine n'est introduite : la certification de cellule `H_path` réutilise exactement `BETA_VALUES`, `tau_root=1e-12`, `SIMPLE_ROOT_CONTROL` et `DEGENERATE_ROOT_CONTROL`.
 
-## 9. Statut
+## 9. Bande de la garde de récurrence (`C_j`)
+
+Cette bande est distincte de celle des événements `T_peak`/`T_thr`/`T_down`/`T_grow` et de celle de `H_path` ci-dessus ; elle concerne la certification de cellule du détecteur hystérétique de récurrence (définition complète : `recurrence-control.md` §11).
+
+Fonction de certification :
+
+```text
+g_rec = C_j - gamma
+```
+
+avec :
+
+```text
+s_rec = 1
+```
+
+`C_j` contient des différences d'énergie générales `|E_a-E_b|`, pas seulement des fréquences d'excitation du fondamental ; néanmoins sa bande reste bornée par `Omega_safe = E_max - E_0`. `C_j` est un polynôme trigonométrique pur de type cosinus, pas un produit ni une fonction séculaire :
+
+```math
+C_j(t)=\sum_kw_k\cos(\omega_kt),
+\qquad
+w_k\ge0,
+\qquad
+\sum_kw_k=1,
+\qquad
+0\le\omega_k\le\Omega_{safe}.
+```
+
+Réutiliser exactement `BETA_VALUES = {1,1/2,1/4,1/8}`. Cellule de certification de récurrence initiale :
+
+```math
+\Delta t_k^{rec}=\beta_k\frac{\pi}{\Omega_{safe}}.
+```
+
+Ceci n'altère pas les facteurs de bande déjà validés des autres événements :
+
+```text
+s_peak = 1
+s_thr  = 1
+s_down = 1
+s_grow = 2
+s_path = 4
+```
+
+```text
+RECURRENCE_CERTIFICATION_OSCILLATORY_FACTOR = 1
+RECURRENCE_CERTIFICATION_BETA_VALUES        = EXISTING_BETA_VALUES
+RECURRENCE_HYSTERESIS_NEW_SCALAR_TOLERANCE  = NONE
+```
+
+## 10. Statut
 
 ```text
 CHI_BANDWIDTH_SCALE                    = VALIDATED_FOR_FREEZE
@@ -427,4 +477,6 @@ ZERO_DENSITY_AS_COMPLETENESS_BOUND      = REJECTED
 ZERO_DENSITY_AS_COST_HEURISTIC          = ALLOWED_WITH_SCOPE
 DERIVATIVE_CELL_EXCLUSION               = VALIDATED_IN_PRINCIPLE
 BETA_GRID_VALUES                        = VALIDATED_FOR_FREEZE
+RECURRENCE_CERTIFICATION_OSCILLATORY_FACTOR = 1
+RECURRENCE_CERTIFICATION_BETA_VALUES        = EXISTING_BETA_VALUES
 ```
