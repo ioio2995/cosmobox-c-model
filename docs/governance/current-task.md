@@ -5,13 +5,17 @@ Ce document suit `docs/governance/collaboration-governance.md` §11 et porte le 
 ## Git
 
 ```text
-ACTIVE_BRANCH = documentation/model0b-foundation
+ACTIVE_BRANCH = implementation/model0b
 BASE_COMMIT   = 08d5ca506ff05e15dd9bc084ea121c3d0a19b662
 ERRATA_COMMIT = d00d146
 GOVERNANCE_EXECUTION_PREFLIGHT = dec669d90fc01bc998e53ef8cec2bac7a93f5679
+IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 ```
 
-Aucun code 0B n'est autorisé dans le lot courant.
+L'implémentation de Model 0B n'est autorisée que par lots bornés sur
+`implementation/model0b`. La spécification/le protocole scientifique gelé
+reste immuable. L'exécution confirmatoire reste séparément
+`NOT_AUTHORIZED`.
 
 ---
 
@@ -36,7 +40,12 @@ MODEL0B_FREEZE_DECISION_DATE    = 2026-08-24
 MODEL0B_FREEZE_BASE_COMMIT      = d796c65d2538eaba2be7882647ba91db5cf93a32
 MODEL0B_FREEZE_RECORD           = docs/toy-models/toy0b/freeze-record.md
 MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES
-IMPLEMENTATION_0B               = NOT_AUTHORIZED
+IMPLEMENTATION_0B               = AUTHORIZED
+IMPLEMENTATION_0B_AUTHORIZATION      = EXPLICITLY_APPROVED
+IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
+IMPLEMENTATION_BRANCH                = implementation/model0b
+IMPLEMENTATION_BRANCH_BASE_COMMIT    = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
+CONFIRMATORY_EXECUTION_0B            = NOT_AUTHORIZED
 
 SCIENTIFIC_METHOD_GOVERNANCE    = DRAFT_IN_FEATURES
 ```
@@ -438,8 +447,13 @@ GROUPED_SPECTRAL_SUPPORT_ORACLE = OPEN_PENDING_SYMMETRY_DERIVATION
 GROUPED_SPECTRAL_SUPPORT_ORACLE_FREEZE_ROLE = NON_BLOCKING_BACKLOG
 GROUPED_SPECTRAL_SUPPORT_ORACLE_REQUIRED_FOR_MODEL0B_FREEZE = NO
 XI1_CONFIRMATORY_SCOPE = SOFT_LOOP_ONLY
-IMPLEMENTATION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = SEPARATE_IMPLEMENTATION_AUTHORIZATION_DECISION
+IMPLEMENTATION_0B = AUTHORIZED
+IMPLEMENTATION_0B_AUTHORIZATION = EXPLICITLY_APPROVED
+IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
+IMPLEMENTATION_BRANCH = implementation/model0b
+IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
+CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
+NEXT_REQUIRED_GOVERNANCE_ACTION = LIONEL_ACCEPT_I0_B_THEN_AUTHORIZE_I1_A
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -469,8 +483,11 @@ reste `OPEN_PENDING_SYMMETRY_DERIVATION` (hors décompte des contrôles majeurs,
 n'implique ni exécution de la campagne confirmatoire, ni autorisation
 d'implémentation (`MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES`).
 
-**Prochaine action** : `SEPARATE_IMPLEMENTATION_AUTHORIZATION_DECISION`.
-Aucune autorisation autonome d'implémentation n'est créée par ce lot de gel.
+**Prochaine action** : la décision d'autorisation d'implémentation séparée a
+depuis été explicitement approuvée par Lionel ORCIL
+(`IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24`) ; cf. « Rôle spécialisé
+cosmobox-code » ci-dessous pour l'état courant de l'implémentation bornée sur
+`implementation/model0b`.
 
 ---
 
@@ -484,15 +501,24 @@ COSMOBOX_CODE_NOMINAL_MODEL = CLAUDE_SONNET_5
 ```
 
 ```text
-MODEL0B_STATUS      = FROZEN
-IMPLEMENTATION_0B    = NOT_AUTHORIZED
+MODEL0B_STATUS       = FROZEN
+IMPLEMENTATION_0B    = AUTHORIZED
+IMPLEMENTATION_0B_AUTHORIZATION      = EXPLICITLY_APPROVED
+IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
+IMPLEMENTATION_BRANCH                = implementation/model0b
+IMPLEMENTATION_BRANCH_BASE_COMMIT    = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
+CONFIRMATORY_EXECUTION_0B            = NOT_AUTHORIZED
 ```
 
 ```text
-CURRENT_LOT = CODE-AGENT-1 cosmobox-code specialized agent creation
-NEXT_REQUIRED_GOVERNANCE_ACTION = AUTHORIZE_I0_B_IMPLEMENTATION_SKELETON
+CURRENT_LOT = Toy Model 0B I0-B implementation authorization and skeleton
+PHASE       = MODEL0B_IMPLEMENTATION_AUTHORIZED
+CURRENT_IMPLEMENTATION_LOT = I0-B
+NEXT_IMPLEMENTATION_LOT    = I1-A_PHYSICAL_BASIS_AND_GAUSS
+NEXT_REQUIRED_GOVERNANCE_ACTION = LIONEL_ACCEPT_I0_B_THEN_AUTHORIZE_I1_A
 ```
 
-La création du rôle `cosmobox-code` n'autorise ni l'implémentation de
-Model 0B, ni la création de `implementation/model0b`, ni l'exécution du
-mandat I0-B précédemment préparé.
+L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
+`implementation/model0b`. La spécification/le protocole scientifique gelé
+reste immuable. L'exécution confirmatoire reste séparément
+`NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`).
