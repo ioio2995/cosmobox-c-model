@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_C1_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -605,8 +605,25 @@ I2_B2_A_STATUS = IMPLEMENTED_PENDING_REVIEW
 CROSS_PRECISION_CLUSTER_MATCHING = NOT_IMPLEMENTED
 D_P = NOT_IMPLEMENTED
 PRECISION_ROUTING = NOT_IMPLEMENTED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_THEN_LIONEL_DECISION
+I2_B2_A_REVIEW = CORRECTION_REQUIRED_IMPORT_TIME_THRESHOLD_PRECISION
+I2_B2_A_C1_SCOPE = PRECISION_LOCAL_FROZEN_THRESHOLDS
+I2_B2_A_C1_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_B2_A_C1_THRESHOLD_VALUES_CHANGED = NO
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_C1_THEN_LIONEL_DECISION
 ```
+
+Correction I2-B2-A-C1 : les seuils gelés (`BACKWARD_RESIDUAL_TOLERANCE`,
+`BACKWARD_ORTHOGONALITY_TOLERANCE`, `PROJECTOR_STABILITY_TOLERANCE`) sont
+désormais représentés canoniquement en `fractions.Fraction` exact
+(`1/10^12`, `1/10^12`, `1/10^10` — valeurs inchangées,
+`I2_B2_A_C1_THRESHOLD_VALUES_CHANGED = NO`) et matérialisés en `mp.mpf`
+uniquement à l'intérieur du contexte `mp.workprec` actif au moment de la
+comparaison, via `_fraction_to_mpf_current`. Défaut corrigé : les
+constantes étaient auparavant matérialisées en `mp.mpf` au moment de
+l'import du module (précision par défaut ~53 bits), puis réutilisées telles
+quelles lors d'analyses P1/P2, ce qui pouvait produire un verdict de porte
+backward incorrect pour une valeur proche de la frontière gelée. Correction
+de fidélité numérique uniquement ; aucun seuil scientifique modifié.
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé

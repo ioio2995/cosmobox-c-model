@@ -68,13 +68,66 @@ def test_mp_allowed_precision_bits():
     assert mpe.MP_ALLOWED_PRECISION_BITS == (106, 212)
 
 
-def test_backward_tolerances():
-    assert mpe.BACKWARD_RESIDUAL_TOLERANCE == mp.mpf("1e-12")
-    assert mpe.BACKWARD_ORTHOGONALITY_TOLERANCE == mp.mpf("1e-12")
+def test_backward_tolerances_canonical_exact_fraction():
+    # Canonical representation is exact Fraction, never an import-time mpf.
+    assert mpe.BACKWARD_RESIDUAL_TOLERANCE == Fraction(1, 10**12)
+    assert mpe.BACKWARD_ORTHOGONALITY_TOLERANCE == Fraction(1, 10**12)
+    assert isinstance(mpe.BACKWARD_RESIDUAL_TOLERANCE, Fraction)
+    assert isinstance(mpe.BACKWARD_ORTHOGONALITY_TOLERANCE, Fraction)
 
 
-def test_projector_stability_tolerance():
-    assert mpe.PROJECTOR_STABILITY_TOLERANCE == mp.mpf("1e-10")
+def test_projector_stability_tolerance_canonical_exact_fraction():
+    assert mpe.PROJECTOR_STABILITY_TOLERANCE == Fraction(1, 10**10)
+    assert isinstance(mpe.PROJECTOR_STABILITY_TOLERANCE, Fraction)
+
+
+# --- 5. Threshold precision-local materialization regression --------------------
+
+
+@pytest.mark.parametrize("bits", PRECISIONS)
+def test_threshold_materialized_at_active_precision(bits):
+    with mp.workprec(bits):
+        expected_1e12 = mp.mpf(1) / mp.mpf(10**12)
+        expected_1e10 = mp.mpf(1) / mp.mpf(10**10)
+
+        residual_mp = mpe._fraction_to_mpf_current(mpe.BACKWARD_RESIDUAL_TOLERANCE)
+        orthogonality_mp = mpe._fraction_to_mpf_current(mpe.BACKWARD_ORTHOGONALITY_TOLERANCE)
+        projector_mp = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
+
+        assert residual_mp == expected_1e12
+        assert orthogonality_mp == expected_1e12
+        assert projector_mp == expected_1e10
+
+
+# --- 6. Boundary-sensitive gate regression ---------------------------------------
+
+
+def test_boundary_sensitive_threshold_distinguishes_stale_vs_fresh_precision():
+    # Reproduce the exact defect identified in review: an mp.mpf constructed
+    # at 53-bit (import-time-like) precision differs from the correctly
+    # rounded 212-bit value by ~2e-29. Construct a probe value strictly
+    # between the two and verify the P2-local frozen threshold gives the
+    # mathematically correct (stricter) verdict, while the stale 53-bit
+    # approximation would have given the wrong one.
+    stale_53bit_threshold = mp.mpf("1e-12")  # constructed at default (53-bit) precision
+
+    with mp.workprec(212):
+        fresh_212bit_threshold = mpe._fraction_to_mpf_current(mpe.BACKWARD_RESIDUAL_TOLERANCE)
+
+        assert stale_53bit_threshold != fresh_212bit_threshold
+
+        # A probe strictly between the two thresholds.
+        probe = (stale_53bit_threshold + fresh_212bit_threshold) / 2
+        assert stale_53bit_threshold != fresh_212bit_threshold
+        assert min(stale_53bit_threshold, fresh_212bit_threshold) < probe
+        assert probe < max(stale_53bit_threshold, fresh_212bit_threshold)
+
+        # The correct (precision-local, frozen) verdict.
+        correct_verdict = probe <= fresh_212bit_threshold
+        # The verdict the old import-time-rounded constant would have given.
+        stale_verdict = probe <= stale_53bit_threshold
+
+        assert correct_verdict != stale_verdict
 
 
 def test_precision_level_status_values():
@@ -176,6 +229,7 @@ def test_synthetic_rotated_degenerate_projector_invariance(bits):
 
     with mp.workprec(bits):
         result = mpe._analyze_mp_hermitian_matrix(m_mp, precision_bits=bits)
+        projector_tol = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
 
         assert result.clusters[0] == (0, 1)
         assert result.ground_cluster_dimension_candidate == 2
@@ -184,7 +238,7 @@ def test_synthetic_rotated_degenerate_projector_invariance(bits):
         # Only the basis-invariant projector is checked -- never a specific
         # eigenvector inside the degenerate subspace.
         diff = result.ground_cluster_projector - p_expected_mp
-        assert _spectral_norm(diff, bits) <= mpe.PROJECTOR_STABILITY_TOLERANCE
+        assert _spectral_norm(diff, bits) <= projector_tol
 
 
 # --- Backward gate on synthetic matrices ------------------------------------------
@@ -204,9 +258,11 @@ def test_backward_gate_synthetic(entries, bits):
     matrix = _mp_matrix_from_complex(entries, bits)
     with mp.workprec(bits):
         result = mpe._analyze_mp_hermitian_matrix(matrix, precision_bits=bits)
+        residual_tol = mpe._fraction_to_mpf_current(mpe.BACKWARD_RESIDUAL_TOLERANCE)
+        orthogonality_tol = mpe._fraction_to_mpf_current(mpe.BACKWARD_ORTHOGONALITY_TOLERANCE)
 
-        assert result.residual_ratio <= mpe.BACKWARD_RESIDUAL_TOLERANCE
-        assert result.orthogonality_defect <= mpe.BACKWARD_ORTHOGONALITY_TOLERANCE
+        assert result.residual_ratio <= residual_tol
+        assert result.orthogonality_defect <= orthogonality_tol
         assert result.backward_gate_pass is True
         assert result.backward_gate_status == mpe.BACKWARD_GATE_STATUS_PASS
 
@@ -233,7 +289,7 @@ def test_projector_properties_synthetic(entries, bits):
     with mp.workprec(bits):
         result = mpe._analyze_mp_hermitian_matrix(matrix, precision_bits=bits)
         dimension = matrix.rows
-        tol = mpe.PROJECTOR_STABILITY_TOLERANCE
+        tol = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
 
         total = mp.matrix(dimension, dimension)
         for cluster, projector in zip(result.clusters, result.cluster_projectors):
@@ -283,7 +339,8 @@ def test_model0b_reference_analysis(lambda_cutoff, bits):
         for projector in result.cluster_projectors:
             total = total + projector
         completeness_defect = _spectral_norm(total - mp.eye(components.dimension), bits)
-    assert completeness_defect <= mpe.PROJECTOR_STABILITY_TOLERANCE
+        projector_tol = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
+    assert completeness_defect <= projector_tol
 
     assert len(result.ground_cluster_indices) >= 1
 
@@ -318,7 +375,8 @@ def test_model0b_lambda3_p2_scalability():
         for projector in result.cluster_projectors:
             total = total + projector
         completeness_defect = _spectral_norm(total - mp.eye(components.dimension), P2_BITS)
-    assert completeness_defect <= mpe.PROJECTOR_STABILITY_TOLERANCE
+        projector_tol = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
+    assert completeness_defect <= projector_tol
 
     assert result.precision_level_status == mpe.PRECISION_LEVEL_STATUS_P2
 

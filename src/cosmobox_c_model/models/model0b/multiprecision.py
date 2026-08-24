@@ -57,14 +57,30 @@ from cosmobox_c_model.models.model0b.exact_assembly import (
 
 MP_ALLOWED_PRECISION_BITS = (P1_BITS, P2_BITS)
 
-BACKWARD_RESIDUAL_TOLERANCE = mp.mpf("1e-12")
+# Frozen decimal thresholds, represented exactly and precision-independently
+# as `Fraction` (consistent with the I2-B1 exact-scalar policy). `mp.mpf(...)`
+# rounds at whatever precision is active AT CONSTRUCTION TIME; storing these
+# as import-time `mp.mpf` would silently fix them at the (typically 53-bit)
+# import-time precision and reuse that stale rounding during P1/P2 analysis.
+# They must instead be materialized as `mp.mpf` only inside the active
+# `mp.workprec` context, via `_fraction_to_mpf_current`, immediately before
+# use.
+BACKWARD_RESIDUAL_TOLERANCE = Fraction(1, 10**12)
 
-BACKWARD_ORTHOGONALITY_TOLERANCE = mp.mpf("1e-12")
+BACKWARD_ORTHOGONALITY_TOLERANCE = Fraction(1, 10**12)
 
 # Recorded here as frozen protocol provenance for the next (cross-precision)
 # stage. NOT used in this module to issue a p/2p stability verdict: d_P and
 # cross-precision cluster matching are not implemented here.
-PROJECTOR_STABILITY_TOLERANCE = mp.mpf("1e-10")
+PROJECTOR_STABILITY_TOLERANCE = Fraction(1, 10**10)
+
+
+def _fraction_to_mpf_current(fraction: Fraction) -> "mp.mpf":
+    """Exact, correctly-rounded conversion of an exact rational threshold to
+    `mpf` AT THE CURRENTLY ACTIVE working precision. Must be called only
+    while the target `mp.workprec(...)` context is active."""
+    return mp.mpf(fraction.numerator) / mp.mpf(fraction.denominator)
+
 
 BACKWARD_GATE_STATUS_PASS = "MP_BACKWARD_PASS"
 BACKWARD_GATE_STATUS_FAIL = "MP_BACKWARD_FAIL"
@@ -215,9 +231,14 @@ def _analyze_mp_hermitian_matrix(
         tuple(orthogonality_eigenvalues[i] for i in range(dimension))
     )
 
+    # Materialize the frozen exact thresholds at the currently active
+    # precision (not at import time) immediately before the comparison.
+    residual_tolerance_mp = _fraction_to_mpf_current(BACKWARD_RESIDUAL_TOLERANCE)
+    orthogonality_tolerance_mp = _fraction_to_mpf_current(BACKWARD_ORTHOGONALITY_TOLERANCE)
+
     backward_gate_pass = (
-        residual_ratio <= BACKWARD_RESIDUAL_TOLERANCE
-        and orthogonality_defect <= BACKWARD_ORTHOGONALITY_TOLERANCE
+        residual_ratio <= residual_tolerance_mp
+        and orthogonality_defect <= orthogonality_tolerance_mp
     )
     backward_gate_status = (
         BACKWARD_GATE_STATUS_PASS if backward_gate_pass else BACKWARD_GATE_STATUS_FAIL
