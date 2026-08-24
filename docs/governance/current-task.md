@@ -604,15 +604,3 @@ I2-B1 n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I2-B2 o
 suivant) n'est autorisé par ce lot. Ce lot n'implémente ni diagonalisation
 haute précision, ni appariement de cluster, ni `d_P`, ni statut de précision
 final ; `P1_P2_EIGENSYSTEM = NOT_IMPLEMENTED`.
-
-L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
-`implementation/model0b`. La spécification/le protocole scientifique gelé
-reste immuable. L'exécution confirmatoire reste séparément
-`NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
-I2-A n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I2-B ou
-suivant) n'est autorisé par ce lot. `I2_A_PRECISION_SCOPE = P0_BINARY64_ONLY` :
-le contrôle multi-précision gelé (`P1>=106 bits`, `P2>=212 bits`,
-stabilité de projecteur `p/2p`) n'est pas implémenté par ce lot
-(`P1_P2_PRECISION_CONTROL = NOT_IMPLEMENTED`) et ce lot n'a aucun rôle
-confirmatoire (`I2_A_CONFIRMATORY_ROLE = NONE`). Rappel épistémique : un
-cluster numérique P0 n'est jamais une dégénérescence physique certifiée.
