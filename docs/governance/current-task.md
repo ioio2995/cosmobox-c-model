@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B1_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -587,20 +587,35 @@ ChatGPT (`BACKEND_DECISION_BASIS = I2-B-AUDIT + ChatGPT independent API
 review`).
 
 ```text
-CURRENT_LOT = Toy Model 0B I2-B1 exact rational and multiprecision Hamiltonian assembly
+I2_B1_STATUS = ACCEPTED
+I2_B1_ACCEPTED_HEAD = 1e80f8093f3f802e3f0a36fb5f41350d21af6ede
+I2_B1_C1_STATUS = ACCEPTED
+```
+
+Lionel ORCIL a explicitement accepté le lot I2-B1 (`I2_B1_STATUS = ACCEPTED`,
+`I2_B1_ACCEPTED_HEAD = 1e80f8093f3f802e3f0a36fb5f41350d21af6ede`) ainsi que la
+correction de gouvernance I2-B1-C1 (`I2_B1_C1_STATUS = ACCEPTED`).
+
+```text
+CURRENT_LOT = Toy Model 0B I2-B2-A multiprecision eigensystem per precision level
 PHASE       = MODEL0B_IMPLEMENTATION
-CURRENT_IMPLEMENTATION_LOT = I2-B1
-I2_B1_SCOPE  = EXACT_RATIONAL_PARAMETERS_AND_DIRECT_MULTIPRECISION_H_ASSEMBLY
-I2_B1_STATUS = IMPLEMENTED_PENDING_REVIEW
-P1_P2_EIGENSYSTEM = NOT_IMPLEMENTED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B1_THEN_LIONEL_DECISION
+CURRENT_IMPLEMENTATION_LOT = I2-B2-A
+I2_B2_A_SCOPE = P1_P2_SINGLE_LEVEL_EIGENSYSTEM_BACKWARD_GATE_AND_CLUSTERS
+I2_B2_A_STATUS = IMPLEMENTED_PENDING_REVIEW
+CROSS_PRECISION_CLUSTER_MATCHING = NOT_IMPLEMENTED
+D_P = NOT_IMPLEMENTED
+PRECISION_ROUTING = NOT_IMPLEMENTED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_THEN_LIONEL_DECISION
 ```
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé
 reste immuable. L'exécution confirmatoire reste séparément
 `NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
-I2-B1 n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I2-B2 ou
-suivant) n'est autorisé par ce lot. Ce lot n'implémente ni diagonalisation
-haute précision, ni appariement de cluster, ni `d_P`, ni statut de précision
-final ; `P1_P2_EIGENSYSTEM = NOT_IMPLEMENTED`.
+I2-B2-A n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur
+(I2-B2-B ou suivant) n'est autorisé par ce lot. Ce lot analyse un seul
+niveau de précision à la fois (P1=106 bits ou P2=212 bits) ; il n'implémente
+ni appariement de cluster inter-précision, ni `d_P`, ni routage
+`PRECISION_STABLE`/`PRECISION_ESCALATED`/`PRECISION_UNRESOLVED`, ni `d_GS`/
+`gap_GS` final. Rappel épistémique : un cluster numérique P1/P2 n'est jamais
+une dégénérescence physique certifiée.
