@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_R1_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -728,7 +728,8 @@ CURRENT_LOT = Toy Model 0B I2-B2-D canonical ground-state density
 PHASE       = MODEL0B_IMPLEMENTATION
 CURRENT_IMPLEMENTATION_LOT = I2-B2-D
 I2_B2_D_STATUS = IMPLEMENTED_PENDING_REVIEW
-CANONICAL_GROUND_STATE_DENSITY = IMPLEMENTED
+CANONICAL_GROUND_STATE_DENSITY = IMPLEMENTED_FAIL_CLOSED_ON_UNCERTIFIED_MULTIPLICITY
+I2_B2_D_R1_REASON = NUMERICAL_CLUSTER_USED_AS_DEGENERATE_STATE_PREMISE
 FINAL_D_GS = NOT_PUBLISHED
 FINAL_GAP_GS = NOT_PUBLISHED
 SPECTRAL_WEIGHTS = NOT_STARTED
@@ -736,7 +737,7 @@ KUBO = NOT_STARTED
 REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
 REFERENCE_LAMBDA2_GROUND_STATE_BRANCH = GROUND_STATE_UNAVAILABLE_PRECISION
 REFERENCE_LAMBDA2_CANONICAL_GROUND_STATE = CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_R1_THEN_LIONEL_DECISION
 ```
 
 Le lot I2-B2-D consomme exclusivement `ground_state_branch.GroundStateBranchResult`
@@ -761,3 +762,33 @@ aucune nouvelle valeur numérique scientifique n'est figée pour elle. Ni
 n'ont été modifiés. Ce lot n'implémente ni `gap_GS`, ni certification
 physique de dégénérescence, ni projecteurs excités, ni poids spectraux
 `C_C^(pq)`, ni Kubo, ni exécution confirmatoire.
+
+### Correction I2-B2-D-R1 : qualification fail-closed de la multiplicité
+
+La revue distante ChatGPT a identifié que l'implémentation initiale
+autorisait `rho_GS = P_GS/d_GS` comme état résolu pour tout `d_GS`, y
+compris `d_GS > 1`, alors que le protocole gelé distingue explicitement un
+fondamental unique (`rho = |Omega><Omega|`) d'un fondamental dégénéré
+(`rho = P_GS/Tr(P_GS)`), avec le principe
+`NUMERICAL_CLUSTER != PHYSICAL_DEGENERACY` : la dimension `d_gs` fournie
+par I2-B2-C est celle d'un cluster spectral numériquement qualifié, pas un
+certificat de dégénérescence physique/exacte
+(`I2_B2_D_R1_REASON = NUMERICAL_CLUSTER_USED_AS_DEGENERATE_STATE_PREMISE`).
+
+Correction appliquée, strictement dans `ground_state_density.py` :
+- `d_gs == 1` : les deux branches de la prescription gelée coïncident
+  exactement (`rho = |Omega><Omega| = P_GS/1 = P_GS`) ; `rho_gs` republie
+  directement `p_gs`, sans opération arithmétique, statut
+  `CANONICAL_GROUND_STATE_RESOLVED` ;
+- `d_gs > 1` : aucun certificat structurel/exact de dégénérescence
+  n'étant disponible à ce niveau, le pipeline reste fail-closed :
+  nouveau statut `CANONICAL_GROUND_STATE_UNAVAILABLE_DEGENERACY_CERTIFICATION`,
+  `rho_gs = None` ; `p_gs`/`d_gs`/`ground_cluster_indices`/
+  `selected_precision_bits` restent disponibles comme diagnostics de
+  sous-espace numérique, jamais comme certification de dégénérescence.
+
+Aucun changement du protocole scientifique gelé
+(`FROZEN_PROTOCOL_CHANGE = NONE`). Le futur certificat structurel/exact de
+dégénérescence n'est pas inventé dans ce R1 et reste hors périmètre. Ni
+`ground_state_branch.py`, ni `precision_control.py`, ni `multiprecision.py`
+n'ont été modifiés par cette correction.

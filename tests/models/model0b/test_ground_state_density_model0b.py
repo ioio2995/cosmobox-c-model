@@ -1,13 +1,19 @@
 """Tests for the Toy Model 0B canonical ground-state density
-(`ground_state_density.py`): applies the frozen unified rule
-`rho_GS = P_GS/d_GS` to an already built
+(`ground_state_density.py`): applies the frozen canonical-state
+prescription to an already built
 `ground_state_branch.GroundStateBranchResult`, with no new spectral
 computation.
 
 NUMERICAL_CLUSTER != PHYSICAL_DEGENERACY_CERTIFICATION:
-`CANONICAL_GROUND_STATE_RESOLVED` never certifies a physical degeneracy;
-`CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION` is a fail-closed propagation
-of an already-established numerical qualification outcome."""
+`CANONICAL_GROUND_STATE_RESOLVED` is only reachable for `d_gs == 1`
+(where `rho = |Omega><Omega| = P_GS` exactly) and never certifies a
+physical degeneracy. For `d_gs > 1`, this module holds no
+structural/exact degeneracy certificate and fails closed as
+`CANONICAL_GROUND_STATE_UNAVAILABLE_DEGENERACY_CERTIFICATION` rather than
+constructing `rho_gs = p_gs/d_gs` from an uncertified numerical
+multiplicity. `CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION` is a
+fail-closed propagation of an already-established numerical qualification
+outcome (I2-B2-D-R1)."""
 
 from __future__ import annotations
 
@@ -37,6 +43,10 @@ def test_canonical_ground_state_status_values():
     assert (
         gsd.CANONICAL_GROUND_STATE_STATUS_UNAVAILABLE_PRECISION
         == "CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION"
+    )
+    assert (
+        gsd.CANONICAL_GROUND_STATE_STATUS_UNAVAILABLE_DEGENERACY_CERTIFICATION
+        == "CANONICAL_GROUND_STATE_UNAVAILABLE_DEGENERACY_CERTIFICATION"
     )
 
 
@@ -90,36 +100,37 @@ def test_nondegenerate_canonical_density():
     assert density.source_ground_state_status == gsb.GROUND_STATE_STATUS_RESOLVED
     assert density.selected_precision_bits == bits
     assert density.d_gs == 1
-    with mp.workprec(bits):
-        assert density.rho_gs == density.p_gs
+    # rho = |Omega><Omega| = P_GS / 1 = P_GS: republished directly, no
+    # arithmetic operation.
+    assert density.rho_gs is density.p_gs
 
 
-# --- B. d_GS = 2 (synthetic) ----------------------------------------------------------
+# --- B. d_GS = 2 (synthetic): fail-closed, no degeneracy certificate ------------------
 
 
-def test_degenerate_canonical_density():
+def test_degenerate_cluster_fails_closed_on_uncertified_multiplicity():
     bits = 106
     branch = _resolved_branch([[0, 0, 0], [0, 0, 0], [0, 0, 2]], bits)
 
     density = gsd.build_canonical_ground_state_density(branch)
 
-    assert density.status == gsd.CANONICAL_GROUND_STATE_STATUS_RESOLVED
+    assert (
+        density.status
+        == gsd.CANONICAL_GROUND_STATE_STATUS_UNAVAILABLE_DEGENERACY_CERTIFICATION
+    )
+    assert density.rho_gs is None
+    # Numerical sub-space diagnostics remain available, but are never a
+    # degeneracy certification.
     assert density.d_gs == 2
-    with mp.workprec(bits):
-        expected = density.p_gs / 2
-        assert density.rho_gs == expected
-        # No single-eigenvector selection: rho_gs must be the full uniform
-        # mixture, not a rank-1 pure-state projector.
-        trace = sum(density.rho_gs[i, i] for i in range(density.rho_gs.rows))
-        assert trace == mp.mpf(1)
-        assert density.rho_gs[0, 0] == mp.mpf("0.5")
-        assert density.rho_gs[1, 1] == mp.mpf("0.5")
+    assert density.ground_cluster_indices == branch.ground_cluster_indices
+    assert density.p_gs is branch.p_gs
+    assert density.selected_precision_bits == bits
 
 
-# --- C. Basis invariance ---------------------------------------------------------------
+# --- C. Basis invariance (d_gs > 1) -----------------------------------------------------
 
 
-def test_canonical_density_basis_invariance():
+def test_canonical_density_basis_invariance_degenerate():
     bits = 106
     base = _synthetic_eigensystem_result([[0, 0, 0], [0, 0, 0], [0, 0, 2]], bits)
 
@@ -166,10 +177,23 @@ def test_canonical_density_basis_invariance():
     reference_density = gsd.build_canonical_ground_state_density(_wrap(base))
     rotated_density = gsd.build_canonical_ground_state_density(_wrap(rotated_eigensystem))
 
+    # Both rotations must fail closed identically: no rho_gs is fabricated
+    # for an uncertified d_gs > 1 multiplicity, regardless of the internal
+    # eigenvector basis chosen for the numerical cluster.
+    assert (
+        reference_density.status
+        == rotated_density.status
+        == gsd.CANONICAL_GROUND_STATE_STATUS_UNAVAILABLE_DEGENERACY_CERTIFICATION
+    )
+    assert reference_density.rho_gs is None
+    assert rotated_density.rho_gs is None
     assert rotated_density.d_gs == reference_density.d_gs
 
+    # The diagnostic projector p_gs itself remains invariant under the
+    # internal unitary rotation (already established by
+    # ground_state_branch.py's own invariance guarantee).
     with mp.workprec(bits):
-        diff = rotated_density.rho_gs - reference_density.rho_gs
+        diff = rotated_density.p_gs - reference_density.p_gs
         max_defect = max(abs(diff[i, j]) for i in range(diff.rows) for j in range(diff.cols))
     # Representation-only engineering bound derived from the target
     # precision's own unit roundoff, not a new scientific tolerance.
@@ -200,7 +224,46 @@ def test_unavailable_precision_propagates():
     assert density.rho_gs is None
 
 
-# --- E. Contract violations: FAIL EXPLICITLY --------------------------------------------
+# --- E. PRECISION_UNAVAILABLE with an inconsistent field: FAIL EXPLICITLY --------------
+
+
+def _unavailable_branch_template():
+    return gsb.GroundStateBranchResult(
+        status=gsb.GROUND_STATE_STATUS_UNAVAILABLE_PRECISION,
+        source_precision_status=pc.PRECISION_STATUS_UNRESOLVED,
+        selected_precision_bits=None,
+        ground_cluster_indices=None,
+        d_gs=None,
+        p_gs=None,
+    )
+
+
+def test_unavailable_precision_with_stray_selected_precision_bits_fails():
+    branch = dataclasses.replace(_unavailable_branch_template(), selected_precision_bits=106)
+    with pytest.raises(ValueError):
+        gsd.build_canonical_ground_state_density(branch)
+
+
+def test_unavailable_precision_with_stray_ground_cluster_indices_fails():
+    branch = dataclasses.replace(_unavailable_branch_template(), ground_cluster_indices=(0,))
+    with pytest.raises(ValueError):
+        gsd.build_canonical_ground_state_density(branch)
+
+
+def test_unavailable_precision_with_stray_d_gs_fails():
+    branch = dataclasses.replace(_unavailable_branch_template(), d_gs=1)
+    with pytest.raises(ValueError):
+        gsd.build_canonical_ground_state_density(branch)
+
+
+def test_unavailable_precision_with_stray_p_gs_fails():
+    stray_p_gs = _mp_matrix_from_complex([[1]], 106)
+    branch = dataclasses.replace(_unavailable_branch_template(), p_gs=stray_p_gs)
+    with pytest.raises(ValueError):
+        gsd.build_canonical_ground_state_density(branch)
+
+
+# --- F. GROUND_STATE_RESOLVED contract violations: FAIL EXPLICITLY --------------------
 
 
 def _resolved_branch_template(bits=106):
@@ -251,7 +314,7 @@ def test_unrecognized_status_fails():
         gsd.build_canonical_ground_state_density(branch)
 
 
-# --- F. No new spectral computation -----------------------------------------------------
+# --- G. No new spectral computation -----------------------------------------------------
 
 
 def test_no_spectral_recalculation(monkeypatch):
@@ -276,7 +339,7 @@ def test_no_spectral_recalculation(monkeypatch):
     assert density.status == gsd.CANONICAL_GROUND_STATE_STATUS_RESOLVED
 
 
-# --- G-H. Real model integration: I2-B2-B -> I2-B2-C -> I2-B2-D --------------------------
+# --- H-I. Real model integration: I2-B2-B -> I2-B2-C -> I2-B2-D --------------------------
 
 
 def test_lambda1_real_canonical_ground_state_resolved():
@@ -290,8 +353,8 @@ def test_lambda1_real_canonical_ground_state_resolved():
 
     assert density.status == gsd.CANONICAL_GROUND_STATE_STATUS_RESOLVED
     assert density.d_gs == 1
+    assert density.rho_gs is density.p_gs
     with mp.workprec(density.selected_precision_bits):
-        assert density.rho_gs == density.p_gs
         trace = sum(density.rho_gs[i, i] for i in range(density.rho_gs.rows))
         # The real (non-synthetic) eigensystem carries its own already
         # -accepted backward-error residual (I2-B2-A/I2-B2-B); trace(rho_gs)
