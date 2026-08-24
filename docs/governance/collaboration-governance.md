@@ -339,6 +339,21 @@ Sonnet exécute la décision fournie par le mandat. Le choix de Sonnet comme mod
 
 Pour le rôle spécialisé `cosmobox-doc`, les règles de `docs/governance/agents/cosmobox-doc-governance.md` restent intégralement applicables.
 
+### 12.1bis Rôles spécialisés
+
+```text
+cosmobox-physics = SCIENTIFIC_CHALLENGE
+cosmobox-doc     = DOCUMENTATION_INTEGRATION
+cosmobox-code    = BOUNDED_IMPLEMENTATION_AND_TESTING
+```
+
+```text
+CODE_IMPLEMENTATION = SONNET_5 / AUTO
+```
+
+L'autorité détaillée du rôle `cosmobox-code` reste dans
+`docs/governance/agents/cosmobox-code-governance.md`.
+
 ### 12.2 REVIEW_OR_ENGINEERING
 
 ```text

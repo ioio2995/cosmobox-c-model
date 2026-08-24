@@ -471,3 +471,28 @@ d'implémentation (`MODEL0B_FREEZE_DOES_NOT_AUTHORIZE_IMPLEMENTATION = YES`).
 
 **Prochaine action** : `SEPARATE_IMPLEMENTATION_AUTHORIZATION_DECISION`.
 Aucune autorisation autonome d'implémentation n'est créée par ce lot de gel.
+
+---
+
+## Rôle spécialisé cosmobox-code
+
+```text
+COSMOBOX_CODE_AGENT       = AVAILABLE
+COSMOBOX_CODE_PROTOCOL    = COSMOBOX_CODE_PROTOCOL_V1
+COSMOBOX_CODE_GOVERNANCE  = docs/governance/agents/cosmobox-code-governance.md
+COSMOBOX_CODE_NOMINAL_MODEL = CLAUDE_SONNET_5
+```
+
+```text
+MODEL0B_STATUS      = FROZEN
+IMPLEMENTATION_0B    = NOT_AUTHORIZED
+```
+
+```text
+CURRENT_LOT = CODE-AGENT-1 cosmobox-code specialized agent creation
+NEXT_REQUIRED_GOVERNANCE_ACTION = AUTHORIZE_I0_B_IMPLEMENTATION_SKELETON
+```
+
+La création du rôle `cosmobox-code` n'autorise ni l'implémentation de
+Model 0B, ni la création de `implementation/model0b`, ni l'exécution du
+mandat I0-B précédemment préparé.
