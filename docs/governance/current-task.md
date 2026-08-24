@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_C_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -688,14 +688,14 @@ explicitement accepté I2-B2-B (`I2_B2_B_STATUS = ACCEPTED`,
 CURRENT_LOT = Toy Model 0B I2-B2-C canonical ground-state subspace
 PHASE       = MODEL0B_IMPLEMENTATION
 CURRENT_IMPLEMENTATION_LOT = I2-B2-C
-I2_B2_C_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_B2_C_STATUS = ACCEPTED
+I2_B2_C_ACCEPTED_HEAD = 8e42cd6492c37286287659303ab05011e6810ff6
 FINAL_D_GS = NOT_PUBLISHED
 FINAL_GAP_GS = NOT_PUBLISHED
 SPECTRAL_WEIGHTS = NOT_STARTED
 KUBO = NOT_STARTED
 REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
 REFERENCE_LAMBDA2_GROUND_STATE_BRANCH = GROUND_STATE_UNAVAILABLE_PRECISION
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_C_THEN_LIONEL_DECISION
 ```
 
 Le lot I2-B2-C consomme exclusivement le résultat déjà qualifié par
@@ -717,4 +717,47 @@ indisponibilité numérique. La référence Λ=2 (g=1, mu=0, delta=0) reste
 n'est publiée pour elle. `precision_control.py` n'a subi aucune
 modification (aucun `CONTRACT_GAP` rencontré). Ce lot n'implémente ni
 `rho_GS`, ni choix d'état pur, ni gap, ni poids spectraux, ni Kubo, ni
-interprétation physique, ni exécution confirmatoire.
+interprétation physique, ni exécution confirmatoire. Lionel ORCIL a
+explicitement accepté I2-B2-C (`I2_B2_C_STATUS = ACCEPTED`,
+`I2_B2_C_ACCEPTED_HEAD = 8e42cd6492c37286287659303ab05011e6810ff6`).
+
+## I2-B2-D — canonical ground-state density
+
+```text
+CURRENT_LOT = Toy Model 0B I2-B2-D canonical ground-state density
+PHASE       = MODEL0B_IMPLEMENTATION
+CURRENT_IMPLEMENTATION_LOT = I2-B2-D
+I2_B2_D_STATUS = IMPLEMENTED_PENDING_REVIEW
+CANONICAL_GROUND_STATE_DENSITY = IMPLEMENTED
+FINAL_D_GS = NOT_PUBLISHED
+FINAL_GAP_GS = NOT_PUBLISHED
+SPECTRAL_WEIGHTS = NOT_STARTED
+KUBO = NOT_STARTED
+REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
+REFERENCE_LAMBDA2_GROUND_STATE_BRANCH = GROUND_STATE_UNAVAILABLE_PRECISION
+REFERENCE_LAMBDA2_CANONICAL_GROUND_STATE = CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_THEN_LIONEL_DECISION
+```
+
+Le lot I2-B2-D consomme exclusivement `ground_state_branch.GroundStateBranchResult`
+(jamais directement `SpectralPrecisionControlResult`, un Hamiltonien, des
+valeurs propres ou des vecteurs propres) et applique la règle canonique
+unifiée déjà gelée (`specification.md` §4, `exact-spectral-response.md`
+§3) : `rho_GS = P_GS / Tr(P_GS) = P_GS / d_GS`, qui couvre automatiquement
+`d_GS=1` (`rho_GS=P_GS`, aucune sélection de vecteur propre) et `d_GS>1`
+(mélange uniforme). La division est effectuée strictement à l'intérieur du
+contexte `mp.workprec(selected_precision_bits)` déjà établi par
+`P_GS`, pour éviter toute troncature silencieuse de précision (même classe
+de défaut que I2-B2-A-C1, vérifiée empiriquement et corrigée dès
+l'implémentation). Pour `GROUND_STATE_UNAVAILABLE_PRECISION`, propage
+`CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION` (aucun `rho_GS`, `P_GS`,
+`d_GS`) : ceci n'est ni une dégénérescence observée, ni un gap nul, ni une
+propriété physique. Toute incohérence de contrat (`p_gs`/`d_gs`/indices
+manquants, `d_gs<=0`, `d_gs != len(indices)`, statut inconnu) échoue
+explicitement. La référence Λ=2 reste `PRECISION_UNRESOLVED` ->
+`GROUND_STATE_UNAVAILABLE_PRECISION` -> `CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION` ;
+aucune nouvelle valeur numérique scientifique n'est figée pour elle. Ni
+`ground_state_branch.py`, ni `precision_control.py`, ni `multiprecision.py`
+n'ont été modifiés. Ce lot n'implémente ni `gap_GS`, ni certification
+physique de dégénérescence, ni projecteurs excités, ni poids spectraux
+`C_C^(pq)`, ni Kubo, ni exécution confirmatoire.
