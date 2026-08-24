@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I1_B_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I1_C_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -527,17 +527,25 @@ doit s'arrêter et demander un arbitrage de périmètre avant d'appliquer un
 chemin alternatif.
 
 ```text
-CURRENT_LOT = Toy Model 0B I1-B elementary physical-sector operators
+I1_B_STATUS = ACCEPTED
+I1_B_ACCEPTED_HEAD = 1d149361184b4e678cea206bc3982932e1ab6b05
+```
+
+Lionel ORCIL a explicitement accepté le lot I1-B (`I1_B_STATUS = ACCEPTED`,
+`I1_B_ACCEPTED_HEAD = 1d149361184b4e678cea206bc3982932e1ab6b05`).
+
+```text
+CURRENT_LOT = Toy Model 0B I1-C static aggregates and Hamiltonian assembly
 PHASE       = MODEL0B_IMPLEMENTATION
-CURRENT_IMPLEMENTATION_LOT = I1-B
-I1_B_SCOPE  = ELEMENTARY_PHYSICAL_SECTOR_OPERATORS
-I1_B_STATUS = IMPLEMENTED_PENDING_REVIEW
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I1_B_THEN_LIONEL_DECISION
+CURRENT_IMPLEMENTATION_LOT = I1-C
+I1_C_SCOPE  = STATIC_AGGREGATES_AND_HAMILTONIAN_ASSEMBLY
+I1_C_STATUS = IMPLEMENTED_PENDING_REVIEW
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I1_C_THEN_LIONEL_DECISION
 ```
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé
 reste immuable. L'exécution confirmatoire reste séparément
 `NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
-I1-B n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I1-C ou
+I1-C n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I2 ou
 suivant) n'est autorisé par ce lot.
