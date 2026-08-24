@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_B_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_C_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -663,21 +663,59 @@ D_P = IMPLEMENTED
 PRECISION_ROUTING = IMPLEMENTED_PENDING_REVIEW
 FINAL_D_GS = NOT_PUBLISHED
 FINAL_GAP_GS = NOT_PUBLISHED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_B_THEN_LIONEL_DECISION
+I2_B2_B_STATUS = ACCEPTED
+I2_B2_B_ACCEPTED_HEAD = 6f0dca477c841b88befeed8ea0a782144acc2529
 ```
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé
 reste immuable. L'exécution confirmatoire reste séparément
-`NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
-I2-B2-B n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur
-(spectral/Kubo ou suivant) n'est autorisé par ce lot. Il implémente
-l'appariement de cluster inter-précision par ensembles d'indices
-déterministes, `d_P` (norme spectrale, seuil gelé `1e-10` matérialisé
-localement à la précision active), et le routage
+`NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Il
+implémente l'appariement de cluster inter-précision par ensembles
+d'indices déterministes, `d_P` (norme spectrale, seuil gelé `1e-10`
+matérialisé localement à la précision active), et le routage
 `PRECISION_STABLE`/`PRECISION_ESCALATED`/`PRECISION_UNRESOLVED` ; aucun
-`d_GS`/`gap_GS` final n'est publié. Rappel épistémique : un cluster
-numérique reste toujours distinct d'une dégénérescence physique certifiée.
-La qualification `PRECISION_UNRESOLVED` observée à Λ=2 (référence g=1,
-mu=0, delta=0) est un résultat de qualification numérique fidèle et
-fail-closed, non une revendication physique.
+`d_GS`/`gap_GS` final n'est publié par ce lot. Rappel épistémique : un
+cluster numérique reste toujours distinct d'une dégénérescence physique
+certifiée. La qualification `PRECISION_UNRESOLVED` observée à Λ=2
+(référence g=1, mu=0, delta=0) est un résultat de qualification numérique
+fidèle et fail-closed, non une revendication physique. Lionel ORCIL a
+explicitement accepté I2-B2-B (`I2_B2_B_STATUS = ACCEPTED`,
+`I2_B2_B_ACCEPTED_HEAD = 6f0dca477c841b88befeed8ea0a782144acc2529`).
+
+## I2-B2-C — canonical ground-state subspace
+
+```text
+CURRENT_LOT = Toy Model 0B I2-B2-C canonical ground-state subspace
+PHASE       = MODEL0B_IMPLEMENTATION
+CURRENT_IMPLEMENTATION_LOT = I2-B2-C
+I2_B2_C_STATUS = IMPLEMENTED_PENDING_REVIEW
+FINAL_D_GS = NOT_PUBLISHED
+FINAL_GAP_GS = NOT_PUBLISHED
+SPECTRAL_WEIGHTS = NOT_STARTED
+KUBO = NOT_STARTED
+REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
+REFERENCE_LAMBDA2_GROUND_STATE_BRANCH = GROUND_STATE_UNAVAILABLE_PRECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_C_THEN_LIONEL_DECISION
+```
+
+Le lot I2-B2-C consomme exclusivement le résultat déjà qualifié par
+I2-B2-B (`precision_control.SpectralPrecisionControlResult`) et construit,
+lorsque `PRECISION_STABLE` ou `PRECISION_ESCALATED`, le sous-espace
+fondamental numérique canonique (`d_GS`, `P_GS`) à partir du clustering
+spectral déjà présent au niveau de précision sélectionné — aucun nouveau
+clustering, aucun nouvel epsilon, aucune nouvelle diagonalisation, aucun
+nouveau contrôle de précision. Pour `PRECISION_UNRESOLVED`, propage
+`GROUND_STATE_UNAVAILABLE_PRECISION` (aucun `P_GS`, aucun `d_GS`) : ceci
+n'est ni une dégénérescence observée, ni un gap nul, ni une propriété
+physique. Toute incohérence de contrat (statut résolvable sans
+`selected_level_result`, métadonnées de cluster incohérentes, aucun ou
+plusieurs clusters contenant l'indice spectral minimal) échoue
+explicitement plutôt que d'être signalée silencieusement comme
+indisponibilité numérique. La référence Λ=2 (g=1, mu=0, delta=0) reste
+`PRECISION_UNRESOLVED` et se propage donc en
+`GROUND_STATE_UNAVAILABLE_PRECISION` ; aucune valeur finale de `d_GS`
+n'est publiée pour elle. `precision_control.py` n'a subi aucune
+modification (aucun `CONTRACT_GAP` rencontré). Ce lot n'implémente ni
+`rho_GS`, ni choix d'état pur, ni gap, ni poids spectraux, ni Kubo, ni
+interprétation physique, ni exécution confirmatoire.
