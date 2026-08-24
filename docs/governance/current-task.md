@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_C1_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B1_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -553,9 +553,10 @@ P1_P2_PRECISION_CONTROL = NOT_IMPLEMENTED
 I2_A_CONFIRMATORY_ROLE = NONE
 I2_A_REVIEW = CORRECTION_REQUIRED_TEST_TOLERANCE_ONLY
 I2_A_C1_SCOPE = STRICT_PROJECTOR_TEST_TOLERANCES
-I2_A_C1_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_A_C1_STATUS = ACCEPTED
 I2_A_C1_PRODUCTION_DIFF = NONE
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_C1_THEN_LIONEL_DECISION
+I2_A_STATUS = ACCEPTED
+I2_A_ACCEPTED_HEAD = 19d3c7c2473c371cee05f67188889702c1f7ad4b
 ```
 
 Correction I2-A-C1 : les assertions de test liées aux projecteurs
@@ -565,7 +566,44 @@ tolérances strictement bornées par `PROJECTOR_STABILITY_TOLERANCE = 1e-10`
 attendue est déterministe bit-à-bit). Défaut de test uniquement ; aucun
 changement de production
 (`I2_A_C1_PRODUCTION_DIFF = NONE`,
-`src/cosmobox_c_model/models/model0b/eigensystem.py` inchangé).
+`src/cosmobox_c_model/models/model0b/eigensystem.py` inchangé). Lionel ORCIL
+a explicitement accepté I2-A et I2-A-C1
+(`I2_A_STATUS = ACCEPTED`, `I2_A_ACCEPTED_HEAD = 19d3c7c2473c371cee05f67188889702c1f7ad4b`).
+
+```text
+I2_B_AUDIT = PASS
+I2_B_AUDIT_REPOSITORY_DIFF = NONE
+I2_B_BACKEND_DECISION = MPMATH
+I2_B_BACKEND_VERSION_RANGE = mpmath>=1.4.1,<1.5
+I2_B_EXACT_PARAMETER_REPRESENTATION = fractions.Fraction
+```
+
+L'audit I2-B-AUDIT (lecture seule, aucune modification versionnée) a
+recommandé `mpmath` comme backend multi-précision (échec architectural de
+`python-flint`/Arb : `acb_mat.eig()` ne peut pas retourner de vecteurs
+propres sous valeurs propres multiples, incompatible avec l'exigence gelée
+de projecteurs de cluster). Décision confirmée par revue indépendante
+ChatGPT (`BACKEND_DECISION_BASIS = I2-B-AUDIT + ChatGPT independent API
+review`).
+
+```text
+CURRENT_LOT = Toy Model 0B I2-B1 exact rational and multiprecision Hamiltonian assembly
+PHASE       = MODEL0B_IMPLEMENTATION
+CURRENT_IMPLEMENTATION_LOT = I2-B1
+I2_B1_SCOPE  = EXACT_RATIONAL_PARAMETERS_AND_DIRECT_MULTIPRECISION_H_ASSEMBLY
+I2_B1_STATUS = IMPLEMENTED_PENDING_REVIEW
+P1_P2_EIGENSYSTEM = NOT_IMPLEMENTED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B1_THEN_LIONEL_DECISION
+```
+
+L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
+`implementation/model0b`. La spécification/le protocole scientifique gelé
+reste immuable. L'exécution confirmatoire reste séparément
+`NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
+I2-B1 n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur (I2-B2 ou
+suivant) n'est autorisé par ce lot. Ce lot n'implémente ni diagonalisation
+haute précision, ni appariement de cluster, ni `d_P`, ni statut de précision
+final ; `P1_P2_EIGENSYSTEM = NOT_IMPLEMENTED`.
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé

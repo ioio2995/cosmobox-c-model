@@ -9,6 +9,7 @@ description = "Cosmobox C Model -- Toy Model 0A analytic identifiability benchma
 requires-python = ">=3.11"
 dependencies = [
     "numpy",
+    "mpmath>=1.4.1,<1.5",
 ]
 
 [project.optional-dependencies]
