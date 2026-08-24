@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_C1_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_B_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -601,15 +601,15 @@ CURRENT_LOT = Toy Model 0B I2-B2-A multiprecision eigensystem per precision leve
 PHASE       = MODEL0B_IMPLEMENTATION
 CURRENT_IMPLEMENTATION_LOT = I2-B2-A
 I2_B2_A_SCOPE = P1_P2_SINGLE_LEVEL_EIGENSYSTEM_BACKWARD_GATE_AND_CLUSTERS
-I2_B2_A_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_B2_A_STATUS = ACCEPTED
+I2_B2_A_ACCEPTED_HEAD = b7bb94706548514d31c4fbf3527b5d6f48e30f2e
 CROSS_PRECISION_CLUSTER_MATCHING = NOT_IMPLEMENTED
 D_P = NOT_IMPLEMENTED
 PRECISION_ROUTING = NOT_IMPLEMENTED
 I2_B2_A_REVIEW = CORRECTION_REQUIRED_IMPORT_TIME_THRESHOLD_PRECISION
 I2_B2_A_C1_SCOPE = PRECISION_LOCAL_FROZEN_THRESHOLDS
-I2_B2_A_C1_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_B2_A_C1_STATUS = ACCEPTED
 I2_B2_A_C1_THRESHOLD_VALUES_CHANGED = NO
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_A_C1_THEN_LIONEL_DECISION
 ```
 
 Correction I2-B2-A-C1 : les seuils gelés (`BACKWARD_RESIDUAL_TOLERANCE`,
@@ -623,16 +623,61 @@ constantes étaient auparavant matérialisées en `mp.mpf` au moment de
 l'import du module (précision par défaut ~53 bits), puis réutilisées telles
 quelles lors d'analyses P1/P2, ce qui pouvait produire un verdict de porte
 backward incorrect pour une valeur proche de la frontière gelée. Correction
-de fidélité numérique uniquement ; aucun seuil scientifique modifié.
+de fidélité numérique uniquement ; aucun seuil scientifique modifié. Lionel
+ORCIL a explicitement accepté I2-B2-A et I2-B2-A-C1
+(`I2_B2_A_STATUS = ACCEPTED`, `I2_B2_A_C1_STATUS = ACCEPTED`).
+
+## Arbitrage I2-B2-B (blocage initial résolu)
+
+```text
+I2_B2_B_INITIAL_STATUS = BLOCKED
+I2_B2_B_INITIAL_BLOCKER = MANDATE_EXPECTED_OUTCOME_CONFLICT
+I2_B2_B_FROZEN_SPECIFICATION_CONFLICT = NO
+I2_B2_B_ARBITRATION = REVISE_LAMBDA2_TEST_EXPECTATION_TO_FAITHFUL_PRECISION_UNRESOLVED
+FROZEN_PROTOCOL_CHANGE = NONE
+GROUPED_SPECTRAL_SUPPORT_ORACLE = UNCHANGED_NON_BLOCKING_BACKLOG
+REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
+```
+
+Le lot I2-B2-B avait initialement été bloqué (`I2_B2_B_INITIAL_STATUS =
+BLOCKED`) : le mandat §24 exigeait littéralement `d_p<=1e-10` /
+`stability_pass=True` pour la comparaison P0/P1 à Λ=2 (référence g=1,
+mu=0, delta=0), alors que l'exécution fidèle du protocole gelé produit
+réellement `d_P≈0.0311` (P0/P1) puis `d_P≈4.40e-8` (P1/P2), toutes deux
+`> 1e-10`, aboutissant à `PRECISION_UNRESOLVED`. Ceci a été confirmé par
+une seconde voie de calcul totalement indépendante (`mp.svd_c`). ChatGPT/
+Lionel ont classifié ce point `MANDATE_EXPECTED_OUTCOME_CONFLICT` (et non
+`FROZEN_SPECIFICATION_CONFLICT`) : le protocole gelé lui-même n'est pas
+modifié (`FROZEN_PROTOCOL_CHANGE = NONE`) ; seule l'attente du mandat pour
+Λ=2 était erronée. `GROUPED_SPECTRAL_SUPPORT_ORACLE` reste inchangé en
+backlog non bloquant, sans promotion dans ce lot.
+
+```text
+CURRENT_LOT = Toy Model 0B I2-B2-B cross-precision projector stability resumed after arbitration
+PHASE       = MODEL0B_IMPLEMENTATION
+CURRENT_IMPLEMENTATION_LOT = I2-B2-B
+I2_B2_B_SCOPE = CROSS_PRECISION_CLUSTER_MATCHING_D_P_AND_PRECISION_ROUTING
+I2_B2_B_STATUS = IMPLEMENTED_PENDING_REVIEW
+CROSS_PRECISION_CLUSTER_MATCHING = IMPLEMENTED
+D_P = IMPLEMENTED
+PRECISION_ROUTING = IMPLEMENTED_PENDING_REVIEW
+FINAL_D_GS = NOT_PUBLISHED
+FINAL_GAP_GS = NOT_PUBLISHED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_B_THEN_LIONEL_DECISION
+```
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé
 reste immuable. L'exécution confirmatoire reste séparément
 `NOT_AUTHORIZED` (`CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED`). Le lot
-I2-B2-A n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur
-(I2-B2-B ou suivant) n'est autorisé par ce lot. Ce lot analyse un seul
-niveau de précision à la fois (P1=106 bits ou P2=212 bits) ; il n'implémente
-ni appariement de cluster inter-précision, ni `d_P`, ni routage
-`PRECISION_STABLE`/`PRECISION_ESCALATED`/`PRECISION_UNRESOLVED`, ni `d_GS`/
-`gap_GS` final. Rappel épistémique : un cluster numérique P1/P2 n'est jamais
-une dégénérescence physique certifiée.
+I2-B2-B n'est pas déclaré `ACCEPTED` ni `CLOSED` ; aucun lot ultérieur
+(spectral/Kubo ou suivant) n'est autorisé par ce lot. Il implémente
+l'appariement de cluster inter-précision par ensembles d'indices
+déterministes, `d_P` (norme spectrale, seuil gelé `1e-10` matérialisé
+localement à la précision active), et le routage
+`PRECISION_STABLE`/`PRECISION_ESCALATED`/`PRECISION_UNRESOLVED` ; aucun
+`d_GS`/`gap_GS` final n'est publié. Rappel épistémique : un cluster
+numérique reste toujours distinct d'une dégénérescence physique certifiée.
+La qualification `PRECISION_UNRESOLVED` observée à Λ=2 (référence g=1,
+mu=0, delta=0) est un résultat de qualification numérique fidèle et
+fail-closed, non une revendication physique.
