@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_C1_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -551,8 +551,21 @@ I2_A_STATUS = IMPLEMENTED_PENDING_REVIEW
 I2_A_PRECISION_SCOPE = P0_BINARY64_ONLY
 P1_P2_PRECISION_CONTROL = NOT_IMPLEMENTED
 I2_A_CONFIRMATORY_ROLE = NONE
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_THEN_LIONEL_DECISION
+I2_A_REVIEW = CORRECTION_REQUIRED_TEST_TOLERANCE_ONLY
+I2_A_C1_SCOPE = STRICT_PROJECTOR_TEST_TOLERANCES
+I2_A_C1_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_A_C1_PRODUCTION_DIFF = NONE
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_A_C1_THEN_LIONEL_DECISION
 ```
+
+Correction I2-A-C1 : les assertions de test liées aux projecteurs
+(`tests/models/model0b/test_eigensystem_model0b.py`) utilisent désormais des
+tolérances strictement bornées par `PROJECTOR_STABILITY_TOLERANCE = 1e-10`
+(`rtol=0.0` / `rel=0.0` explicite, ou égalité exacte lorsque la valeur
+attendue est déterministe bit-à-bit). Défaut de test uniquement ; aucun
+changement de production
+(`I2_A_C1_PRODUCTION_DIFF = NONE`,
+`src/cosmobox_c_model/models/model0b/eigensystem.py` inchangé).
 
 L'implémentation de Model 0B est autorisée uniquement par lots bornés sur
 `implementation/model0b`. La spécification/le protocole scientifique gelé

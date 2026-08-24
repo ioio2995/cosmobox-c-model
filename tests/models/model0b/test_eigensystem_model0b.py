@@ -47,9 +47,11 @@ def test_diagonal_matrix_no_degeneracy():
     assert result.ground_cluster_dimension_candidate == 1
 
     expected_ground_projector = np.diag([1.0, 0.0, 0.0]).astype(complex)
-    assert np.allclose(result.ground_cluster_projector, expected_ground_projector, atol=1e-10)
-    assert np.allclose(result.ground_density_candidate, result.ground_cluster_projector, atol=1e-10)
-    assert result.ground_to_next_cluster_separation_candidate == pytest.approx(1.0)
+    # diag(0,1,3) is already diagonal: eigh returns the exact eigenpairs, so
+    # equality is exact (no representation-stability concern here).
+    assert np.array_equal(result.ground_cluster_projector, expected_ground_projector)
+    assert np.array_equal(result.ground_density_candidate, result.ground_cluster_projector)
+    assert result.ground_to_next_cluster_separation_candidate == 1.0
 
 
 def test_exact_degenerate_diagonal_matrix():
@@ -60,12 +62,14 @@ def test_exact_degenerate_diagonal_matrix():
     assert result.ground_cluster_dimension_candidate == 2
 
     expected_ground_projector = np.diag([1.0, 1.0, 0.0]).astype(complex)
-    assert np.allclose(result.ground_cluster_projector, expected_ground_projector, atol=1e-10)
+    # diag(0,0,2) is already diagonal: eigh returns the exact eigenpairs, so
+    # equality is exact (no representation-stability concern here).
+    assert np.array_equal(result.ground_cluster_projector, expected_ground_projector)
 
     expected_rho = np.diag([0.5, 0.5, 0.0]).astype(complex)
-    assert np.allclose(result.ground_density_candidate, expected_rho, atol=1e-10)
+    assert np.array_equal(result.ground_density_candidate, expected_rho)
 
-    assert result.ground_to_next_cluster_separation_candidate == pytest.approx(2.0)
+    assert result.ground_to_next_cluster_separation_candidate == 2.0
 
 
 @pytest.mark.parametrize("dimension", [2, 3, 5])
@@ -78,7 +82,9 @@ def test_fully_degenerate_zero_matrix(dimension):
     assert result.ground_to_next_cluster_separation_candidate is None
 
     expected_rho = np.eye(dimension, dtype=complex) / dimension
-    assert np.allclose(result.ground_density_candidate, expected_rho, atol=1e-10)
+    # For a zero Hamiltonian, P_C = V @ V^H = I exactly for any orthonormal
+    # eigenbasis V: equality is exact (no representation-stability concern).
+    assert np.array_equal(result.ground_density_candidate, expected_rho)
 
 
 # --- Backward diagnostics ------------------------------------------------------
@@ -102,10 +108,13 @@ def test_backward_diagnostics_pass_and_epsilon_derived(matrix):
     assert result.backward_gate_pass is True
     assert result.backward_gate_status == eig.BACKWARD_GATE_STATUS_PASS
 
+    # Recomputed from the exact same reported floating diagnostics via the
+    # same arithmetic operation: deterministic, bit-identical, so exact
+    # equality is used rather than a new approximate tolerance.
     expected_epsilon = result.hamiltonian_scale * (
         result.residual_ratio + result.orthogonality_defect
     )
-    assert result.epsilon_h == pytest.approx(expected_epsilon)
+    assert result.epsilon_h == expected_epsilon
 
 
 # --- Projectors ---------------------------------------------------------------
@@ -127,9 +136,9 @@ def test_projector_properties(matrix):
 
     total = np.zeros((dimension, dimension), dtype=complex)
     for cluster, projector in zip(result.clusters, result.cluster_projectors):
-        assert np.allclose(projector, projector.conj().T, atol=tol)
-        assert np.allclose(projector @ projector, projector, atol=tol)
-        assert np.trace(projector).real == pytest.approx(len(cluster), abs=tol)
+        assert np.allclose(projector, projector.conj().T, rtol=0.0, atol=tol)
+        assert np.allclose(projector @ projector, projector, rtol=0.0, atol=tol)
+        assert np.trace(projector).real == pytest.approx(len(cluster), rel=0.0, abs=tol)
         total = total + projector
 
     for i, (_, projector_i) in enumerate(zip(result.clusters, result.cluster_projectors)):
@@ -138,10 +147,11 @@ def test_projector_properties(matrix):
                 assert np.allclose(
                     projector_i @ projector_j,
                     np.zeros((dimension, dimension)),
+                    rtol=0.0,
                     atol=tol,
                 )
 
-    assert np.allclose(total, np.eye(dimension, dtype=complex), atol=tol)
+    assert np.allclose(total, np.eye(dimension, dtype=complex), rtol=0.0, atol=tol)
 
 
 # --- Model 0B reference qualification ------------------------------------------
@@ -158,8 +168,8 @@ def test_model0b_reference_qualification_lambda2():
     assert result.ground_cluster_dimension_candidate == 1
 
     ground_trace = np.trace(result.ground_density_candidate)
-    assert ground_trace.real == pytest.approx(1.0, abs=1e-10)
-    assert ground_trace.imag == pytest.approx(0.0, abs=1e-10)
+    assert ground_trace.real == pytest.approx(1.0, rel=0.0, abs=eig.PROJECTOR_STABILITY_TOLERANCE)
+    assert ground_trace.imag == pytest.approx(0.0, rel=0.0, abs=eig.PROJECTOR_STABILITY_TOLERANCE)
 
     assert result.ground_to_next_cluster_separation_candidate is not None
     assert result.ground_to_next_cluster_separation_candidate > 0.0
@@ -178,7 +188,12 @@ def test_model0b_reference_lambda_sanity(lambda_cutoff):
 
     dimension = hamiltonian.shape[0]
     total = sum(result.cluster_projectors)
-    assert np.allclose(total, np.eye(dimension, dtype=complex), atol=eig.PROJECTOR_STABILITY_TOLERANCE)
+    assert np.allclose(
+        total,
+        np.eye(dimension, dtype=complex),
+        rtol=0.0,
+        atol=eig.PROJECTOR_STABILITY_TOLERANCE,
+    )
 
     assert result.precision_status == "P0_ONLY_NOT_PRECISION_CERTIFIED"
 
