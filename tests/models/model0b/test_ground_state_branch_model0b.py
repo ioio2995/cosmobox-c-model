@@ -12,7 +12,6 @@ qualification outcome, never a physical claim."""
 from __future__ import annotations
 
 import dataclasses
-from fractions import Fraction
 
 import mpmath as mp
 import pytest
@@ -20,8 +19,6 @@ import pytest
 from cosmobox_c_model.models.model0b import ground_state_branch as gsb
 from cosmobox_c_model.models.model0b import multiprecision as mpe
 from cosmobox_c_model.models.model0b import precision_control as pc
-from cosmobox_c_model.models.model0b.basis_config import build_physical_basis
-from cosmobox_c_model.models.model0b.exact_assembly import build_exact_discrete_components
 
 
 # --- Frozen status constants -----------------------------------------------------
@@ -359,14 +356,10 @@ def test_no_spectral_recalculation(monkeypatch):
 # --- I. Real model integration: Lambda=1 (resolved) and Lambda=2 (unresolved) ----
 
 
-def test_lambda1_real_ground_state_resolved():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-    result = pc.run_spectral_precision_control(
-        components, g=Fraction(1, 1), mu=Fraction(0, 1), delta=Fraction(0, 1)
-    )
-
-    branch = gsb.build_ground_state_branch(result)
+def test_lambda1_real_ground_state_resolved(lambda1_precision_result):
+    # Shared PRECISION_STABLE ladder result (PERF-1, conftest.py): never
+    # relaunches run_spectral_precision_control here.
+    branch = gsb.build_ground_state_branch(lambda1_precision_result)
 
     assert branch.status == gsb.GROUND_STATE_STATUS_RESOLVED
     assert branch.source_precision_status == pc.PRECISION_STATUS_STABLE
@@ -375,14 +368,10 @@ def test_lambda1_real_ground_state_resolved():
     assert branch.ground_cluster_indices == (0,)
 
 
-def test_lambda2_real_ground_state_unavailable_precision():
-    basis = build_physical_basis(2)
-    components = build_exact_discrete_components(basis, lambda_cutoff=2)
-    result = pc.run_spectral_precision_control(
-        components, g=Fraction(1, 1), mu=Fraction(0, 1), delta=Fraction(0, 1)
-    )
-
-    branch = gsb.build_ground_state_branch(result)
+def test_lambda2_real_ground_state_unavailable_precision(lambda2_precision_result):
+    # Single authoritative Lambda=2 full P0/P1/P2 ladder execution for the
+    # session, shared via conftest.py (PERF-1): never recomputed here.
+    branch = gsb.build_ground_state_branch(lambda2_precision_result)
 
     assert branch.status == gsb.GROUND_STATE_STATUS_UNAVAILABLE_PRECISION
     assert branch.source_precision_status == pc.PRECISION_STATUS_UNRESOLVED

@@ -23,12 +23,10 @@ import mpmath as mp
 import pytest
 
 from cosmobox_c_model.models.model0b import precision_control as pc
-from cosmobox_c_model.models.model0b.basis_config import build_physical_basis
 from cosmobox_c_model.models.model0b.exact_assembly import (
     P0_BITS,
     P1_BITS,
     P2_BITS,
-    build_exact_discrete_components,
 )
 from cosmobox_c_model.models.model0b.multiprecision import (
     PROJECTOR_STABILITY_TOLERANCE,
@@ -281,13 +279,10 @@ def test_p0_matrix_to_mp_exact_conversion():
 # --- Real model: Lambda=1 P0/P1 (positive regression) -----------------------------
 
 
-def test_lambda1_real_p0_p1_stable():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-
-    p0 = pc._analyze_p0_direct(components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA)
-    p1 = pc._analyze_p1_direct(components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA)
-    comparison = pc.compare_precision_levels(p0, p1)
+def test_lambda1_real_p0_p1_stable(lambda1_precision_result):
+    # p0_p1_comparison is already computed by run_spectral_precision_control
+    # as part of the shared fixture: reused as-is, no second comparison.
+    comparison = lambda1_precision_result.p0_p1_comparison
 
     assert comparison.matching_status == pc.MATCHING_STATUS_MATCHED
     assert comparison.backward_gates_pass is True
@@ -298,12 +293,12 @@ def test_lambda1_real_p0_p1_stable():
     assert comparison.stability_pass is True
 
 
-def test_lambda1_real_p1_p2_stable():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-
-    p1 = pc._analyze_p1_direct(components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA)
-    p2 = pc._analyze_p2_direct(components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA)
+def test_lambda1_real_p1_p2_stable(lambda1_precision_result, lambda1_p2_result):
+    # P1 is reused from the shared PRECISION_STABLE ladder result; P2 is the
+    # session-unique explicit build (lambda1_p2_result), never recomputed
+    # here.
+    p1 = lambda1_precision_result.p1_result
+    p2 = lambda1_p2_result
     comparison = pc.compare_precision_levels(p1, p2)
 
     assert comparison.matching_status == pc.MATCHING_STATUS_MATCHED
@@ -314,13 +309,8 @@ def test_lambda1_real_p1_p2_stable():
     assert comparison.stability_pass is True
 
 
-def test_lambda1_end_to_end_precision_stable_lazy_p2():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-
-    result = pc.run_spectral_precision_control(
-        components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA
-    )
+def test_lambda1_end_to_end_precision_stable_lazy_p2(lambda1_precision_result):
+    result = lambda1_precision_result
 
     assert result.precision_status == pc.PRECISION_STATUS_STABLE
     assert result.selected_precision_bits == 106
@@ -333,13 +323,10 @@ def test_lambda1_end_to_end_precision_stable_lazy_p2():
 # --- Real model: Lambda=2 (faithful PRECISION_UNRESOLVED qualification) ----------
 
 
-def test_lambda2_full_ladder_and_independent_d_p_oracle():
-    basis = build_physical_basis(2)
-    components = build_exact_discrete_components(basis, lambda_cutoff=2)
-
-    result = pc.run_spectral_precision_control(
-        components, g=REFERENCE_G, mu=REFERENCE_MU, delta=REFERENCE_DELTA
-    )
+def test_lambda2_full_ladder_and_independent_d_p_oracle(lambda2_precision_result):
+    # Single authoritative Lambda=2 full P0/P1/P2 ladder execution for the
+    # session, shared via conftest.py (PERF-1): never recomputed here.
+    result = lambda2_precision_result
 
     p0_p1 = result.p0_p1_comparison
     assert p0_p1.matching_status == pc.MATCHING_STATUS_MATCHED
@@ -524,12 +511,11 @@ def test_lazy_p2_not_invoked_when_first_pair_passes(monkeypatch):
 # --- Exact nonbinary rational parameter route -------------------------------------
 
 
-def test_nonbinary_exact_parameter_route_executes_without_float():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-
+def test_nonbinary_exact_parameter_route_executes_without_float(lambda1_components):
+    # Distinct (non-reference) rational parameter point: not shared with
+    # the reference fixtures, but reuses the shared exact components.
     result = pc.run_spectral_precision_control(
-        components, g=Fraction(1, 10), mu=Fraction(-3, 4), delta=Fraction(2, 5)
+        lambda1_components, g=Fraction(1, 10), mu=Fraction(-3, 4), delta=Fraction(2, 5)
     )
 
     assert isinstance(result, pc.SpectralPrecisionControlResult)
@@ -540,8 +526,8 @@ def test_nonbinary_exact_parameter_route_executes_without_float():
     )
 
 
-def test_run_spectral_precision_control_rejects_float_g():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
+def test_run_spectral_precision_control_rejects_float_g(lambda1_components):
     with pytest.raises(TypeError):
-        pc.run_spectral_precision_control(components, g=0.1, mu=Fraction(0), delta=Fraction(0))
+        pc.run_spectral_precision_control(
+            lambda1_components, g=0.1, mu=Fraction(0), delta=Fraction(0)
+        )

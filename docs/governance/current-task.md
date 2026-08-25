@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_R1_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF1_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -727,7 +727,8 @@ explicitement accepté I2-B2-C (`I2_B2_C_STATUS = ACCEPTED`,
 CURRENT_LOT = Toy Model 0B I2-B2-D canonical ground-state density
 PHASE       = MODEL0B_IMPLEMENTATION
 CURRENT_IMPLEMENTATION_LOT = I2-B2-D
-I2_B2_D_STATUS = IMPLEMENTED_PENDING_REVIEW
+I2_B2_D_STATUS = ACCEPTED
+I2_B2_D_ACCEPTED_HEAD = 1b8b573c284ccb64391a87a8c4ae6870eac48755
 CANONICAL_GROUND_STATE_DENSITY = IMPLEMENTED_FAIL_CLOSED_ON_UNCERTIFIED_MULTIPLICITY
 I2_B2_D_R1_REASON = NUMERICAL_CLUSTER_USED_AS_DEGENERATE_STATE_PREMISE
 FINAL_D_GS = NOT_PUBLISHED
@@ -737,7 +738,6 @@ KUBO = NOT_STARTED
 REFERENCE_LAMBDA2_PRECISION_QUALIFICATION = PRECISION_UNRESOLVED
 REFERENCE_LAMBDA2_GROUND_STATE_BRANCH = GROUND_STATE_UNAVAILABLE_PRECISION
 REFERENCE_LAMBDA2_CANONICAL_GROUND_STATE = CANONICAL_GROUND_STATE_UNAVAILABLE_PRECISION
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_I2_B2_D_R1_THEN_LIONEL_DECISION
 ```
 
 Le lot I2-B2-D consomme exclusivement `ground_state_branch.GroundStateBranchResult`
@@ -791,4 +791,49 @@ Aucun changement du protocole scientifique gelé
 (`FROZEN_PROTOCOL_CHANGE = NONE`). Le futur certificat structurel/exact de
 dégénérescence n'est pas inventé dans ce R1 et reste hors périmètre. Ni
 `ground_state_branch.py`, ni `precision_control.py`, ni `multiprecision.py`
-n'ont été modifiés par cette correction.
+n'ont été modifiés par cette correction. Lionel ORCIL a explicitement
+accepté I2-B2-D (`I2_B2_D_STATUS = ACCEPTED`,
+`I2_B2_D_ACCEPTED_HEAD = 1b8b573c284ccb64391a87a8c4ae6870eac48755`).
+
+## PERF-1 — shared real-model test fixtures
+
+```text
+CURRENT_LOT = Model 0B PERF-1 shared real-model test fixtures
+PHASE = MODEL0B_IMPLEMENTATION_PERFORMANCE
+PERF1_STATUS = IMPLEMENTED_PENDING_REVIEW
+PERF1_SCOPE = TEST_SESSION_REUSE_ONLY
+SCIENTIFIC_CODE_CHANGED = NO
+FROZEN_PROTOCOL_CHANGED = NO
+SCIENTIFIC_RESULTS_CHANGED = NO
+FINAL_D_GS       = NOT_PUBLISHED
+FINAL_GAP_GS     = NOT_PUBLISHED
+SPECTRAL_WEIGHTS = NOT_STARTED
+KUBO             = NOT_STARTED
+CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF1_THEN_LIONEL_DECISION
+```
+
+PERF-1 est une optimisation d'infrastructure de test strictement
+intra-session : ajout de `tests/models/model0b/conftest.py` exposant des
+fixtures `scope="session"` (`lambda1_components`, `lambda2_components`,
+`lambda1_precision_result`, `lambda2_precision_result`,
+`lambda1_p2_result`) qui appellent les routes scientifiques déjà acceptées
+(`build_physical_basis`, `build_exact_discrete_components`,
+`precision_control.run_spectral_precision_control`,
+`precision_control._analyze_p2_direct`) exactement comme les tests les
+appelaient directement auparavant. Les tests d'intégration réels de
+`test_precision_control_model0b.py`, `test_ground_state_branch_model0b.py`
+et `test_ground_state_density_model0b.py` consomment désormais ces
+résultats partagés au lieu de relancer le ladder P0/P1/P2 complet à
+chaque fois. Aucun code de production (`src/cosmobox_c_model/**`)
+n'a été modifié ; aucun algorithme, seuil, précision ou verdict attendu
+n'a changé (`SCIENTIFIC_CODE_CHANGED = NO`, `FROZEN_PROTOCOL_CHANGED =
+NO`, `SCIENTIFIC_RESULTS_CHANGED = NO`). L'exécution complète du ladder
+Λ=2 (P0/P1/P2), auparavant répétée 3 fois par session (~524s cumulés sur
+un total de 657s), n'est désormais exécutée qu'une seule fois par session
+(~187s), avec un gain mesuré `BASELINE_WALL_SECONDS = 657.28s` ->
+`OPTIMIZED_WALL_SECONDS = 301.42s` (`SPEEDUP ≈ 2.18`,
+`TIME_REDUCTION_PERCENT ≈ 54.1%`), pour un compte de tests inchangé
+(`530 passed` avant et après). Les tests synthétiques de
+`compare_precision_levels` et le routage forcé par monkeypatch sont
+inchangés.

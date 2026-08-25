@@ -18,7 +18,6 @@ outcome (I2-B2-D-R1)."""
 from __future__ import annotations
 
 import dataclasses
-from fractions import Fraction
 
 import mpmath as mp
 import pytest
@@ -31,8 +30,6 @@ from cosmobox_c_model.models.model0b.multiprecision import (
     PROJECTOR_STABILITY_TOLERANCE,
     _fraction_to_mpf_current,
 )
-from cosmobox_c_model.models.model0b.basis_config import build_physical_basis
-from cosmobox_c_model.models.model0b.exact_assembly import build_exact_discrete_components
 
 
 # --- Frozen status constants -----------------------------------------------------
@@ -342,13 +339,10 @@ def test_no_spectral_recalculation(monkeypatch):
 # --- H-I. Real model integration: I2-B2-B -> I2-B2-C -> I2-B2-D --------------------------
 
 
-def test_lambda1_real_canonical_ground_state_resolved():
-    basis = build_physical_basis(1)
-    components = build_exact_discrete_components(basis, lambda_cutoff=1)
-    control_result = pc.run_spectral_precision_control(
-        components, g=Fraction(1, 1), mu=Fraction(0, 1), delta=Fraction(0, 1)
-    )
-    branch = gsb.build_ground_state_branch(control_result)
+def test_lambda1_real_canonical_ground_state_resolved(lambda1_precision_result):
+    # Shared PRECISION_STABLE ladder result (PERF-1, conftest.py): never
+    # relaunches the ladder here.
+    branch = gsb.build_ground_state_branch(lambda1_precision_result)
     density = gsd.build_canonical_ground_state_density(branch)
 
     assert density.status == gsd.CANONICAL_GROUND_STATE_STATUS_RESOLVED
@@ -364,13 +358,10 @@ def test_lambda1_real_canonical_ground_state_resolved():
         assert abs(trace - mp.mpf(1)) <= tolerance
 
 
-def test_lambda2_real_canonical_ground_state_unavailable():
-    basis = build_physical_basis(2)
-    components = build_exact_discrete_components(basis, lambda_cutoff=2)
-    control_result = pc.run_spectral_precision_control(
-        components, g=Fraction(1, 1), mu=Fraction(0, 1), delta=Fraction(0, 1)
-    )
-    branch = gsb.build_ground_state_branch(control_result)
+def test_lambda2_real_canonical_ground_state_unavailable(lambda2_precision_result):
+    # Single authoritative Lambda=2 full P0/P1/P2 ladder execution for the
+    # session, shared via conftest.py (PERF-1): never recomputed here.
+    branch = gsb.build_ground_state_branch(lambda2_precision_result)
     density = gsd.build_canonical_ground_state_density(branch)
 
     assert density.status == gsd.CANONICAL_GROUND_STATE_STATUS_UNAVAILABLE_PRECISION
