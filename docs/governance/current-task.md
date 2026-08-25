@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF2_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF3_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -845,7 +845,8 @@ inchangés. Lionel ORCIL a explicitement accepté PERF-1
 ```text
 CURRENT_LOT = Model 0B PERF-2 projector-distance norm optimization
 PHASE = MODEL0B_IMPLEMENTATION_PERFORMANCE
-PERF2_STATUS = IMPLEMENTED_PENDING_REVIEW
+PERF2_STATUS = ACCEPTED
+PERF2_ACCEPTED_HEAD = 180274659133523c970c0a490b4b151245542e94
 PERF2_SCOPE = PROJECTOR_DISTANCE_NORM_KERNEL_ONLY
 SCIENTIFIC_CODE_CHANGED = NO
 NUMERICAL_IMPLEMENTATION_CHANGED = YES
@@ -856,7 +857,6 @@ FINAL_GAP_GS     = NOT_PUBLISHED
 SPECTRAL_WEIGHTS = NOT_STARTED
 KUBO             = NOT_STARTED
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF2_THEN_LIONEL_DECISION
 ```
 
 PERF-2 optimise exclusivement le noyau numérique du calcul de `d_P` dans
@@ -891,4 +891,71 @@ nouveaux tests d'équivalence, aucun skip/xfail). L'oracle indépendant
 n'a pas été modifié et continue de confirmer `PRECISION_UNRESOLVED` pour
 la référence Λ=2. Aucun autre fichier de production
 (`multiprecision.py`, `eigensystem.py`, `ground_state_branch.py`,
-`ground_state_density.py`, `exact_assembly.py`) n'a été modifié.
+`ground_state_density.py`, `exact_assembly.py`) n'a été modifié. Lionel
+ORCIL a explicitement accepté PERF-2 (`PERF2_STATUS = ACCEPTED`,
+`PERF2_ACCEPTED_HEAD = 180274659133523c970c0a490b4b151245542e94`).
+
+## PERF-3 — multiprecision pipeline profiling and safe test reuse
+
+```text
+CURRENT_LOT = Model 0B PERF-3 multiprecision pipeline optimization
+PHASE = MODEL0B_IMPLEMENTATION_PERFORMANCE
+PERF3_STATUS = IMPLEMENTED_PENDING_REVIEW
+PERF3_SCOPE = MULTIPRECISION_PROFILE_AND_SAFE_REUSE
+FROZEN_PROTOCOL_CHANGED = NO
+SCIENTIFIC_RESULTS_CHANGED = NO
+PRODUCTION_NUMERICAL_CODE_CHANGED = NO
+FINAL_D_GS       = NOT_PUBLISHED
+FINAL_GAP_GS     = NOT_PUBLISHED
+SPECTRAL_WEIGHTS = NOT_STARTED
+KUBO             = NOT_STARTED
+CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF3_THEN_LIONEL_DECISION
+```
+
+PERF-3 ne modifie aucun fichier de production
+(`PRODUCTION_NUMERICAL_CODE_CHANGED = NO`, `multiprecision.py` intact).
+Profilage local détaillé (développement uniquement, non committé) de la
+route Λ=3/P2 (g=1, mu=0, delta=0, 118×118) : `basis_components`=0.008s,
+`assembly`=0.095s, `primary_eighe`=15.567s (diagonalisation principale,
+poste dominant), `residual_build`=0.381s, `residual_norm`=4.125s,
+`orthogonality_build`=1.436s, `orthogonality_eighe`=3.184s,
+`clustering`≈0s, `projector_build`=10.460s (80 clusters, second poste),
+`test_completeness_norm`=7.863s (côté test). Deux voies de production
+alternatives ont été mesurées et écartées faute de gain : (1) résidu
+`H V - V Λ` vérifié **non exactement hermitien** (attendu
+mathématiquement) — `mp.svd_c` direct = 6.294s vs voie actuelle
+(`A†A`+`eighe`) = 4.851s, **SVD plus lente**, écartée ; (2) le calcul
+d'orthogonalité `V†V-I` utilise déjà la voie hermitienne directe
+(`eighe` direct, pas de `A†A`), aucune optimisation possible. Aucun autre
+poste dominant (`primary_eighe`, `projector_build`) n'est une norme —
+hors du périmètre autorisé des optimisations de noyau numérique.
+`PRODUCTION_OPTIMIZATION_SELECTED = NONE`, résultat explicitement
+acceptable selon le mandat.
+
+Deux optimisations d'infrastructure de test ont été appliquées dans
+`test_multiprecision_eigensystem_model0b.py` uniquement : (a) réutilisation
+des fixtures session PERF-1 (`lambda1_precision_result`,
+`lambda1_p2_result`, `lambda2_precision_result`) dans
+`test_model0b_reference_analysis`, supprimant les 4 recalculs Λ=1/P1,
+Λ=1/P2, Λ=2/P1, Λ=2/P2 encore présents ; (b) fast-path hermitien exact
+(`eighe(A)` direct, gardé par une vérification exacte sans tolérance,
+mêmes garanties que le noyau accepté en PERF-2) dans le helper de test
+`_spectral_norm`, avec repli inchangé vers la voie générale sinon —
+vérifié indépendamment sur `sum(P_C)-I` à Λ=3/P2 : hermitien confirmé,
+4.267s (voie générale) contre 3.175s (fast-path), écart numérique
+~1e-124. Un test d'équivalence dédié
+(`test_spectral_norm_helper_hermitian_fast_path_equivalence`) a été
+ajouté. `conftest.py` n'a pas eu besoin d'être modifié (fixtures Λ=1/Λ=2
+déjà suffisantes). `BASELINE_LAMBDA3_P2_TEST_SECONDS = 43.61s` ->
+`OPTIMIZED_LAMBDA3_P2_TEST_SECONDS ≈ 44.37s` (gain non significatif sur ce
+test précis, dominé par `primary_eighe`/`projector_build` hors scope,
+variance système). Suite complète :
+`PERF2_FULL_BASELINE_SECONDS = 234.77s` ->
+`OPTIMIZED_FULL_WALL_SECONDS = 211.25s`
+(`FULL_SUITE_SPEEDUP_VS_PERF2 ≈ 1.11`,
+`FULL_TIME_REDUCTION_PERCENT_VS_PERF2 ≈ 10.0%`), `538 passed` (537 + 1
+nouveau test d'équivalence, aucun skip/xfail). Les seuils gelés
+(`BACKWARD_RESIDUAL_TOLERANCE`, `BACKWARD_ORTHOGONALITY_TOLERANCE`,
+`PROJECTOR_STABILITY_TOLERANCE`, `P1=106`, `P2=212`, la règle de
+clustering) restent strictement inchangés.

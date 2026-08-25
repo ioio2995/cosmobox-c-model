@@ -33,8 +33,32 @@ def _mp_matrix_from_complex(entries, bits):
         return matrix
 
 
+def _is_exactly_hermitian(matrix) -> bool:
+    """Exact (no tolerance, no `almosteq`, no symmetrization) Hermiticity
+    check on the matrix representation actually supplied. Test-side helper
+    gating only; never used to modify the matrix (PERF-3)."""
+    dimension = matrix.rows
+    if matrix.cols != dimension:
+        return False
+    for i in range(dimension):
+        for j in range(dimension):
+            if matrix[i, j] != matrix[j, i].conjugate():
+                return False
+    return True
+
+
 def _spectral_norm(matrix, bits):
+    """`||matrix||_2`. Mathematically identical in every case to the
+    unconditional `sqrt(lambda_max(A^dagger A))` route, but takes a faster
+    Hermitian fast path (`max_i |lambda_i(A)|`, a single `mp.eighe(A)`
+    call) when `matrix` is verified EXACTLY Hermitian in its current
+    mpmath representation (PERF-3 test-side optimization, mirroring the
+    accepted `precision_control._projector_difference_spectral_norm`
+    kernel)."""
     with mp.workprec(bits):
+        if _is_exactly_hermitian(matrix):
+            eigs = mp.eighe(matrix, eigvals_only=True)
+            return max(abs(eigs[i]) for i in range(matrix.rows))
         product = matrix.transpose_conj() * matrix
         eigs = mp.eighe(product, eigvals_only=True)
         top = max(eigs[i].real for i in range(matrix.cols))
@@ -128,6 +152,38 @@ def test_boundary_sensitive_threshold_distinguishes_stale_vs_fresh_precision():
         stale_verdict = probe <= stale_53bit_threshold
 
         assert correct_verdict != stale_verdict
+
+
+# --- PERF-3: test-side spectral norm helper Hermitian fast-path equivalence -----
+
+
+def test_spectral_norm_helper_hermitian_fast_path_equivalence():
+    bits = 106
+    hermitian = _mp_matrix_from_complex([[1, 2 + 3j], [2 - 3j, 4]], bits)
+    non_hermitian = _mp_matrix_from_complex([[1, 2], [0, 3]], bits)
+
+    with mp.workprec(bits):
+        assert _is_exactly_hermitian(hermitian) is True
+        assert _is_exactly_hermitian(non_hermitian) is False
+
+        # Fast path vs the unconditional general definition computed inline
+        # (never via the helper under test itself).
+        fast = _spectral_norm(hermitian, bits)
+        product = hermitian.transpose_conj() * hermitian
+        eigs = mp.eighe(product, eigvals_only=True)
+        general = mp.sqrt(max(eigs[i].real for i in range(hermitian.rows)))
+        # Representation-only bound derived from the target precision's own
+        # unit roundoff, not a new scientific tolerance and far stricter
+        # than any frozen scientific tolerance.
+        assert abs(fast - general) <= mp.mpf(2) ** (8 - bits)
+
+        # Non-Hermitian input takes the fallback route exactly: identical
+        # call, bit-identical result.
+        fast_nh = _spectral_norm(non_hermitian, bits)
+        product_nh = non_hermitian.transpose_conj() * non_hermitian
+        eigs_nh = mp.eighe(product_nh, eigvals_only=True)
+        general_nh = mp.sqrt(max(eigs_nh[i].real for i in range(non_hermitian.rows)))
+        assert fast_nh == general_nh
 
 
 def test_precision_level_status_values():
@@ -317,28 +373,39 @@ def test_projector_properties_synthetic(entries, bits):
 
 
 @pytest.mark.parametrize("lambda_cutoff,bits", [(1, P1_BITS), (1, P2_BITS), (2, P1_BITS), (2, P2_BITS)])
-def test_model0b_reference_analysis(lambda_cutoff, bits):
-    basis = build_physical_basis(lambda_cutoff)
-    components = build_exact_discrete_components(basis, lambda_cutoff=lambda_cutoff)
+def test_model0b_reference_analysis(
+    lambda_cutoff,
+    bits,
+    lambda1_precision_result,
+    lambda1_p2_result,
+    lambda2_precision_result,
+):
+    # PERF-3: reuse the already-computed real P1/P2 results from the PERF-1
+    # session fixtures (conftest.py) instead of rebuilding
+    # components/rerunning analyze_mp_eigensystem here. Same scientific
+    # route, same real MPEigensystemResult objects, no mock, no serialized
+    # result, no frozen eigenvalue.
+    if lambda_cutoff == 1:
+        result = lambda1_precision_result.p1_result if bits == P1_BITS else lambda1_p2_result
+    else:
+        result = (
+            lambda2_precision_result.p1_result
+            if bits == P1_BITS
+            else lambda2_precision_result.p2_result
+        )
 
-    result = mpe.analyze_mp_eigensystem(
-        components,
-        g=Fraction(1, 1),
-        mu=Fraction(0, 1),
-        delta=Fraction(0, 1),
-        precision_bits=bits,
-    )
-
+    assert result.precision_bits == bits
     assert result.backward_gate_pass is True
 
+    dimension = len(result.eigenvalues)
     covered = sorted(index for cluster in result.clusters for index in cluster)
-    assert covered == list(range(components.dimension))
+    assert covered == list(range(dimension))
 
     with mp.workprec(bits):
-        total = mp.matrix(components.dimension, components.dimension)
+        total = mp.matrix(dimension, dimension)
         for projector in result.cluster_projectors:
             total = total + projector
-        completeness_defect = _spectral_norm(total - mp.eye(components.dimension), bits)
+        completeness_defect = _spectral_norm(total - mp.eye(dimension), bits)
         projector_tol = mpe._fraction_to_mpf_current(mpe.PROJECTOR_STABILITY_TOLERANCE)
     assert completeness_defect <= projector_tol
 
