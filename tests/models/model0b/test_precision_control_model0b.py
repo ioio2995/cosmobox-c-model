@@ -276,6 +276,97 @@ def test_p0_matrix_to_mp_exact_conversion():
         assert converted == expected
 
 
+# --- PERF-2: projector-difference spectral norm kernel equivalence --------------
+
+
+def _mp_matrix_from_complex_entries(entries, bits):
+    with mp.workprec(bits):
+        dimension = len(entries)
+        matrix = mp.matrix(dimension, dimension)
+        for i in range(dimension):
+            for j in range(dimension):
+                matrix[i, j] = mp.mpc(entries[i][j])
+        return matrix
+
+
+def test_is_exactly_hermitian_detects_hermitian_and_non_hermitian():
+    bits = 106
+    hermitian = _mp_matrix_from_complex_entries([[1, 1j], [-1j, 2]], bits)
+    non_hermitian = _mp_matrix_from_complex_entries([[1, 1], [0, 2]], bits)
+    with mp.workprec(bits):
+        assert pc._is_exactly_hermitian(hermitian) is True
+        assert pc._is_exactly_hermitian(non_hermitian) is False
+
+
+def test_norm_kernel_equivalence_hermitian_zero():
+    bits = 106
+    matrix = _mp_matrix_from_complex_entries([[0, 0], [0, 0]], bits)
+    with mp.workprec(bits):
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        assert fast == general == mp.mpf(0)
+
+
+def test_norm_kernel_equivalence_hermitian_diagonal():
+    bits = 106
+    matrix = _mp_matrix_from_complex_entries([[3, 0], [0, -5]], bits)
+    with mp.workprec(bits):
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        assert fast == general == mp.mpf(5)
+
+
+def test_norm_kernel_equivalence_hermitian_complex_off_diagonal():
+    bits = 212
+    matrix = _mp_matrix_from_complex_entries([[1, 2 + 3j], [2 - 3j, 4]], bits)
+    with mp.workprec(bits):
+        assert pc._is_exactly_hermitian(matrix) is True
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        # Representation-only bound derived from the target precision's own
+        # unit roundoff (rounding-path non-associativity between the two
+        # independently computed routes: eighe(A) directly vs
+        # sqrt(eigmax(A^dagger A))), not a new scientific tolerance and far
+        # stricter than the frozen PROJECTOR_STABILITY_TOLERANCE=1e-10.
+        assert abs(fast - general) <= mp.mpf(2) ** (8 - bits)
+
+
+def test_norm_kernel_equivalence_non_hermitian_general():
+    bits = 106
+    matrix = _mp_matrix_from_complex_entries([[1, 2], [0, 3]], bits)
+    with mp.workprec(bits):
+        assert pc._is_exactly_hermitian(matrix) is False
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        # Non-Hermitian input takes the fallback route exactly: identical
+        # call, bit-identical result.
+        assert fast == general
+
+
+def test_norm_kernel_equivalence_rank1_projector_difference():
+    bits = 106
+    # Difference of two orthogonal rank-1 projectors: exactly Hermitian,
+    # ||diff||_2 = 1 exactly.
+    matrix = _mp_matrix_from_complex_entries([[1, 0], [0, -1]], bits)
+    with mp.workprec(bits):
+        assert pc._is_exactly_hermitian(matrix) is True
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        assert fast == general == mp.mpf(1)
+
+
+def test_norm_kernel_equivalence_rank_gt1_projector_difference():
+    bits = 106
+    # Difference between a rank-2 projector (identity on the first two of
+    # three coordinates) and a rank-1 projector (third coordinate).
+    matrix = _mp_matrix_from_complex_entries([[1, 0, 0], [0, 1, 0], [0, 0, -1]], bits)
+    with mp.workprec(bits):
+        assert pc._is_exactly_hermitian(matrix) is True
+        fast = pc._projector_difference_spectral_norm(matrix)
+        general = pc._spectral_norm_general(matrix)
+        assert fast == general == mp.mpf(1)
+
+
 # --- Real model: Lambda=1 P0/P1 (positive regression) -----------------------------
 
 

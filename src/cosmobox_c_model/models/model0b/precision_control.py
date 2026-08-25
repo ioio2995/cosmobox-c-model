@@ -33,6 +33,15 @@ level is ever upcast from another already-assembled Hamiltonian.
 
 `PRECISION_UNRESOLVED` is terminal: no downstream confirmatory dependency
 may consume a result at that status.
+
+PERF-2 numerical-implementation note: `d_P`'s per-cluster spectral norm
+(`||P_C^(HIGH)-P_C^(LOW)||_2`) uses `_projector_difference_spectral_norm`,
+which takes a faster exact-Hermitian fast path when the supplied
+difference matrix is verified exactly Hermitian in its current mpmath
+representation, and otherwise falls back unchanged to the general route.
+This changes only the numerical kernel used to evaluate the frozen `d_P`
+definition; the definition itself, the matrix compared, the frozen
+threshold, the matching, and the routing are all unchanged.
 """
 
 from __future__ import annotations
@@ -204,6 +213,42 @@ def _p0_matrix_to_mp_exact(matrix: np.ndarray) -> "mp.matrix":
     return out
 
 
+def _is_exactly_hermitian(matrix: "mp.matrix") -> bool:
+    """Exact (no tolerance, no `almosteq`, no symmetrization) Hermiticity
+    check on the matrix representation actually supplied: `A[i,j] ==
+    conjugate(A[j,i])` for every `i, j`. Used only to gate the Hermitian
+    fast path in `_projector_difference_spectral_norm`; never to modify
+    `matrix` itself."""
+    dimension = matrix.rows
+    if matrix.cols != dimension:
+        return False
+    for i in range(dimension):
+        for j in range(dimension):
+            if matrix[i, j] != matrix[j, i].conjugate():
+                return False
+    return True
+
+
+def _projector_difference_spectral_norm(matrix: "mp.matrix") -> "mp.mpf":
+    """`||A||_2` for a projector-difference matrix `A` (frozen `d_P`
+    definition, temporal-event-solver.md Section 17): mathematically
+    identical to `_spectral_norm_general(A)` in every case, but takes a
+    faster Hermitian fast path (`||A||_2 = max_i |lambda_i(A)|`, a single
+    `mp.eighe(A)` call) when `A` is verified EXACTLY Hermitian in its
+    current mpmath representation (a difference of two Hermitian
+    projectors is mathematically always Hermitian, but the fast path is
+    only taken when this is exactly true of the matrix actually supplied,
+    never assumed or approximated). Falls back to the unchanged general
+    route (`sqrt(lambda_max(A^dagger A))`) for the matrix actually
+    supplied, unmodified, whenever the exact Hermiticity check fails.
+    PERF-2 numerical-implementation optimization only: same matrix
+    difference, same mathematical 2-norm, same `d_P`, same routing."""
+    if _is_exactly_hermitian(matrix):
+        eigenvalues = mp.eighe(matrix, eigvals_only=True)
+        return max(abs(eigenvalues[i]) for i in range(matrix.rows))
+    return _spectral_norm_general(matrix)
+
+
 def compare_precision_levels(low_result, high_result) -> PrecisionPairComparison:
     """Compare an accepted LOW-precision result against an accepted
     HIGH-precision result for one of the two frozen adjacent pairs
@@ -268,7 +313,7 @@ def compare_precision_levels(low_result, high_result) -> PrecisionPairComparison
             for high_index in high_indices:
                 covering = covering + high_result.cluster_projectors[high_index]
             difference = covering - low_projectors_mp[low_index]
-            projector_defects_list.append(_spectral_norm_general(difference))
+            projector_defects_list.append(_projector_difference_spectral_norm(difference))
         projector_defects = tuple(projector_defects_list)
         d_p = max(projector_defects)
 

@@ -453,7 +453,7 @@ IMPLEMENTATION_0B_AUTHORIZATION_DATE = 2026-08-24
 IMPLEMENTATION_BRANCH = implementation/model0b
 IMPLEMENTATION_BRANCH_BASE_COMMIT = 42f0b1a01204859b30a332ff7a6b9c5a6bdeb815
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF1_THEN_LIONEL_DECISION
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF2_THEN_LIONEL_DECISION
 ```
 
 **État** : vingt-et-un paramètres numériques majeurs sont fermés et intégrés
@@ -800,7 +800,8 @@ accepté I2-B2-D (`I2_B2_D_STATUS = ACCEPTED`,
 ```text
 CURRENT_LOT = Model 0B PERF-1 shared real-model test fixtures
 PHASE = MODEL0B_IMPLEMENTATION_PERFORMANCE
-PERF1_STATUS = IMPLEMENTED_PENDING_REVIEW
+PERF1_STATUS = ACCEPTED
+PERF1_ACCEPTED_HEAD = c59539a5981ef513a7ef71b149ce62d285b1b2f7
 PERF1_SCOPE = TEST_SESSION_REUSE_ONLY
 SCIENTIFIC_CODE_CHANGED = NO
 FROZEN_PROTOCOL_CHANGED = NO
@@ -810,7 +811,6 @@ FINAL_GAP_GS     = NOT_PUBLISHED
 SPECTRAL_WEIGHTS = NOT_STARTED
 KUBO             = NOT_STARTED
 CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
-NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF1_THEN_LIONEL_DECISION
 ```
 
 PERF-1 est une optimisation d'infrastructure de test strictement
@@ -836,4 +836,59 @@ un total de 657s), n'est désormais exécutée qu'une seule fois par session
 `TIME_REDUCTION_PERCENT ≈ 54.1%`), pour un compte de tests inchangé
 (`530 passed` avant et après). Les tests synthétiques de
 `compare_precision_levels` et le routage forcé par monkeypatch sont
-inchangés.
+inchangés. Lionel ORCIL a explicitement accepté PERF-1
+(`PERF1_STATUS = ACCEPTED`,
+`PERF1_ACCEPTED_HEAD = c59539a5981ef513a7ef71b149ce62d285b1b2f7`).
+
+## PERF-2 — projector-distance norm kernel optimization
+
+```text
+CURRENT_LOT = Model 0B PERF-2 projector-distance norm optimization
+PHASE = MODEL0B_IMPLEMENTATION_PERFORMANCE
+PERF2_STATUS = IMPLEMENTED_PENDING_REVIEW
+PERF2_SCOPE = PROJECTOR_DISTANCE_NORM_KERNEL_ONLY
+SCIENTIFIC_CODE_CHANGED = NO
+NUMERICAL_IMPLEMENTATION_CHANGED = YES
+FROZEN_PROTOCOL_CHANGED = NO
+SCIENTIFIC_RESULTS_CHANGED = NO
+FINAL_D_GS       = NOT_PUBLISHED
+FINAL_GAP_GS     = NOT_PUBLISHED
+SPECTRAL_WEIGHTS = NOT_STARTED
+KUBO             = NOT_STARTED
+CONFIRMATORY_EXECUTION_0B = NOT_AUTHORIZED
+NEXT_REQUIRED_GOVERNANCE_ACTION = CHATGPT_REVIEW_PERF2_THEN_LIONEL_DECISION
+```
+
+PERF-2 optimise exclusivement le noyau numérique du calcul de `d_P` dans
+`precision_control.compare_precision_levels`, sans toucher à sa
+définition, au matching de clusters, aux projecteurs utilisés, aux
+précisions P0/P1/P2, aux seuils gelés, à la logique d'escalade ni aux
+verdicts. Profilage local (développement uniquement, non committé) sur les
+47 différences de projecteurs réelles P0/P1 de la référence Λ=2 : les 47
+matrices sont exactement hermitiennes (vérifié sans tolérance) ; voie A
+actuelle (`A†A` puis `eighe` puis `sqrt`) = 75.09s ; voie B SVD directe
+(`mp.svd_c`) = 99.51s (plus lente, écartée) ; voie C fast-path hermitien
+exact (`eighe(A)` direct puis `max|lambda|`) = 55.36s, avec accord
+numérique avec la voie A à ~1e-33/1e-34 près (précision de représentation,
+pas une tolérance nouvelle). Nouveau helper privé
+`_projector_difference_spectral_norm` : bascule vers le fast-path
+uniquement si `_is_exactly_hermitian(A)` est vrai (`A[i,j] ==
+conjugate(A[j,i])` exactement, aucun epsilon, aucune symétrisation),
+sinon repli inchangé vers `_spectral_norm_general`. Sept tests
+d'équivalence synthétiques ajoutés (hermitienne nulle, diagonale, complexe
+non diagonale, non-hermitienne générale, différences de projecteurs
+rang 1 et rang > 1). `PROJECTOR_STABILITY_TOLERANCE = 1e-10`,
+`P0=53`/`P1=106`/`P2=212`, et la priorité des `failure_reason` restent
+inchangés. `BASELINE_LAMBDA2_TEST_SECONDS = 163.21s` ->
+`OPTIMIZED_LAMBDA2_TEST_SECONDS = 129.92s`
+(`LAMBDA2_TEST_SPEEDUP ≈ 1.26`). Suite complète :
+`PERF1_FULL_BASELINE_SECONDS = 301.42s` ->
+`OPTIMIZED_FULL_WALL_SECONDS = 234.77s`
+(`FULL_SUITE_SPEEDUP_VS_PERF1 ≈ 1.28`,
+`FULL_TIME_REDUCTION_PERCENT_VS_PERF1 ≈ 22.1%`), `537 passed` (530 + 7
+nouveaux tests d'équivalence, aucun skip/xfail). L'oracle indépendant
+`mp.svd_c` du test `test_lambda2_full_ladder_and_independent_d_p_oracle`
+n'a pas été modifié et continue de confirmer `PRECISION_UNRESOLVED` pour
+la référence Λ=2. Aucun autre fichier de production
+(`multiprecision.py`, `eigensystem.py`, `ground_state_branch.py`,
+`ground_state_density.py`, `exact_assembly.py`) n'a été modifié.
